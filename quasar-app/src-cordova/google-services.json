@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "757405799687",
+    "firebase_url": "https://brochure-7cf51.firebaseio.com",
+    "project_id": "brochure-7cf51",
+    "storage_bucket": "brochure-7cf51.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:757405799687:android:51ec51768f7bb4ec84e1a2",
+        "android_client_info": {
+          "package_name": "com.quasar.brochure"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "757405799687-r9o1umsb4r9a4fqs60ndclm1vqbkdbgh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrGwxpcD8pgZdR6YQwHYZdkyWRjnaGDTc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "757405799687-r9o1umsb4r9a4fqs60ndclm1vqbkdbgh.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "757405799687-eo1n3m80f6drfm9qrndqtp5pnl3si70b.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.quasar.brochure"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

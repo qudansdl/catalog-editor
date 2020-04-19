@@ -1,0 +1,94 @@
+server:
+  port: 8081
+
+## Spring DATASOURCE (DataSourceAutoConfiguration & DataSourceProperties)
+spring:
+  devtools:
+    livereload:
+      enabled: true
+  output.ansi.enabled: ALWAYS
+  servlet:
+    multipart:
+      maxFileSize: 20MB
+      maxRequestSize: 20MB
+  datasource:
+    url: jdbc:postgresql://basicit.co.kr:3008/skmagic
+    username: skmagic
+    password: 11111111
+#  flyway:
+#    enabled: true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        id.new_generator_mappings: false
+        jdbc.lob.non_contextual_creation: true
+    hibernate:
+      ddl-auto: validate
+      naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+    generate-ddl: true
+    show-sql: true
+
+  flyway.enabled: true
+  mustache:
+    suffix: .html
+    cache: false
+    charset: UTF-8
+    check-template-location: true
+    content-type: text/html
+    enabled: true
+
+#logging.level.org.hibernate.type: trace
+
+graphql:
+  servlet:
+    mapping: /graphql
+    enabled: true
+    corsEnabled: true
+    exception-handlers-enabled: true
+    contextSetting: PER_REQUEST_WITH_INSTRUMENTATION
+
+  tools:
+    schema-location-pattern: "**/*.graphqls"
+    # Enable or disable the introspection query. Disabling it puts your server in contravention of the GraphQL
+    # specification and expectations of most clients, so use this option with caution
+    introspection-enabled: true
+
+graphiql:
+  mapping: /graphiql
+  endpoint:
+    graphql: /graphql
+    subscriptions: /subscriptions
+  subscriptions:
+    timeout: 30
+    reconnect: false
+  static:
+    basePath: /
+  enabled: true
+  pageTitle: GraphiQL
+  cdn:
+    enabled: false
+    version: 0.13.0
+
+altair:
+  mapping: /altair
+  endpoint:
+    graphql: /graphql
+    subscriptions: /subscriptions
+  subscriptions:
+    timeout: 30
+    reconnect: false
+  static:
+    basePath: /
+  enabled: true
+  pageTitle: Altair
+  cdn:
+    enabled: false
+    version: 2.1.7
+
+pdf2html:
+  repository: https://raw.githubusercontent.com/chehabz/email-templates/master
+  authorizationToken: ${ACCESSTOKEN}
+  chromePath: ${CHROMEPATH}
+  serverHostName: ${HOSTNAME}

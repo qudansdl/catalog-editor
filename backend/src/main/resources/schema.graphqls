@@ -1,0 +1,179 @@
+scalar UUID
+scalar Upload
+scalar Long
+
+
+interface Entity {
+  id: UUID
+}
+
+input CategoryInput {
+  id: UUID
+  name: String
+}
+
+type Category implements Entity {
+  id: UUID
+  name: String
+}
+
+
+
+type Catalog  implements Entity {
+  id: UUID
+  name: String
+  description: String
+  categories: [Category]
+  blocks: [CatalogBlock]
+}
+
+
+type CatalogBlock  implements Entity  {
+  id: UUID
+  x: Int
+  y: Int
+  w: Int
+  h: Int
+  type: String
+  content: String
+}
+
+
+
+input CatalogBlockInput {
+  id: UUID
+  x: Int
+  y: Int
+  w: Int
+  h: Int
+  type: String
+  content: String
+}
+
+
+
+
+
+
+input ImageInput {
+  id: UUID
+  content: String
+}
+
+type Image  implements Entity {
+  id: UUID
+  content: String
+  categories: [Category]
+}
+
+
+input TextInput {
+  id: UUID
+  content: String
+}
+
+type Text  implements Entity  {
+  id: UUID
+  content: String
+  categories: [Category]
+}
+
+
+input OrderInput {
+  column: Int
+  dir: String
+}
+
+input ColumnInput {
+  name: String
+  value: String
+  operation: String
+  columns: [ColumnInput]
+}
+
+input DataTablesInput {
+  start: Int
+  length: Int
+  order: [OrderInput]
+  columns: [ColumnInput]
+}
+
+interface DataTablesOutput {
+  recordsTotal: Long
+  recordsFiltered: Long
+  error: String
+}
+
+type CategoryOutput implements DataTablesOutput {
+  recordsTotal: Long
+  recordsFiltered: Long
+  error: String
+  data: [Category]
+}
+
+type CatalogOutput implements DataTablesOutput {
+  recordsTotal: Long
+  recordsFiltered: Long
+  error: String
+  data: [Catalog]
+}
+
+
+type ImageOutput implements DataTablesOutput {
+  recordsTotal: Long
+  recordsFiltered: Long
+  error: String
+  data: [Image]
+}
+
+
+
+
+type TextOutput implements DataTablesOutput {
+  recordsTotal: Long
+  recordsFiltered: Long
+  error: String
+  data: [Text]
+}
+
+
+
+
+type Query {
+  categories(input: DataTablesInput): CategoryOutput
+  category(categoryId: UUID!): Category
+
+  catalogs(input: DataTablesInput): CatalogOutput
+  catalog(catalogId: UUID!): Catalog
+
+  images(input: DataTablesInput): ImageOutput
+  image(imageId: UUID!): Image
+
+  texts(input: DataTablesInput): TextOutput
+  text(textId: UUID!): Text
+}
+
+type Mutation {
+  createCategory(name: UUID): Category
+  updateCategory(categoryId: UUID!, name: String): Category
+  deleteCategory(categoryId: UUID!): Boolean
+
+  createCatalog(name: String
+    description: String
+    categories: [CategoryInput]
+    blocks: [CatalogBlockInput]
+  ): Catalog
+  updateCatalog(catalogId: UUID!,
+    name: String
+    description: String
+    categories: [CategoryInput]
+    blocks: [CatalogBlockInput]
+  ): Catalog
+  deleteCatalog(catalogId: UUID!): Boolean
+
+
+  createImage(file: Upload): Image
+  updateImage(imageId: UUID!, file: Upload): Image
+  deleteImage(imageId: UUID!): Boolean
+
+}

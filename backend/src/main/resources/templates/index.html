@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SKMAgic Sample</title>
+    <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="js/lib/genericons/genericons.css">
+    <link rel="stylesheet" href="js/base.css">
+</head>
+
+<body>
+<div id="ptr">
+    <span class="genericon genericon-next"></span>
+
+    <div class="loading">
+        <span id="l1"></span>
+        <span id="l2"></span>
+        <span id="l3"></span>
+    </div>
+</div>
+
+<div id="content">
+    Pull down to refresh!<br>
+    <button onclick="executeEditor()">Execute Editor</button>
+</div>
+
+<script src="js/lib/hammer.2.0.4.js"></script>
+<script src="js/lib/wptr.1.1.js"></script>
+
+<script>
+    // Pull To Refresh 시작 //
+    window.onload = function() {
+        WebPullToRefresh.init( {
+            loadingFunction: loadingFunction
+        } );
+    };
+
+    var loadingFunction = function() {
+        return new Promise( function( resolve, reject ) {
+            // Run some async loading code here
+
+            if ( true /* if the loading worked */ ) {
+                resolve();
+            } else {
+                reject();
+            }
+        } );
+    };
+    // Pull To Refresh 끝 //
+
+    // editor 실행 //
+    console.log('start content')
+    //에디터 실행
+    function executeEditor(){
+        console.log('execute editor')
+        window.parent.postMessage({type:'EXECUTE_EDITOR'}, '*');
+    }
+
+    // editor 끝 //
+
+    //Event를 받기 위한 리스너 등록
+    window.addEventListener("message", receiveMessage, false);
+
+    function receiveMessage(event)
+    {
+        console.log('received event : ' + JSON.stringify(event))
+        if (event.data.type === "FCM_TOKEN")         //FCM TOKEN 처리
+        {
+            //받은 토큰은 DB에 저장했다가 Push를 보낼때 사용해야함
+            console.log("FCM Token :  " + event.data.token)
+        }
+    }
+</script>
+</body>
+
+</html>
+
+
+
+
+
+
+

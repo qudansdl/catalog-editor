@@ -1,0 +1,53 @@
+{
+  "name": "com.quasar.brochure",
+  "displayName": "Quasar App",
+  "version": "1.0.0",
+  "description": "A sample Apache Cordova application that responds to the deviceready event.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "ecosystem:cordova"
+  ],
+  "author": "Apache Cordova Team",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "cordova-android": "^8.1.0",
+    "cordova-ios": "^5.1.1",
+    "cordova-plugin-android-zoom": "git+https://github.com/deltragon/cordova-plugin-android-zoom.git",
+    "cordova-plugin-firebase-analytics": "^4.2.0",
+    "cordova-plugin-firebase-messaging": "^4.3.0",
+    "cordova-plugin-inappbrowser": "^3.2.0",
+    "cordova-plugin-ionic-webview": "^2.5.3",
+    "cordova-plugin-splashscreen": "^5.0.2",
+    "cordova-plugin-whitelist": "^1.3.3",
+    "cordova-plugin-wkwebview-engine": "^1.2.1",
+    "cordova-support-android-plugin": "^1.0.2",
+    "cordova-support-google-services": "^1.4.0"
+  },
+  "devDependencies": {
+    "cordova-plugin-whitelist": "^1.3.3"
+  },
+  "cordova": {
+    "plugins": {
+      "cordova-plugin-whitelist": {},
+      "cordova-plugin-ionic-webview": {
+        "ANDROID_SUPPORT_ANNOTATIONS_VERSION": "27.+"
+      },
+      "cordova-plugin-wkwebview-engine": {},
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-inappbrowser": {},
+      "cordova-plugin-firebase-messaging": {
+        "FIREBASE_MESSAGING_VERSION": "20.1.+",
+        "ANDROIDX_CORE_VERSION": "1.0.+"
+      },
+      "cordova-support-google-services": {},
+      "cordova-plugin-android-zoom": {}
+    },
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  }
+}

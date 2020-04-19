@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<springProperty scope="context" name="logfiledirectory"   source="logging.directory"       defaultValue="/data/logs" />
+	<springProperty scope="context" name="logfile"            source="logging.log.file"        defaultValue="backend.log" />
+	<springProperty scope="context" name="maxFileSize"        source="logging.filesize.max"    defaultValue="100MB" />
+	<springProperty scope="context" name="maxArchiveSize"     source="logging.archivesize.max" defaultValue="10GB" />
+	<springProperty scope="context" name="maxHistory"         source="logging.history.max"     defaultValue="60" />
+	<springProperty scope="context" name="logLevel"           source="logging.loglevel"   defaultValue="INFO" />
+
+	<springProfile name="local">
+		<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+			<encoder>
+				<pattern>%d{HH:mm:ss.SSS} %-5level %class \(%thread\) [%logger{36}] -- %msg%n</pattern>
+			</encoder>
+		</appender>
+		<root level="${logLevel}" additivity="false">
+			<appender-ref ref="console" />
+		</root>
+	</springProfile>
+
+	<springProfile name="!local">
+		<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+			<file>${logfiledirectory}/${logfile}</file>
+			<rollingPolicy
+					class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+				<!-- rollover daily -->
+				<fileNamePattern>${logfiledirectory}/${logfile}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+				<maxFileSize>${maxFileSize}</maxFileSize>
+				<maxHistory>${maxHistory}</maxHistory>
+				<totalSizeCap>${maxArchiveSize}</totalSizeCap>
+			</rollingPolicy>
+			<encoder>
+				<pattern>%d %-5level %class \(%thread\) [%logger{36}] -- %msg%n</pattern>
+			</encoder>
+		</appender>
+		<root level="${logLevel}" additivity="false">
+			<appender-ref ref="file" />
+		</root>
+	</springProfile>
+</configuration>
