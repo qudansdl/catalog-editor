@@ -5,37 +5,36 @@
         <ApolloQuery :query="QUERY_CATEGORIES">
           <template v-slot="{ result: { loading, error, data } }">
             <template v-if="data && data.categories.data">
-            <el-option
-                    v-for="category in data.categories.data"
-                    :key="category.id"
-                    :label="category.name"
-                    :value="category.id">
-            </el-option>
+              <el-option
+                      v-for="category in data.categories.data"
+                      :key="category.id"
+                      :label="category.name"
+                      :value="category.id">
+              </el-option>
             </template>
           </template>
         </ApolloQuery>
       </el-select>
-    <el-row>
-      <ApolloQuery :query="QUERY_CATEGORIES">
-        <el-col :span="8" v-for="(o, index) in 2" :key="o" :offset="index > 0 ? 2 : 0">
-          <el-card :body-style="{ padding: '0px' }">
-            <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png" class="image">
-            <div style="padding: 14px;">
-              <span>Yummy hamburger</span>
-              <div class="bottom clearfix">
-                <time class="time">{{ currentDate }}</time>
-                <el-button type="text" class="button">Operating</el-button>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
+
+      <ApolloQuery :query="QUERY_IMAGES">
+        <template v-slot="{ result: { loading, error, data } }">
+          <template v-if="data && data.images.data">
+            <el-row>
+              <el-col :span="8" v-for="image in data.images.data" :key="image.id">
+                <el-card :body-style="{ padding: '0px' }">
+                  <el-image style="width: 100px; height: 100px" :src="image.content"></el-image>
+                </el-card>
+            </el-col>
+            </el-row>
+            <el-pagination
+                    background
+                    layout="prev, pager, next"
+                    :total="1000">
+            </el-pagination>
+
+          </template>
+        </template>
       </ApolloQuery>
-    </el-row>
-    <el-pagination
-            background
-            layout="prev, pager, next"
-            :total="1000">
-    </el-pagination>
   </div>
 </template>
 

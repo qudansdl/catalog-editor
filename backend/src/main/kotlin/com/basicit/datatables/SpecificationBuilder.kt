@@ -31,26 +31,23 @@ class SpecificationBuilder<E, P: Comparable<P>>(
             return createFinalPredicate(criteriaBuilder)
         }
 
-        private fun initPredicatesRecursively(column: Column, from: From<*, *>, fetch: FetchParent<E, E>, criteriaBuilder: CriteriaBuilder) {
+        private fun initPredicatesRecursively(column: Column, from: From<*, *>, fetch: FetchParent<*, *>, criteriaBuilder: CriteriaBuilder) {
             if (column.isLeaf) {
-                //column: Column, criteriaBuilder: CriteriaBuilder, from: From<E, E>
                 val predicate = filterSpecifications.getPredicate(column, criteriaBuilder, from)
                 columnPredicates.add(predicate)
-            }
-            for (child in column.columns) {
-                val path = from.get<Any>(child.name)
-                if (path is AbstractPathImpl<*>) {
-                    if ((path as AbstractPathImpl<*>).attribute.isCollection) {
-                        // ignore OneToMany and ManyToMany relationships
-                        continue
+            }else {
+                val join: Join<E, E> = from.join(column.name, JoinType.LEFT)
+                val childFetch: Fetch<E, E> = fetch.fetch(column.name, JoinType.LEFT)
+
+                for (child in column.columns) {
+                    val path = join.get<Any>(child.name)
+                    if (child.isLeaf) {
+                        initPredicatesRecursively(child, join, childFetch, criteriaBuilder)
+                    } else {
+                        // val join: Join<E, E> = from.join(child.name, JoinType.LEFT)
+                        // val childFetch: Fetch<E, E> = fetch.fetch(child.name, JoinType.LEFT)
+                        initPredicatesRecursively(child, join, childFetch, criteriaBuilder)
                     }
-                }
-                if (child.isLeaf) {
-                    initPredicatesRecursively(child, from, fetch, criteriaBuilder)
-                } else {
-                    val join: Join<E, E> = from.join(child.name, JoinType.LEFT)
-                    val childFetch: Fetch<E, E> = fetch.fetch(child.name, JoinType.LEFT)
-                    initPredicatesRecursively(child, join, childFetch, criteriaBuilder)
                 }
             }
         }

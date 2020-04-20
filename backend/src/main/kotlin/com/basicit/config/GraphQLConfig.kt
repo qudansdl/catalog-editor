@@ -68,7 +68,7 @@ class GraphQLConfig {
     fun customScalarLong(): GraphQLScalarType = GraphQLScalarType.newScalar()
             .name("Long")
             .description("Long, i.e. 12454")
-            .coercing(object : Coercing<Long, String> {
+            .coercing(object : Coercing<Long, Long> {
                 override fun parseLiteral(input: Any?): Long? {
                     return when (input) {
                         is StringValue -> input.value.toLong()
@@ -79,9 +79,9 @@ class GraphQLConfig {
 
                 override fun parseValue(input: Any?): Long? = parseLiteral(input)
 
-                override fun serialize(longFetcherResult: Any?): String? = when (longFetcherResult) {
-                    is String -> longFetcherResult
-                    is LocalDate -> longFetcherResult.toString()
+                override fun serialize(longFetcherResult: Any?): Long? = when (longFetcherResult) {
+                    is String -> longFetcherResult.toLong()
+                    is Long -> longFetcherResult
                     else -> null
                 }
             }).build()

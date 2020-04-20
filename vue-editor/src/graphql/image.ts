@@ -14,7 +14,7 @@ export const GET_IMAGES = gql`query($input: DataTablesInput) {
     images(input: $input) {
         data {
             id
-            name
+            content
         }
     }
 }`;
