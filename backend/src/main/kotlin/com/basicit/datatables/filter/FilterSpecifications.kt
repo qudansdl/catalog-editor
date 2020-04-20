@@ -1,12 +1,11 @@
 package com.basicit.datatables.filter
 
-import org.springframework.data.jpa.domain.Specification
+import com.basicit.datatables.mapping.Column
+import org.springframework.core.convert.ConversionService
 import org.springframework.stereotype.Service
+import java.lang.reflect.TypeVariable
 import java.util.*
-import java.util.function.Function
-import javax.persistence.criteria.CriteriaBuilder
-import javax.persistence.criteria.CriteriaQuery
-import javax.persistence.criteria.Root
+import javax.persistence.criteria.*
 
 /**
  *
@@ -68,77 +67,27 @@ import javax.persistence.criteria.Root
  * @param <E>
  * @param <T>
 </T></E> */
-@Service
-class FilterSpecifications<E, T : Comparable<T>> {
-    private var map: MutableMap<FilterOperation, Function<FilterCriteria<T>, Specification<E>>> = mutableMapOf()
-    fun getSpecification(operation: FilterOperation): Function<FilterCriteria<T>, Specification<E>> {
-        return map[operation]!!
-    }
+class FilterSpecifications<P: Comparable<P>>(private val conversionServiceList: List<ConversionService>) {
+    fun getPredicate(column: Column, criteriaBuilder: CriteriaBuilder, from: From<*, *>): Predicate {
+        val expression = from.get<Any>(column.name) as Expression<P>
+        val criteria = FilterCriteria(column, expression, conversionServiceList)
 
-    /**
-     *
-     * Forms the generic filter specifications for the operations
-     * [FilterOperation]
-     *
-     * @return
-     */
-    private fun initSpecifications(): Map<FilterOperation, Function<FilterCriteria<T>, Specification<E>>> {
-        // Equal
-        map[FilterOperation.EQUAL] = Function { filterCriteria: FilterCriteria<T> ->
-            Specification { root: Root<E>, criteriaQuery: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-                criteriaBuilder.equal(root.get<Any>(filterCriteria.fieldName), filterCriteria.convertedSingleValue)
+        return when (criteria.operation) {
+            FilterOperation.EQUAL -> criteriaBuilder.equal(expression, criteria.convertedSingleValue)
+            FilterOperation.NOT_EQUAL-> criteriaBuilder.notEqual(expression, criteria.convertedSingleValue)
+            FilterOperation.GREATER_THAN -> criteriaBuilder.greaterThan(expression, criteria.convertedSingleValue!!)
+            FilterOperation.GREATER_THAN_OR_EQUAL_TO-> criteriaBuilder.greaterThanOrEqualTo(expression, criteria.convertedSingleValue!!)
+            FilterOperation.LESS_THAN-> criteriaBuilder.lessThan(expression, criteria.convertedSingleValue!!)
+            FilterOperation.LESSTHAN_OR_EQUAL_TO-> criteriaBuilder.lessThanOrEqualTo(expression, criteria.convertedSingleValue!!)
+            FilterOperation.IN-> expression.`in`(criteria.convertedValues!!)
+            FilterOperation.NOT_IN-> criteriaBuilder.not(expression.`in`(criteria.convertedValues))
+            FilterOperation.BETWEEN-> criteriaBuilder.between(expression, criteria.minValue!!, criteria.maxValue!!)
+            FilterOperation.CONTAINS-> criteriaBuilder.like(expression as Expression<String>, "%" + criteria.convertedSingleValue + "%")
+            else -> { // Note the block
+                criteriaBuilder.equal(expression, criteria.convertedSingleValue)
             }
         }
-        map[FilterOperation.NOT_EQUAL] = Function { filterCriteria: FilterCriteria<T> ->
-            Specification { root: Root<E>, criteriaQuery: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-                criteriaBuilder.notEqual(root.get<Any>(filterCriteria.fieldName), filterCriteria.convertedSingleValue)
-            }
-        }
-        map[FilterOperation.GREATER_THAN] = Function { filterCriteria: FilterCriteria<T> ->
-            Specification { root: Root<E>, criteriaQuery: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-                criteriaBuilder.greaterThan(root[filterCriteria.fieldName], filterCriteria.convertedSingleValue!!)
-            }
-        }
-        map[FilterOperation.GREATER_THAN_OR_EQUAL_TO] = Function { filterCriteria: FilterCriteria<T> ->
-            Specification { root: Root<E>, criteriaQuery: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-                criteriaBuilder.greaterThanOrEqualTo(root[filterCriteria.fieldName], filterCriteria.convertedSingleValue!!)
-            }
-        }
-        map[FilterOperation.LESS_THAN] = Function { filterCriteria: FilterCriteria<T> ->
-            Specification { root: Root<E>, criteriaQuery: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-                criteriaBuilder.lessThan(root[filterCriteria.fieldName], filterCriteria.convertedSingleValue!!)
-            }
-        }
-        map[FilterOperation.LESSTHAN_OR_EQUAL_TO] = Function { filterCriteria: FilterCriteria<T> ->
-            Specification { root: Root<E>, criteriaQuery: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-                criteriaBuilder.lessThanOrEqualTo(root[filterCriteria.fieldName], filterCriteria.convertedSingleValue!!)
-            }
-        }
-        map[FilterOperation.IN] = Function { filterCriteria: FilterCriteria<T> ->
-            Specification { root: Root<E>, criteriaQuery: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder? ->
-                root.get<Any>(filterCriteria.fieldName).`in`(filterCriteria.convertedValues)
-            }
-        }
-        map[FilterOperation.NOT_IN] = Function { filterCriteria: FilterCriteria<T> ->
-            Specification { root: Root<E>, criteriaQuery: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-                criteriaBuilder
-                        .not(root.get<Any>(filterCriteria.fieldName).`in`(filterCriteria.convertedSingleValue))
-            }
-        }
-        map[FilterOperation.BETWEEN] = Function { filterCriteria: FilterCriteria<T> ->
-            Specification { root: Root<E>, criteriaQuery: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-                criteriaBuilder.between(root[filterCriteria.fieldName], filterCriteria.minValue!!, filterCriteria.maxValue!!)
-            }
-        }
-        map[FilterOperation.CONTAINS] = Function { filterCriteria: FilterCriteria<T> ->
-            Specification { root: Root<E>, criteriaQuery: CriteriaQuery<*>?, criteriaBuilder: CriteriaBuilder ->
-                criteriaBuilder.like(root.get(filterCriteria.fieldName), "%" + filterCriteria.convertedSingleValue + "%")
-            }
-        }
-        return map
-    }
 
-    init {
-        initSpecifications()
     }
 }
+

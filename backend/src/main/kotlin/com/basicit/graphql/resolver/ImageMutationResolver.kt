@@ -19,7 +19,7 @@ class ImageMutationResolver (private val imageService: ImageService) : GraphQLMu
     val contentType  = Tika().detect(part.submittedFileName)
 
     part.inputStream.use {
-      val base64str = DatatypeConverter.printBase64Binary(it.readAllBytes())
+      val base64str = DatatypeConverter.printBase64Binary(it.readBytes())
       val sb = StringBuilder()
       sb.append("data:")
       sb.append(contentType)

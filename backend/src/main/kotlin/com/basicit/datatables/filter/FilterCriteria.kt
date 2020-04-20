@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.Validate
 import org.springframework.core.convert.ConversionService
 import javax.persistence.criteria.Expression
+import javax.persistence.criteria.Path
 
 /**
  * Filter Criteria Holder
@@ -15,7 +16,7 @@ import javax.persistence.criteria.Expression
  * @param <T>
  * is the java type of the DB table column
 </T> */
-class FilterCriteria<T: Comparable<in T>> {
+class FilterCriteria<T: Comparable<T>> {
 
     /**
      * Holds the operation [FilterOperation]
@@ -55,8 +56,8 @@ class FilterCriteria<T: Comparable<in T>> {
     </T> */
     val convertedValues: MutableCollection<T>
 
-    val conversionService: ConversionService
-    val expression: Expression<*>
+    val conversionServiceList: List<ConversionService>
+    val expression: Expression<T>
 
     /**
      *
@@ -118,7 +119,7 @@ class FilterCriteria<T: Comparable<in T>> {
      * @param expression
      * @param conversionService
      */
-    constructor(column: Column, expression: Expression<T>, conversionService: ConversionService)
+    constructor(column: Column, expression: Expression<T>, conversionServiceList: List<ConversionService>)
     {
 
         // Validations
@@ -126,7 +127,7 @@ class FilterCriteria<T: Comparable<in T>> {
         Validate.notEmpty(column.value, "Filter criteria can't be empty")
         Validate.notEmpty(column.operation, "Filter operation can't be empty")
 
-        this.conversionService = conversionService
+        this.conversionServiceList = conversionServiceList
         this.expression = expression
         this.fieldName = column.name
 
@@ -146,6 +147,15 @@ class FilterCriteria<T: Comparable<in T>> {
         validateAndAssign(operationValues)
     }
 
+    private fun convert(value: Any, t: Class<*>): T? {
+
+        for(conversionService in this.conversionServiceList)
+        {
+            if(conversionService.canConvert(value.javaClass, t))
+            return conversionService.convert(value, t) as T
+        }
+        return null
+    }
     private fun validateAndAssign(operationValues: Array<String>) {
 
         //For operation 'btn'
@@ -156,11 +166,11 @@ class FilterCriteria<T: Comparable<in T>> {
             require(operationValues.size == 2) { "For 'btn' operation two values are expected" }
 
             //Convert
-            val value1 = this.conversionService.convert(operationValues[0], expression.javaType) as T
-            val value2 = this.conversionService.convert(operationValues[1], expression.javaType) as T
+            val value1 = convert(operationValues[0], expression.javaType)!!
+            val value2 = convert(operationValues[1], expression.javaType)!!
 
             //Set min and max values
-            if (value1!! > value2) {
+            if (value1 > value2) {
                 minValue = value2
                 maxValue = value1
             } else {
@@ -170,10 +180,10 @@ class FilterCriteria<T: Comparable<in T>> {
 
             //For 'in' or 'nin' operation
         } else if (FilterOperation.IN == operation || FilterOperation.NOT_IN == operation) {
-            convertedValues.addAll(originalValues.map { it ->  this.conversionService.convert(it , expression.javaType) as T })
+            convertedValues.addAll(originalValues.map { it ->  this.convert(it , expression.javaType)!! })
         } else {
             //All other operation
-            convertedSingleValue = this.conversionService.convert(operationValues[0] , expression.javaType) as T
+            convertedSingleValue = this.convert(operationValues[0] , expression.javaType)
         }
     }
 

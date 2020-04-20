@@ -1,20 +1,16 @@
 package com.basicit.datatables
 
-import com.basicit.datatables.filter.FilterCriteria
 import com.basicit.datatables.filter.FilterSpecifications
 import com.basicit.datatables.mapping.Column
 import com.basicit.datatables.mapping.DataTablesInput
 import org.hibernate.query.criteria.internal.path.AbstractPathImpl
-import org.springframework.core.convert.ConversionService
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.stereotype.Service
 import java.util.*
 import javax.persistence.criteria.*
 
-@Service
-class SpecificationBuilder<E, T : Comparable<T>>(
-        private val filterSpecifications: FilterSpecifications<E, T>,
-        private val conversionService: ConversionService
+class SpecificationBuilder<E, P: Comparable<P>>(
+        private val filterSpecifications: FilterSpecifications<P>
 ) : AbstractPredicateBuilder<Specification<E>>() {
 
     override fun build(input: DataTablesInput): Specification<E> {
@@ -35,14 +31,11 @@ class SpecificationBuilder<E, T : Comparable<T>>(
             return createFinalPredicate(criteriaBuilder)
         }
 
-        private fun initPredicatesRecursively(column: Column, from: From<E, E>, fetch: FetchParent<E, E>, criteriaBuilder: CriteriaBuilder) {
+        private fun initPredicatesRecursively(column: Column, from: From<*, *>, fetch: FetchParent<E, E>, criteriaBuilder: CriteriaBuilder) {
             if (column.isLeaf) {
-
-                val expression = from.get<Any>(column.name) as Expression<T>
-                val criteria = FilterCriteria(column, expression, conversionService)
-
-                val function = filterSpecifications.getSpecification(criteria.operation)
-                columnPredicates.add(function.apply(criteria).toPredicate(from, criteriaBuilder))
+                //column: Column, criteriaBuilder: CriteriaBuilder, from: From<E, E>
+                val predicate = filterSpecifications.getPredicate(column, criteriaBuilder, from)
+                columnPredicates.add(predicate)
             }
             for (child in column.columns) {
                 val path = from.get<Any>(child.name)
