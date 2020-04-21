@@ -12,8 +12,8 @@ import java.util.*
 class CatalogMutationResolver (private val catalogService: CatalogService) : GraphQLMutationResolver {
   fun createCatalog(name: String? = null,
                     description: String? = null,
-                    categories: List<Category> = ArrayList(),
-                    blocks: List<CatalogBlock> = ArrayList()
+                    categories: MutableSet<Category> = mutableSetOf(),
+                    blocks: MutableSet<CatalogBlock> = mutableSetOf()
   ): Catalog =
     catalogService.addCatalog(
       Catalog(
@@ -27,8 +27,8 @@ class CatalogMutationResolver (private val catalogService: CatalogService) : Gra
   fun updateCatalog(catalogId: String,
                     name: String? = null,
                     description: String? = null,
-                    categories: List<Category> = ArrayList(),
-                    blocks: List<CatalogBlock> = ArrayList()): Catalog =
+                    categories: MutableSet<Category> = mutableSetOf(),
+                    blocks: MutableSet<CatalogBlock> = mutableSetOf()): Catalog =
     catalogService.putCatalog(
       catalogId,
       Catalog(

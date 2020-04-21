@@ -40,14 +40,7 @@ class SpecificationBuilder<E, P: Comparable<P>>(
                 val childFetch: Fetch<E, E> = fetch.fetch(column.name, JoinType.LEFT)
 
                 for (child in column.columns) {
-                    val path = join.get<Any>(child.name)
-                    if (child.isLeaf) {
-                        initPredicatesRecursively(child, join, childFetch, criteriaBuilder)
-                    } else {
-                        // val join: Join<E, E> = from.join(child.name, JoinType.LEFT)
-                        // val childFetch: Fetch<E, E> = fetch.fetch(child.name, JoinType.LEFT)
-                        initPredicatesRecursively(child, join, childFetch, criteriaBuilder)
-                    }
+                    initPredicatesRecursively(child, join, childFetch, criteriaBuilder)
                 }
             }
         }

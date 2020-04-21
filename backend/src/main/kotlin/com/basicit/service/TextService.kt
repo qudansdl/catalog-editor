@@ -2,6 +2,7 @@ package com.basicit.service
 
 import com.basicit.datatables.mapping.DataTablesInput
 import com.basicit.datatables.mapping.DataTablesOutput
+import com.basicit.model.Category
 import com.basicit.model.Image
 import com.basicit.model.Text
 import com.basicit.repository.TextRepository
@@ -25,7 +26,7 @@ class TextService(private val textRepository: TextRepository) {
       textRepository.findById(textId).map { currentText ->
       val updatedText = Text(
               currentText.id,
-              mutableListOf(),
+              mutableSetOf(),
               newText.content)
 
           textRepository.save(updatedText)
