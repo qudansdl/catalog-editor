@@ -24,7 +24,7 @@ class ImageService(private val imageRepository: ImageRepository) {
       imageRepository.findById(imageId).map { currentImage ->
       val updatedImage = Image(
               currentImage.id,
-              mutableListOf(),
+              mutableSetOf(),
               newImage.content)
 
           imageRepository.save(updatedImage)

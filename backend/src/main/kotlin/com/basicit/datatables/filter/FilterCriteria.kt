@@ -4,8 +4,6 @@ import com.basicit.datatables.mapping.Column
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.Validate
 import org.springframework.core.convert.ConversionService
-import javax.persistence.criteria.Expression
-import javax.persistence.criteria.Path
 
 /**
  * Filter Criteria Holder
@@ -57,7 +55,7 @@ class FilterCriteria<T: Comparable<T>> {
     val convertedValues: MutableCollection<T>
 
     val conversionServiceList: List<ConversionService>
-    val expression: Expression<T>
+    val javaType: Class<T>
 
     /**
      *
@@ -119,7 +117,7 @@ class FilterCriteria<T: Comparable<T>> {
      * @param expression
      * @param conversionService
      */
-    constructor(column: Column, expression: Expression<T>, conversionServiceList: List<ConversionService>)
+    constructor(column: Column, javaType: Class<T>, conversionServiceList: List<ConversionService>)
     {
 
         // Validations
@@ -128,7 +126,7 @@ class FilterCriteria<T: Comparable<T>> {
         Validate.notEmpty(column.operation, "Filter operation can't be empty")
 
         this.conversionServiceList = conversionServiceList
-        this.expression = expression
+        this.javaType = javaType
         this.fieldName = column.name
 
         val operation = column.operation
@@ -166,8 +164,8 @@ class FilterCriteria<T: Comparable<T>> {
             require(operationValues.size == 2) { "For 'btn' operation two values are expected" }
 
             //Convert
-            val value1 = convert(operationValues[0], expression.javaType)!!
-            val value2 = convert(operationValues[1], expression.javaType)!!
+            val value1 = convert(operationValues[0], javaType)!!
+            val value2 = convert(operationValues[1], javaType)!!
 
             //Set min and max values
             if (value1 > value2) {
@@ -180,10 +178,10 @@ class FilterCriteria<T: Comparable<T>> {
 
             //For 'in' or 'nin' operation
         } else if (FilterOperation.IN == operation || FilterOperation.NOT_IN == operation) {
-            convertedValues.addAll(originalValues.map { it ->  this.convert(it , expression.javaType)!! })
+            convertedValues.addAll(originalValues.map { it ->  this.convert(it , javaType)!! })
         } else {
             //All other operation
-            convertedSingleValue = this.convert(operationValues[0] , expression.javaType)
+            convertedSingleValue = this.convert(operationValues[0] , javaType)
         }
     }
 

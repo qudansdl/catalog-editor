@@ -24,9 +24,9 @@ class Catalog(
                 inverseJoinColumns = [JoinColumn(name = "category_id", nullable = false, updatable = false)]
         )
         @Fetch(FetchMode.SELECT)
-        var categories: List<Category> = ArrayList(),
+        var categories: MutableSet<Category> = mutableSetOf(),
 
         @OneToMany(mappedBy = "catalog", fetch = FetchType.EAGER)
         @Fetch(FetchMode.SELECT)
-        var blocks: List<CatalogBlock> = ArrayList()
+        var blocks: MutableSet<CatalogBlock> = mutableSetOf()
 ) : AbstractEntity(id)

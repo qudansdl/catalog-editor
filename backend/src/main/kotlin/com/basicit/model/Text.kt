@@ -19,9 +19,10 @@ class Text(
         @JoinTable(name = "text_categories",
                 joinColumns = [JoinColumn(name = "text_id")],
                 inverseJoinColumns = [JoinColumn(name = "category_id")]
+
         )
         @Fetch(FetchMode.SELECT)
-        var categories: List<Category> = mutableListOf(),
+        var categories: MutableSet<Category> = mutableSetOf(),
 
         val content: String? = null
 ) : AbstractEntity(id)

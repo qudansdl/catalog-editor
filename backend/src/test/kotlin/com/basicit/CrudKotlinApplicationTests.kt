@@ -1,4 +1,4 @@
-package com.grekz.crudKotlin
+package com.basicit
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest

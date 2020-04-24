@@ -28,7 +28,7 @@ abstract class AbstractPredicateBuilder<S> {
     }
 
     abstract fun build(input: DataTablesInput): S
-    private inner class DataTablesPageRequest internal constructor(private val offset: Int, private val pageSize: Int, private val sort: Sort) : Pageable {
+    private inner class DataTablesPageRequest(private val offset: Int, private val pageSize: Int, private val sort: Sort) : Pageable {
         override fun getOffset(): Long {
             return offset.toLong()
         }

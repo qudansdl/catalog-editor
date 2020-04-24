@@ -21,7 +21,7 @@ class Image(
                 inverseJoinColumns = [JoinColumn(name = "category_id", nullable = false, updatable = false)]
         )
         @Fetch(FetchMode.SELECT)
-        var categories: List<Category> = ArrayList(),
+        var categories: MutableSet<Category> = mutableSetOf(),
 
         val content: String? = null
 ) : AbstractEntity(id)

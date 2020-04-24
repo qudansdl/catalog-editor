@@ -6,6 +6,8 @@ plugins {
 	kotlin("jvm") version "1.3.72"
 	kotlin("plugin.spring") version "1.3.72"
 	kotlin("plugin.jpa") version "1.3.72"
+	kotlin("kapt") version "1.3.72"
+	idea
 }
 
 group = "com.basicit"
@@ -23,7 +25,14 @@ repositories {
 	mavenCentral()
 }
 
+sourceSets {
+	kotlin.sourceSets.register("$buildDir/generated/source/kapt/main")
+}
+
 dependencies {
+	implementation(kotlin("stdlib-jdk8"))
+	implementation(kotlin("reflect"))
+
 	implementation("com.graphql-java-kickstart:graphql-spring-boot-starter:7.0.1")
 	implementation("com.graphql-java-kickstart:graphql-java-tools:6.0.2")
 
@@ -40,6 +49,18 @@ dependencies {
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+	implementation("org.graalvm.sdk:graal-sdk:20.0.0")
+	implementation("org.graalvm.js:js:20.0.0")
+	implementation("org.graalvm.js:js-scriptengine:20.0.0")
+	implementation("org.graalvm.tools:profiler:20.0.0")
+	implementation("org.graalvm.tools:chromeinspector:20.0.0")
+
+
+	implementation("com.querydsl:querydsl-jpa:4.2.2")
+	implementation("com.querydsl:querydsl-core:4.2.2")
+	kapt("com.querydsl:querydsl-apt:4.2.2:jpa")
+	kapt("javax.persistence:javax.persistence-api")
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 
@@ -64,3 +85,10 @@ tasks.withType<KotlinCompile> {
 	}
 }
 
+idea {
+	module {
+		val kaptMain = file("build/generated/source/kapt/main")
+		sourceDirs.add(kaptMain)
+		generatedSourceDirs.add(kaptMain)
+	}
+}

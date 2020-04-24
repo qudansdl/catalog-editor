@@ -1,1 +1,4 @@
 /backend/out
+/backend/.settings
+/backend/.project
+/backend/.classpath

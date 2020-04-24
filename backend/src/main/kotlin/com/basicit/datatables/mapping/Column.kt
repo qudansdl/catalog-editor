@@ -7,5 +7,5 @@ data class Column (
     val columns: MutableList<Column> = mutableListOf()
 )
 {
-    val isLeaf = columns.size == 0
+    fun isLeaf(): Boolean = columns.size == 0
 }

@@ -16,41 +16,68 @@
         </ApolloQuery>
       </el-select>
 
-      <ApolloQuery :query="QUERY_IMAGES">
-        <template v-slot="{ result: { loading, error, data } }">
-          <template v-if="data && data.images.data">
-            <el-row>
-              <el-col :span="8" v-for="image in data.images.data" :key="image.id">
-                <el-card :body-style="{ padding: '0px' }">
-                  <el-image style="width: 100px; height: 100px" :src="image.content"></el-image>
-                </el-card>
-            </el-col>
-            </el-row>
-            <el-pagination
-                    background
-                    layout="prev, pager, next"
-                    :total="1000">
-            </el-pagination>
 
-          </template>
+    <ApolloQuery
+            fetch-policy=""
+            :query="QUERY_IMAGES"
+            :variables="variables()"
+            ref="imageApollo"
+    >
+      <template v-slot="{ result: { loading, error, data } }">
+        <template v-if="data && data.images.data">
+          <el-row>
+            <el-col :span="8" v-for="image in data.images.data" :key="image.id">
+              <el-card :body-style="{ padding: '0px' }">
+                <el-image style="width: 100px; height: 100px" :src="image.content"></el-image>
+              </el-card>
+            </el-col>
+          </el-row>
+          <el-pagination
+                  background
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page.sync="currentPage"
+                  :page-sizes="[10, 20, 30, 40]"
+                  :page-size="pageSize"
+                  layout="prev, pager, next"
+                  :total="data.images.recordsTotal">
+          </el-pagination>
+
         </template>
-      </ApolloQuery>
+      </template>
+    </ApolloQuery>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 import { GET_CATEGORIES } from "@/graphql/category";
-import { GET_IMAGES } from "@/graphql/image";
+import { GET_IMAGES, getImageVariable } from "@/graphql/image";
 
 @Component({
-  name: 'SelectImage',
+  name: 'SelectImage'
 })
 export default class extends Vue {
   private category: string = ''
+  private pageSize = 10
+  private currentPage = 1
 
   private QUERY_CATEGORIES = GET_CATEGORIES
   private QUERY_IMAGES = GET_IMAGES
+
+  private variables() {
+    return getImageVariable(this.category, this.pageSize, this.currentPage);
+  }
+
+  private handleSizeChange(val: number) {
+      this.pageSize = val
+      console.log(this.$refs.imageApollo)
+  }
+  private handleCurrentChange(val: number) {
+    this.currentPage = val
+    console.log(this.$refs.imageApollo)
+  }
+
 }
 </script>
 
