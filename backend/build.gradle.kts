@@ -50,8 +50,16 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-	implementation("com.querydsl:querydsl-jpa:4.3.1")
-	kapt("com.querydsl:querydsl-apt:4.3.1:jpa")
+	implementation("org.graalvm.sdk:graal-sdk:20.0.0")
+	implementation("org.graalvm.js:js:20.0.0")
+	implementation("org.graalvm.js:js-scriptengine:20.0.0")
+	implementation("org.graalvm.tools:profiler:20.0.0")
+	implementation("org.graalvm.tools:chromeinspector:20.0.0")
+
+
+	implementation("com.querydsl:querydsl-jpa:4.2.2")
+	implementation("com.querydsl:querydsl-core:4.2.2")
+	kapt("com.querydsl:querydsl-apt:4.2.2:jpa")
 	kapt("javax.persistence:javax.persistence-api")
 
 	developmentOnly("org.springframework.boot:spring-boot-devtools")

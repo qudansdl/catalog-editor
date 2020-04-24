@@ -4,8 +4,6 @@ import com.basicit.datatables.mapping.Column
 import org.apache.commons.lang3.StringUtils
 import org.apache.commons.lang3.Validate
 import org.springframework.core.convert.ConversionService
-import javax.persistence.criteria.Expression
-import javax.persistence.criteria.Path
 
 /**
  * Filter Criteria Holder
