@@ -10,10 +10,12 @@ import org.graalvm.polyglot.Context
 import org.graalvm.polyglot.HostAccess
 import org.slf4j.LoggerFactory
 import org.springframework.core.convert.ConversionService
+import org.springframework.core.io.ClassPathResource
 import org.springframework.data.jpa.repository.support.JpaEntityInformation
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository
 import java.io.File
 import java.io.Serializable
+import java.nio.file.Files
 import javax.persistence.EntityManager
 import javax.script.Bindings
 import javax.script.ScriptContext
