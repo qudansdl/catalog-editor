@@ -9,15 +9,22 @@ function findAll()
     let qClassInstance = context.getQClassInstance()
     let recordsTotal = context.getQuery().select(context.getQClassInstance().id.countDistinct()).fetchOne()
 
-    for (column of context.getInput().getColumns()) {
-        addCondition(column, qClassInstance)
-    }
+    if(context.getInput())
+        for (column of context.getInput().getColumns()) {
+            addCondition(column, qClassInstance)
+        }
 
     context.getQuery().where(context.getWhere())
 
     let totalCount = context.getQuery().select(context.getQClassInstance().id.countDistinct()).fetchOne()
-    let list = context.getQuery().select(context.getQClassInstance()).fetch()
 
+    let list
+    if(context.getInput())
+    {
+        list = context.getQuery().select(context.getQClassInstance()).offset(context.getInput().getStart()).limit(context.getInput().getLength()).fetch()
+    }else{
+        list = context.getQuery().select(context.getQClassInstance()).fetch()
+    }
 
     context.getOutput().setRecordsTotal(recordsTotal)
     context.getOutput().setRecordsFiltered(totalCount)
@@ -26,26 +33,40 @@ function findAll()
 }
 
 function addWhere(column, path, criteria) {
-        switch(column.operation) {
-            case "eq": path.eq(criteria.convertedSingleValue)
+    console.log("addWhere = " + column + "/" + path + "/" + criteria)
+    console.log("column.operation = " + column.getOperation())
+    console.log("criteria.convertedSingleValue = " + criteria.getConvertedSingleValue())
+
+        switch(column.getOperation()) {
+            case "eq":  context.getWhere().and(path.eq(criteria.getConvertedSingleValue()))
+                console.log("eq : " + criteria.getConvertedSingleValue())
                 break;
-            case "neq":  path.ne(criteria.convertedSingleValue)
+            case "neq":  context.getWhere().and(path.ne(criteria.getConvertedSingleValue()))
+                console.log("neq : " + criteria.getConvertedSingleValue())
                 break;
-            case "gt": path.gt(criteria.convertedSingleValue)
+            case "gt": context.getWhere().and(path.gt(criteria.getConvertedSingleValue()))
+                console.log("gt : " + criteria.getConvertedSingleValue())
                 break;
-            case "gte": path.goe(criteria.convertedSingleValue)
+            case "gte": context.getWhere().and(path.goe(criteria.getConvertedSingleValue()))
+                console.log("gte : " + criteria.getConvertedSingleValue())
                 break;
-            case "lt": path.lt(criteria.convertedSingleValue)
+            case "lt": context.getWhere().and(path.lt(criteria.getConvertedSingleValue()))
+                console.log("lt : " + criteria.getConvertedSingleValue())
                 break;
-            case "lte": path.loe(criteria.convertedSingleValue)
+            case "lte": context.getWhere().and(path.loe(criteria.getConvertedSingleValue()))
+                console.log("lte : " + criteria.getConvertedSingleValue())
                 break;
-            case "in": path.in(criteria.convertedValues)
+            case "in": context.getWhere().and(path.in(criteria.getConvertedValues()))
+                console.log("in : " + criteria.getConvertedValues())
                 break;
-            case "nin": path.notIn(criteria.convertedValues)
+            case "nin": context.getWhere().and(path.notIn(criteria.getConvertedValues()))
+                console.log("nin : " + criteria.getConvertedValues())
                 break;
-            case "btn": path.between(criteria.minValue, criteria.maxValue)
+            case "btn": context.getWhere().and(path.between(criteria.getMinValue(), criteria.getMaxValue()))
+                console.log("btn : " + criteria.getMinValue() + ":" +  + criteria.getMaxValue())
                 break;
-            case "like": path.like("%" + criteria.convertedSingleValue + "%")
+            case "like": context.getWhere().and(path.like("%" + criteria.getConvertedSingleValue() + "%"))
+                console.log("nin : " + criteria.getConvertedSingleValue())
                 break;
         }
 }
@@ -53,6 +74,8 @@ function addWhere(column, path, criteria) {
 function addCondition(column, qClassInstance)
 {
     let queryPath = qClassInstance[column.getName()]
+    console.log(column.getName() + " isLeaf : " + column.isLeaf())
+
     if (column.isLeaf()) {
         let criteria = context.filterCriteria(column, queryPath)
         addWhere(column, queryPath, criteria)

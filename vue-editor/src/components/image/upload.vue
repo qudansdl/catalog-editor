@@ -20,15 +20,10 @@
     <el-row v-show="imageUrl.length>1">
       <el-col :span="24">
         <div class="image-preview">
-          <div
-                  class="image-preview-wrapper"
-          >
+          <div class="image-preview-wrapper">
             <img :src="imageUrl">
             <div class="image-preview-action">
-              <i
-                      class="el-icon-delete"
-                      @click="removeImage"
-              />
+              <i class="el-icon-delete" @click="removeImage"/>
             </div>
           </div>
         </div>
@@ -38,31 +33,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import { CREATE_IMAGE } from "@/graphql/image";
+import {Component, Model, Vue} from 'vue-property-decorator'
+import {uploadImages} from "@/api/images";
 
 @Component({
   name: 'UploadImage'
 })
 export default class extends Vue {
-  private imageUrl: string = ''
+  @Model('imageUrl', { type: String }) imageUrl: string = ''
 
   private async uploadImage(option: any) {
-    const { data } = await this.$apollo.mutate({
-      mutation: CREATE_IMAGE,
-      variables: {
-        file: option.file
-      },
-      context: {
-        hasUpload: true // Important!
-      }
-    });
-    this.imageUrl = data.createImage.content
-
+    const { data } =  await uploadImages(option.file)
+    this.$emit('imageUrl', data.createImage.content)
   }
 
   private removeImage() {
-    this.imageUrl = ''
+    this.$emit('imageUrl', '')
   }
 }
 </script>

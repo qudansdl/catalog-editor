@@ -51,8 +51,6 @@ class DataTablesRepositoryImpl<T, ID : Serializable, P: Comparable<P>>(
 
         val queryFactory = JPAQueryFactory(entityManager)
 
-
-
         val context = QueryContext<T>(
             input,
             output,
@@ -63,9 +61,12 @@ class DataTablesRepositoryImpl<T, ID : Serializable, P: Comparable<P>>(
         engine.put("context", context)
 
 
-        // val js = File("C:\\projects\\beadnet\\sources\\catalog-editor\\backend\\src\\main\\resources\\querydsl.js").readText(Charsets.UTF_8)
+        val js = File("C:\\projects\\beadnet\\sources\\catalog-editor\\backend\\src\\main\\resources\\querydsl.js").readText(Charsets.UTF_8)
+        /*
         val resource = ClassPathResource("querydsl.js").getFile();
         val js = Files.readAllBytes(resource.toPath()).toString(Charsets.UTF_8)
+
+         */
 
         engine.eval(js)
 

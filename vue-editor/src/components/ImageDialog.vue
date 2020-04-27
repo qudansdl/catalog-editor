@@ -31,40 +31,46 @@
                 </el-tab-pane>
             </el-tabs>
             <span slot="footer" class="dialog-footer">
-                <el-button type="primary" icon="el-icon-check">선택</el-button>
+                <el-button type="primary" icon="el-icon-check" @click="selectImage" :disabled="imageURL == ''">선택</el-button>
                 <el-button icon="el-icon-close" @click="closeDialog">닫기</el-button>
           </span>
         </c-el-dialog>
 </template>
 
 <script lang="ts">
-    import {Component, Prop, Vue} from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import CElDialog from '@/components/dialog'
+import UploadImage from './image/upload.vue'
+import SelectImage from './image/select.vue'
 
-    import CElDialog from '../components/dialog'
-
-    import UploadImage from './image/upload.vue'
-    import SelectImage from './image/select.vue'
-
-    @Component({
-        components: {
-            UploadImage,
-            SelectImage,
-            CElDialog
-        }
-    })
-    export default class ImageDialog extends Vue {
-        @Prop() private dialogVisible!: boolean;
-
-        private imageURL: string = '';
-
-        private activeName: string = 'UPLOAD';
-
-
-        private closeDialog(){
-            this.$emit('closeDialog');
-        }
-
-        private handleDialogDrag() {
-        }
+@Component({
+    components: {
+        UploadImage,
+        SelectImage,
+        CElDialog
     }
+})
+export default class ImageDialog extends Vue {
+    @Prop() private dialogVisible!: boolean;
+
+    private imageURL: string = '';
+
+    private activeName: string = 'UPLOAD';
+
+    @Watch('imageURL')
+    onImageChanged(val: string, oldVal: string) {
+        console.log(val)
+    }
+
+    private selectImage(){
+        this.$emit('selectImage', this.imageURL);
+    }
+
+    private closeDialog(){
+        this.$emit('closeDialog');
+    }
+
+    private handleDialogDrag() {
+    }
+}
 </script>

@@ -1,10 +1,8 @@
 import { configure, addDecorator } from '@storybook/vue';
-import apolloProvider from "../src/plugins/vueApollo";
-import "../src/plugins/elementui";
+import "@/plugins/elementui";
 
 addDecorator(() => {
   return {
-    apolloProvider,
     template: `
       <div>
           <story/>

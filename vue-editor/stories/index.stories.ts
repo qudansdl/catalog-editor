@@ -8,14 +8,15 @@ import { linkTo } from "@storybook/addon-links";
 import Welcome from "./Welcome";
 
 // @ts-ignore
-import MyButton from "../src/components/MyButton.vue";
+import MyButton from "@/components/MyButton.vue";
 
 // @ts-ignore
-import drr from '../src/components/drr.vue';
+import drr from '@/components/drr.vue';
 // @ts-ignore
 import TextBox from './components/TextBox';
+// @ts-ignore
+import CatalogEditor from '@/CatalogEditor.vue';
 
-import CatalogEditor from '../src/CatalogEditor';
 
 storiesOf('CatalogEditor', module)
     .add('with editor', () => ({

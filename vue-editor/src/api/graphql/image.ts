@@ -10,11 +10,11 @@ export const CREATE_IMAGE = gql`
     }
 `;
 
-
-
-
 export const GET_IMAGES = gql`query($input: DataTablesInput) {
     images(input: $input) {
+        recordsTotal
+        recordsFiltered
+        error
         data {
             id
             content
