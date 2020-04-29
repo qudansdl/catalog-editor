@@ -1,0 +1,39 @@
+{
+  "name": "catalog-editor",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "@minogin/vue-drag-resize-rotate": "^1.0.5",
+    "@packy-tang/vue-tinymce": "^1.0.0",
+    "core-js": "^2.6.5",
+    "lodash": "^4.17.15",
+    "tinymce": "^5.2.2",
+    "vue": "^2.6.10",
+    "vue-color": "^2.7.0",
+    "vue-draggable-resizable": "^2.0.0-rc2",
+    "vue-html2canvas": "0.0.4",
+    "vue-rotate": "0.0.9"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^3.9.0",
+    "@vue/cli-service": "^3.9.0",
+    "node-sass": "^4.12.0",
+    "postcss-cssnext": "^3.1.0",
+    "postcss-import": "^12.0.1",
+    "sass-loader": "^7.1.0",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "postcss": {
+    "plugins": {
+      "autoprefixer": {}
+    }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions"
+  ]
+}

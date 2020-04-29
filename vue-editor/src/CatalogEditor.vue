@@ -3,7 +3,9 @@
         <el-container>
             <el-main>
                 <div class="page-wrapper">
-                    <div class="page" id="content"></div>
+                    <div class="page" id="content">
+                        <component v-for="item in items" :is="item"></component>
+                    </div>
                 </div>
             </el-main>
             <el-footer style="position: fixed;  left: 0;  bottom: 0;">
@@ -45,7 +47,8 @@ Object.keys(directives).forEach(key => {
     }
 })
 export default class CatalogEditor extends Vue {
-    showImageDialog = false
+    private showImageDialog = false
+    private items: []
 
     private handleSelectImage(image: IImage) {
         console.log("image : " + image)
