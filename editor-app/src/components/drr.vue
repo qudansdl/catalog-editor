@@ -23,7 +23,7 @@
           <!-- rotate info  -->
           <div ref="ddrInfo" :class="['ddr', {hidden:test}]"></div>
           <slot/>
-          <img :src="imgSrc" alt="" v-if="imgSrc" style="width: 100%; height: 100%; position: absolute">
+          <img :src="content" alt="" v-if="content" style="width: 100%; height: 100%; position: absolute">
       </drr>
 
       <span v-if="lineActiveTop"  class="hori" :style="{top: linePosTop + 'px'}"></span>
@@ -44,7 +44,7 @@ export default {
       this.angle = this.currItem.angle
   },
   mounted() {
-    this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle, this.imgSrc)
+    this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle, this.content)
     document.addEventListener('keydown', (e) => {
       if(
       this.$refs.ddrContRef &&
@@ -58,7 +58,7 @@ export default {
 
   },
 
-  props: ['imgSrc','coText','kal','coImg', 'edit'],
+  props: ['content','coText','kal','coImg', 'edit'],
   computed: {
     topLeft(){
       return this.x - (this.width / 2)
@@ -81,7 +81,7 @@ export default {
       return this.y + (this.height / 2)
     },
     currItem(){
-      return this.imgSrc ?
+      return this.type === 'image' ?
         (this.coImg[this.kal] && this.coImg[this.kal].w  ? this.coImg[this.kal] : {x: 100, y: 100, w: 100, h: 100, angle: 0})
         :
         (this.coImg[this.kal] && this.coText[this.kal].w ? this.coText[this.kal] : {x: 100, y: 100, w: 100, h: 100, angle: 0})
@@ -122,26 +122,26 @@ export default {
 
   methods: {
     moveFunc(e){
-      console.log('moving')
-      console.log(e.key)
+        console.log('moving')
+        console.log(e.key)
         if (e.key == 'ArrowUp') {
           this.y -= 1
-          this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle, this.imgSrc)
+          this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle, this.content)
           e.preventDefault()
         }
         else if (e.key == 'ArrowDown'){
           this.y += 1
-          this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle, this.imgSrc)
+          this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle, this.content)
           e.preventDefault()
         }
         else if (e.key == 'ArrowRight'){
           this.x += 1
-          this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle, this.imgSrc)
+          this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle, this.content)
           e.preventDefault()
         }
         else if (e.key == 'ArrowLeft') {
           this.x -= 1
-          this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle, this.imgSrc)
+          this.$emit('coordinate', this.x, this.y, this.kal, this.width, this.height, this.angle, this.content)
           e.preventDefault()
         }
     },
@@ -185,8 +185,6 @@ export default {
           this.$refs.ddrContRef.children[0].className = 'drr active'
       }
 
-      // this.$refs.ddrContRef.children[0].classList.add('active')
-      // console.log("resewt")
       this.pl = 0
       this.pr = 0
       this.pb = 0
@@ -196,9 +194,6 @@ export default {
       this.lineActiveRight = false
       this.lineActiveLeft =false
       this.mouseUP = true
-
-
-
     }, 600),
     onDragResize(rect){
       this.x = rect.x
@@ -215,17 +210,15 @@ export default {
 
       this.snapped          = false
 
-
       this.width  = rect.w
       this.height = rect.h
       this.angle  = rect.angle
 
-
       // Add coText elements to allArrays
       for(let xnew in this.coText){
-        if(xnew==this.kal && !this.imgSrc){
+        if(xnew==this.kal && !this.content){
               continue
-          }
+        }
         this.allArrays.push({
           x: this.coText[xnew].x,
           y: this.coText[xnew].y,
@@ -235,7 +228,7 @@ export default {
       }
       // Add imgText elements to allArrays
       for(let xnew in this.coImg){
-        if(xnew==this.kal && this.imgSrc){
+        if(xnew==this.kal && this.content){
               continue
           }
         this.allArrays.push({
@@ -349,7 +342,7 @@ export default {
         }
       }
 
-      this.$emit('coordinate', rect.x, rect.y, this.kal, rect.w, rect.h, rect.angle, this.imgSrc)
+      this.$emit('coordinate', rect.x, rect.y, this.kal, rect.w, rect.h, rect.angle, this.content)
       this.allArrays = []
     },
 
@@ -411,15 +404,15 @@ export default {
     border-top: 1px dashed;
     width: 100%;
     position: absolute;
-}
-.vert{
-    border-right: 1px dashed;
-    height: 100%;
-    position: absolute;
-}
-.vert2{
-    border-left: 1px dashed;
-    height: 100%;
-    position: absolute;
-}
+  }
+  .vert{
+      border-right: 1px dashed;
+      height: 100%;
+      position: absolute;
+  }
+  .vert2{
+      border-left: 1px dashed;
+      height: 100%;
+      position: absolute;
+  }
 </style>

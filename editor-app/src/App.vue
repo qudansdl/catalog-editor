@@ -14,15 +14,28 @@
                     <div id="paper" class="constructor__inner__border__cnt">
                         <div class="printing-body" ref="printMe" :style="[{'background': $root.bgPtrn ? `url(${$root.bgPtrn}) repeat` : `${$root.bgColor || '#ffffff'} url(${$root.bgImg}) 0 0/cover no-repeat`}]">
                             <div key="image-drr">
-                                <dr v-for="(value2, k) in $root.inputsArr.img" :key="k"
-                                    :imgSrc="value2.src"
-                                @coordinate="coorStickImg" :coImg="$root.inputsArr.img" :coText="$root.inputsArr.text" :kal="k" ></dr>
+                                <dr v-for="(value2, k) in $root.inputsArr.img"
+                                    :key="k"
+                                    :content="value2.src"
+                                    @coordinate="coorStickImg"
+                                    :coImg="$root.inputsArr.img"
+                                    :coText="$root.inputsArr.text"
+                                    type="image"
+                                    :kal="k" >
+                                </dr>
                             </div>
                             <div key="text-drr">
-                                <dr v-for="(value1, ke) in $root.inputsArr.text" :key="ke"
-                                @coordinate="coorStickText" :coText="$root.inputsArr.text" :coImg="$root.inputsArr.img"  :kal="ke" :edit="true"
-                                    v-html="$root.inputsArr.text[ke].src">
-                            </dr>
+                                <dr v-for="(value1, ke) in $root.inputsArr.text"
+                                    :key="ke"
+                                    :content="value1.src"
+                                    @coordinate="coorStickText"
+                                    :coText="$root.inputsArr.text"
+                                    :coImg="$root.inputsArr.img"
+                                    :kal="ke"
+                                    type="text"
+                                    :edit="true">
+                                    <div v-html="$root.inputsArr.text[ke].src"></div>
+                                 </dr>
                             </div>
                         </div>
                     </div>
@@ -355,7 +368,6 @@ export default {
         },
 
         pushElement(value, type){
-            debugger
             this.$root.inputsArr[type].push({src:value})
             this.updateLocalStorage()
         },
