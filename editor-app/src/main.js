@@ -33,9 +33,6 @@ import dr from '@/components/drr'
 import VueHtml2Canvas from 'vue-html2canvas';
 Vue.use(VueHtml2Canvas);
 
-import Fitty from 'vue-fitty'
-Vue.use(Fitty)
-
 // optionally import default styles
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
 
@@ -44,13 +41,8 @@ Vue.component('vue-draggable-resizable', VueDraggableResizable)
 Vue.component('drr', drr)
 Vue.component('dr', dr)
 
-//
-
-
-
 Vue.config.productionTip = false
 Vue.config.strict = false
-
 
 new Vue({
   data: () => ({

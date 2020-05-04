@@ -22,15 +22,13 @@
           <!-- rotate info  -->
           <div ref="ddrInfo" :class="['ddr', {hidden:test}]"></div>
         <template v-if="item.type == 'text'">
-          <fitty>
+          <fitty ref="fitty">
             <template  v-slot:content>
               <slot/>
             </template>
           </fitty>
         </template>
-
-
-          <img :src="item.src" alt="" v-if="item.src && item.type == 'image'" style="width: 100%; height: 100%; position: absolute">
+        <img :src="item.src" alt="" v-if="item.src && item.type == 'image'" style="width: 100%; height: 100%; position: absolute">
       </drr>
 
       <template  v-if="guideLine.active">
@@ -43,6 +41,7 @@
 </template>
 
 <script>
+import Fitty from '@/components/vue-fitty/Fitty.vue'
 
 export default {
   mounted() {
@@ -56,8 +55,11 @@ export default {
       }
     })
   },
-
   props: ['items','itemIndex','item'],
+  components: {
+    Fitty
+  },
+
   data(){
     return {
       width: this.item.w,
@@ -92,7 +94,6 @@ export default {
         }
 
       let item = {x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle, src:this.item.src, type: this.item.type}
-        debugger
       this.$emit('coordinate', item, this.itemIndex)
       e.preventDefault()
     },
@@ -109,13 +110,15 @@ export default {
       }, 500)
     },
 
-    onDragStop() {
-      _.debounce( function() {
-        console.log('onDragStop')
+    redrawText: _.debounce(function() {
+      console.log('onDragStop')
+      if(this.$refs.fitty)
+        this.$refs.fitty.fit()
+    }, 600),
 
 
-        console.log('drag stop init')
-      }, 600)
+    onDragStop(){
+      this.redrawText()
     },
 
     reSet: _.debounce(function() {
@@ -177,6 +180,8 @@ export default {
 
       let item = {x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle, src:this.item.src, type: this.item.type}
       this.$emit('coordinate', item, this.itemIndex)
+
+      this.redrawText()
     },
 
   }

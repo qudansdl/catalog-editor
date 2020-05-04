@@ -10,6 +10,7 @@
     "@minogin/vue-drag-resize-rotate": "^1.0.5",
     "@packy-tang/vue-tinymce": "^1.0.0",
     "core-js": "^2.6.5",
+    "fitty": "^2.3.0",
     "lodash": "^4.17.15",
     "tinymce": "^5.2.2",
     "vue": "^2.6.10",
