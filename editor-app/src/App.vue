@@ -101,14 +101,15 @@ import fontTab from './components/font'
 import templatesTab from './components/templates'
 
 import _ from 'lodash'
+
 export default {
     name: 'app',
     mounted() {
-        let inputsArr = localStorage.getItem('inputsArr')
-        let output = localStorage.getItem('output')
-        let bgImg = localStorage.getItem('bgImg')
-        let bgColor = localStorage.getItem('bgColor')
-        let bgPtrn = localStorage.getItem('bgPtrn')
+        const inputsArr = localStorage.getItem('inputsArr')
+        const output = localStorage.getItem('output')
+        const bgImg = localStorage.getItem('bgImg')
+        const bgColor = localStorage.getItem('bgColor')
+        const bgPtrn = localStorage.getItem('bgPtrn')
         if(inputsArr){
             this.$root.inputsArr = JSON.parse(inputsArr)
         }
@@ -188,10 +189,10 @@ export default {
             const options = {
                 type: 'dataURL'
             }
-            let outputlocal = await this.$html2canvas(el, options)
+            const outputlocal = await this.$html2canvas(el, options)
 
             this.output = outputlocal
-            let link = document.createElement('a')
+            const link = document.createElement('a')
             link.href = outputlocal
             link.download= "image.jpg"
             document.body.appendChild(link)
@@ -211,7 +212,7 @@ export default {
         },
 
         pushElement(value, type){
-            let item = {x: 100, y: 100, w: 100, h: 100, angle: 0, src:value, type: type}
+            const item = {x: 100, y: 100, w: 100, h: 100, angle: 0, src:value, type: type}
             this.$root.inputsArr.items.push(item)
             this.updateLocalStorage()
         },

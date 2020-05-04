@@ -52,7 +52,7 @@ export default {
         },
         onInputChange(e) {
             if(e.target.files){
-                for(let file of e.target.files) {
+                for(const file of e.target.files) {
                     const reader = new FileReader()
                     reader.onload = e => this.$root.bgPcImages.push(e.target.result)
                     reader.readAsDataURL(file)

@@ -42,6 +42,7 @@
 
 <script>
 import Fitty from '@/components/vue-fitty/Fitty.vue'
+import _ from 'lodash'
 
 export default {
   mounted() {
@@ -93,13 +94,13 @@ export default {
           this.x -= 1
         }
 
-      let item = {x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle, src:this.item.src, type: this.item.type}
+      const item = {x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle, src:this.item.src, type: this.item.type}
       this.$emit('coordinate', item, this.itemIndex)
       e.preventDefault()
     },
 
     printRect(rect){
-      let r = rect.angle
+      const r = rect.angle
       this.$refs.ddrInfo.innerHTML = r < 0 ? Math.floor(360 + r) : Math.round(rect.angle)
       this.test=false
     },
@@ -122,10 +123,10 @@ export default {
     },
 
     reSet: _.debounce(function() {
-      let w = document.querySelectorAll('.drr')
+      const w = document.querySelectorAll('.drr')
 
-      for(let i in w){
-        if(w.hasOwnProperty(i)){
+      for(const i in w){
+        if(Object.prototype.hasOwnProperty.call(w, i)){
           w[i].className = 'drr inactive'
         }
       }
@@ -153,8 +154,8 @@ export default {
       const sinAng = Math.sin(radian)
       const cosAng = Math.cos(radian)
 
-      let newX = x*cosAng - y*sinAng
-      let newY = x*sinAng + y*cosAng
+      const newX = x*cosAng - y*sinAng
+      const newY = x*sinAng + y*cosAng
 
       return {x:newX, y:newY}
     },
@@ -168,17 +169,17 @@ export default {
       this.height = rect.h
       this.angle  = rect.angle
 
-      let topLeft = this.getRotatedPoint(rect.x - rect.w/2, rect.y + rect.h/2, rect.angle)
-      let topRight = this.getRotatedPoint(rect.x + rect.w/2, rect.y + rect.h/2, rect.angle)
-      let bottomLeft = this.getRotatedPoint(rect.x - rect.w/2, rect.y - rect.h/2, rect.angle)
-      let bottomRight = this.getRotatedPoint(rect.x + rect.w/2, rect.y - rect.h/2, rect.angle)
+      const topLeft = this.getRotatedPoint(rect.x - rect.w/2, rect.y + rect.h/2, rect.angle)
+      const topRight = this.getRotatedPoint(rect.x + rect.w/2, rect.y + rect.h/2, rect.angle)
+      const bottomLeft = this.getRotatedPoint(rect.x - rect.w/2, rect.y - rect.h/2, rect.angle)
+      const bottomRight = this.getRotatedPoint(rect.x + rect.w/2, rect.y - rect.h/2, rect.angle)
 
       this.guideLine.posLeft = Math.min(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x)
       this.guideLine.posBottom = Math.min(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
       this.guideLine.posRight = Math.max(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x)
       this.guideLine.posTop = Math.max(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
 
-      let item = {x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle, src:this.item.src, type: this.item.type}
+      const item = {x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle, src:this.item.src, type: this.item.type}
       this.$emit('coordinate', item, this.itemIndex)
 
       this.redrawText()
