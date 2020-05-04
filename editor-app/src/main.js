@@ -33,6 +33,8 @@ import dr from '@/components/drr'
 import VueHtml2Canvas from 'vue-html2canvas';
 Vue.use(VueHtml2Canvas);
 
+import Fitty from 'vue-fitty'
+Vue.use(Fitty)
 
 // optionally import default styles
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css'
@@ -58,13 +60,12 @@ new Vue({
     pcImages: [],
     urlImg: [],
     bgPtrn: '',
-    sequenceOfChange: [],
+    changeHistory: [],
     inputsArr: {
       bgImg: '',
       bgColor: '',
       bgPtrn: '',
-      img: [],
-      text: [],
+      items: []
     },
     setterState: false,
   }),

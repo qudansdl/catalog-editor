@@ -12,30 +12,34 @@
                         <div class="back__line"></div>
                     </div>
                     <div id="paper" class="constructor__inner__border__cnt">
-                        <div class="printing-body" ref="printMe" :style="[{'background': $root.bgPtrn ? `url(${$root.bgPtrn}) repeat` : `${$root.bgColor || '#ffffff'} url(${$root.bgImg}) 0 0/cover no-repeat`}]">
+                        <div
+                                class="printing-body"
+                                ref="printMe"
+                                :style="[{'background': $root.bgPtrn ? `url(${$root.bgPtrn}) repeat` : `${$root.bgColor || '#ffffff'} url(${$root.bgImg}) 0 0/cover no-repeat`}]">
                             <div key="image-drr">
-                                <dr v-for="(value2, k) in $root.inputsArr.img"
-                                    :key="k"
-                                    :content="value2.src"
-                                    @coordinate="coorStickImg"
-                                    :coImg="$root.inputsArr.img"
-                                    :coText="$root.inputsArr.text"
-                                    type="image"
-                                    :kal="k" >
+                                <template v-for="(item, idx) in $root.inputsArr.items">
+                                <dr
+                                    :key="idx"
+                                    v-if="item.type == 'image'"
+                                    :item="item"
+                                    @coordinate="onCoordinatesChanged"
+                                    :items="$root.inputsArr.items"
+                                    :itemIndex="idx" >
                                 </dr>
+                                </template>
                             </div>
                             <div key="text-drr">
-                                <dr v-for="(value1, ke) in $root.inputsArr.text"
-                                    :key="ke"
-                                    :content="value1.src"
-                                    @coordinate="coorStickText"
-                                    :coText="$root.inputsArr.text"
-                                    :coImg="$root.inputsArr.img"
-                                    :kal="ke"
-                                    type="text"
-                                    :edit="true">
-                                    <div v-html="$root.inputsArr.text[ke].src"></div>
-                                 </dr>
+                                <template v-for="(item, idx) in $root.inputsArr.items">
+                                    <dr
+                                            :key="idx"
+                                            v-if="item.type == 'text'"
+                                            :item="item"
+                                            @coordinate="onCoordinatesChanged"
+                                            :items="$root.inputsArr.items"
+                                            :itemIndex="idx" >
+                                        <div v-html="item.src"></div>
+                                    </dr>
+                                </template>
                             </div>
                         </div>
                     </div>
@@ -47,7 +51,7 @@
     <div class="side-ctn">
         <div :class="['aside-block', {active: isActive}]"  >
             <div class="aside-active-tab-cnt">
-                <component :is="selectedComponent" @addText="pushElement" :lalala="output" @newTemp="newTmplt" ></component>
+                <component :is="selectedComponent" @addText="pushElement" :lalala="output"></component>
             </div>
 
 
@@ -95,20 +99,16 @@ import textTab from './components/text'
 import imagesTab from './components/images'
 import fontTab from './components/font'
 import templatesTab from './components/templates'
+
 import _ from 'lodash'
 export default {
     name: 'app',
     mounted() {
-
-        let lastTemplate = localStorage.getItem('template')
         let inputsArr = localStorage.getItem('inputsArr')
         let output = localStorage.getItem('output')
         let bgImg = localStorage.getItem('bgImg')
         let bgColor = localStorage.getItem('bgColor')
         let bgPtrn = localStorage.getItem('bgPtrn')
-        if(lastTemplate){
-            this.baza = JSON.parse(lastTemplate)
-        }
         if(inputsArr){
             this.$root.inputsArr = JSON.parse(inputsArr)
         }
@@ -129,66 +129,6 @@ export default {
             this.$root.bgPtrn = this.$root.inputsArr.bgPtrn
         } else if(bgPtrn) {
             this.$root.bgPtrn = bgPtrn
-        }
-        if (this.$root.inputsArr.text.length) {
-            for (let item=0; item < this.$root.inputsArr.text.length; item++) {
-                if(!this.baza.template) {
-                    this.$set(this.baza, 'template', {})
-                }
-                if(!this.baza.template.text) {
-                    this.$set(this.baza.template, 'text', [])
-                }
-                if(item < this.baza.template.text.length) {
-                    continue
-                }
-                this.baza.template.text.push({
-                    src: this.$root.inputsArr.text[item].src,
-                    x: this.$root.inputsArr.text[item].x,
-                    y: this.$root.inputsArr.text[item].y,
-                    w: this.$root.inputsArr.text[item].w,
-                    h: this.$root.inputsArr.text[item].h,
-                    angle: this.$root.inputsArr.text[item].angle
-                })
-            }
-        }
-
-        if (this.$root.inputsArr.text.length) {
-            for (let item=0; item < this.$root.inputsArr.img.length; item++) {
-                if(!this.baza.template) {
-                    this.$set(this.baza, 'template', {})
-                }
-                if(!this.baza.template.img) {
-                    this.$set(this.baza.template, 'img', [])
-                }
-                if(item < this.baza.template.img.length) {
-                    continue
-                }
-                this.baza.template.img.push({
-                    src: this.$root.inputsArr.img[item].src,
-                    x: this.$root.inputsArr.img[item].x,
-                    y: this.$root.inputsArr.img[item].y,
-                    w: this.$root.inputsArr.img[item].w,
-                    h: this.$root.inputsArr.img[item].h,
-                    angle: this.$root.inputsArr.img[item].angle
-                })
-            }
-        }
-        if(this.baza.template && !this.baza.template.src) {
-            this.$set(this.baza.template, 'src', '')
-        }
-
-        if(this.baza.template && !this.baza.template.bgColor) {
-            this.$set(this.baza.template, 'bgColor', '')
-        }
-
-        if(this.baza.template && !this.baza.template.bgImg) {
-            this.$set(this.baza.template, 'bgImg', '')
-        }
-
-        if(this.baza.template) {
-            this.baza.template.bgImg = this.$root.inputsArr.bgImg
-            this.baza.template.src = this.output
-            this.baza.template.bgColor = this.$root.inputsArr.bgColor
         }
     },
     data(){
@@ -228,25 +168,6 @@ export default {
                     name: 'templates-tab', btnClass: 'Templates-btn', text: 'Templates', icon: 'fa-pen-square fa-2x'
                 },
             ],
-
-            baza: {
-                default: {
-                    text: [
-                        {src: '123', x: 0, y: 0, angle: 0, w: 0, h: 0}
-                    ],
-                    img: [
-                        {src: '@/assets/dsd.jpg', x: 1, y: 24, angle: 0, w: 0, h: 0}
-                    ]
-                },
-                'qoraLayout': {
-                    text: [
-                        {}
-                    ],
-                    img: [
-                        {}
-                    ]
-                }
-            },
             countChange: 0
 
         }
@@ -257,70 +178,12 @@ export default {
         textTab,
         imagesTab,
         fontTab,
-
         templatesTab
     },
 
 
     methods: {
-        activeEl(type, key) {
-            for (let xtype in this.isActiveEl) {
-                this.isActiveEl[xtype] = false
-            }
-            this.isActiveEl[type] = true
-            this.activeElemType = type
-            this.activeElemArrIndex = key
-            console.log(type)
-        },
-
         async print() {
-
-            for (let item=0; item < this.$root.inputsArr.text.length; item++) {
-
-                if(!this.baza.template) {
-                    this.$set(this.baza, 'template', {})
-                }
-
-                if(!this.baza.template.text) {
-                    this.$set(this.baza.template, 'text', [])
-                }
-
-                if(item < this.baza.template.text.length) {
-                    continue
-                }
-
-                this.baza.template.text.push({
-                    src: this.$root.inputsArr.text[item].src,
-                    x: this.$root.inputsArr.text[item].x,
-                    y: this.$root.inputsArr.text[item].y,
-                    w: this.$root.inputsArr.text[item].w,
-                    h: this.$root.inputsArr.text[item].h,
-                    angle: this.$root.inputsArr.text[item].angle
-                })
-            }
-            for (let item=0; item < this.$root.inputsArr.img.length; item++) {
-                if(!this.baza.template) {
-                    this.$set(this.baza, 'template', {})
-                }
-
-                if(!this.baza.template.img) {
-                    this.$set(this.baza.template, 'img', [])
-                }
-
-                if(item < this.baza.template.img.length) {
-                    continue
-                }
-
-                this.baza.template.img.push({
-                    src: this.$root.inputsArr.img[item].src,
-                    x: this.$root.inputsArr.img[item].x,
-                    y: this.$root.inputsArr.img[item].y,
-                    w: this.$root.inputsArr.img[item].w,
-                    h: this.$root.inputsArr.img[item].h,
-                    angle: this.$root.inputsArr.img[item].angle
-                })
-            }
-
             const el = this.$refs.printMe
             const options = {
                 type: 'dataURL'
@@ -330,31 +193,11 @@ export default {
             this.output = outputlocal
             let link = document.createElement('a')
             link.href = outputlocal
-            link.download= "filename.jpg"
+            link.download= "image.jpg"
             document.body.appendChild(link)
             link.click()
 
             localStorage.setItem('output', this.output)
-
-            if(this.baza.template && !this.baza.template.src) {
-                this.$set(this.baza.template, 'src', '')
-            }
-            this.baza.template.src =outputlocal
-
-            if(!this.baza.template.bgColor) {
-                this.$set(this.baza.template, 'bgColor', '')
-            }
-            this.baza.template.bgColor = this.$root.bgColor
-
-            if(!this.baza.template.bgImg) {
-                this.$set(this.baza.template, 'bgImg', '')
-            }
-            this.baza.template.bgImg = this.$root.bgImg
-
-            if(!this.baza.template.bgPtrn) {
-                this.$set(this.baza.template, 'bgPtrn', '')
-            }
-            this.baza.template.bgPtrn = this.$root.bgPtrn
         },
 
         toggleAside(){
@@ -368,74 +211,45 @@ export default {
         },
 
         pushElement(value, type){
-            this.$root.inputsArr[type].push({src:value})
+            let item = {x: 100, y: 100, w: 100, h: 100, angle: 0, src:value, type: type}
+            this.$root.inputsArr.items.push(item)
             this.updateLocalStorage()
         },
-        updateLocalStorage2() {
-            localStorage.setItem('template', JSON.stringify(this.baza))
-            localStorage.setItem('inputsArr', JSON.stringify(this.$root.inputsArr))
-        },
-        updateLocalStorage: _.debounce(function() {
 
+        updateLocalStorage: _.debounce(function() {
             this.$root.inputsArr.bgImg = this.$root.bgImg
             this.$root.inputsArr.bgColor = this.$root.bgColor
             this.$root.inputsArr.bgPtrn = this.$root.bgPtrn
-            localStorage.setItem('template', JSON.stringify(this.baza))
             localStorage.setItem('inputsArr', JSON.stringify(this.$root.inputsArr))
 
             const clone = _.cloneDeep(this.$root.inputsArr)
             console.log('oldInputs before', clone)
-            this.$root.sequenceOfChange = [
+            this.$root.changeHistory = [
                 clone,
-                ...this.$root.sequenceOfChange
+                ...this.$root.changeHistory
             ]
 
-            console.log(this.$root.sequenceOfChange)
+            console.log(this.$root.changeHistory)
         }, 300),
-        coorStickText(x,y,k,w,h,angle,src){
-            this.$root.inputsArr.text[k]={x:x,y:y,w:w,h:h,angle:angle,src:src}
+        onCoordinatesChanged(item, index){
+            this.$root.inputsArr.items[index] = item
             this.updateLocalStorage()
         },
 
-        coorStickImg(x,y,k,w,h,angle,src){
-            this.$root.inputsArr.img[k]={x:x,y:y,w:w,h:h,angle:angle,src:src}
-            this.updateLocalStorage()
-        },
-
-        newTmplt(tempImgSrc) {
-            console.log(1)
-            this.$root.inputsArr = []
-
-            for(let item in this.baza) {
-                console.log(2)
-                if(this.baza[item].src == tempImgSrc) {
-                    if(!this.baza[item].text) {
-                        this.$set(this.baza[item], 'text', [])
-                    }
-                    if(!this.baza[item].img) {
-                        this.$set(this.baza[item], 'img', [])
-                    }
-                    this.$root.inputsArr = this.baza[item]
-                    this.baza[item] = {}
-                    this.updateLocalStorage()
-                    location.reload()
-                }
-            }
-        },
         backChange () {
-            this.$root.inputsArr = _.cloneDeep(this.$root.sequenceOfChange[++this.countChange])
-            console.log(this.$root.sequenceOfChange[this.countChange])
+            this.$root.inputsArr = _.cloneDeep(this.$root.changeHistory[++this.countChange])
+            console.log(this.$root.changeHistory[this.countChange])
 
             this.$root.bgImg = this.$root.inputsArr.bgImg
             this.$root.bgColor = this.$root.inputsArr.bgColor
             this.$root.bgPtrn = this.$root.inputsArr.bgPtrn
-            console.log('back change', this.$root.sequenceOfChange[this.countChange])
-            this.updateLocalStorage2()
+            console.log('back change', this.$root.changeHistory[this.countChange])
+            this.updateLocalStorage()
         },
         frontChange() {
-            this.$root.inputsArr = this.$root.sequenceOfChange[--this.countChange]
-            console.log('front change', this.$root.sequenceOfChange[this.countChange])
-            this.updateLocalStorage2()
+            this.$root.inputsArr = this.$root.changeHistory[--this.countChange]
+            console.log('front change', this.$root.changeHistory[this.countChange])
+            this.updateLocalStorage()
         }
     },
     computed: {
