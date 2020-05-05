@@ -13,34 +13,19 @@
                     </div>
                     <div id="paper" class="constructor__inner__border__cnt">
                         <div
-                                class="printing-body"
-                                ref="printMe"
-                                :style="[{'background': $root.bgPtrn ? `url(${$root.bgPtrn}) repeat` : `${$root.bgColor || '#ffffff'} url(${$root.bgImg}) 0 0/cover no-repeat`}]">
-                            <div key="image-drr">
-                                <template v-for="(item, idx) in $root.inputsArr.items">
-                                <dr
-                                    :key="idx"
-                                    v-if="item.type == 'image'"
-                                    :item="item"
-                                    @coordinate="onCoordinatesChanged"
-                                    :items="$root.inputsArr.items"
-                                    :itemIndex="idx" >
-                                </dr>
-                                </template>
-                            </div>
-                            <div key="text-drr">
-                                <template v-for="(item, idx) in $root.inputsArr.items">
-                                    <dr
-                                            :key="idx"
-                                            v-if="item.type == 'text'"
-                                            :item="item"
-                                            @coordinate="onCoordinatesChanged"
-                                            :items="$root.inputsArr.items"
-                                            :itemIndex="idx" >
-                                        <div v-html="item.src"></div>
-                                    </dr>
-                                </template>
-                            </div>
+                            class="printing-body"
+                            ref="printMe"
+                            :style="[{'background': $root.bgPtrn ? `url(${$root.bgPtrn}) repeat` : `${$root.bgColor || '#ffffff'} url(${$root.bgImg}) 0 0/cover no-repeat`}]">
+
+                            <template v-for="(item, idx) in $root.inputsArr.items">
+                            <dr
+                                :key="item.id"
+                                :item="item"
+                                @coordinate="onCoordinatesChanged"
+                                :items="$root.inputsArr.items"
+                                :itemIndex="idx" >
+                            </dr>
+                            </template>
                         </div>
                     </div>
                 </div>
@@ -93,14 +78,13 @@
 </template>
 
 <script>
+import { v4 as uuidv4 } from 'uuid'
 
 import searchTab from './components/search'
 import textTab from './components/text'
 import imagesTab from './components/images'
 import fontTab from './components/font'
 import templatesTab from './components/templates'
-
-import _ from 'lodash'
 
 export default {
     name: 'app',
@@ -212,33 +196,34 @@ export default {
         },
 
         pushElement(value, type){
-            const item = {x: 100, y: 100, w: 100, h: 100, angle: 0, src:value, type: type}
+            const item = {id: uuidv4(), x: 100, y: 100, w: 100, h: 100, angle: 0, src:value, type: type}
             this.$root.inputsArr.items.push(item)
             this.updateLocalStorage()
         },
+        updateLocalStorage(){
+            this.$_.debounce(function() {
+                this.$root.inputsArr.bgImg = this.$root.bgImg
+                this.$root.inputsArr.bgColor = this.$root.bgColor
+                this.$root.inputsArr.bgPtrn = this.$root.bgPtrn
+                localStorage.setItem('inputsArr', JSON.stringify(this.$root.inputsArr))
 
-        updateLocalStorage: _.debounce(function() {
-            this.$root.inputsArr.bgImg = this.$root.bgImg
-            this.$root.inputsArr.bgColor = this.$root.bgColor
-            this.$root.inputsArr.bgPtrn = this.$root.bgPtrn
-            localStorage.setItem('inputsArr', JSON.stringify(this.$root.inputsArr))
+                const clone = this.$_.cloneDeep(this.$root.inputsArr)
+                console.log('oldInputs before', clone)
+                this.$root.changeHistory = [
+                    clone,
+                    ...this.$root.changeHistory
+                ]
 
-            const clone = _.cloneDeep(this.$root.inputsArr)
-            console.log('oldInputs before', clone)
-            this.$root.changeHistory = [
-                clone,
-                ...this.$root.changeHistory
-            ]
-
-            console.log(this.$root.changeHistory)
-        }, 300),
+                console.log(this.$root.changeHistory)
+            }, 300)
+        },
         onCoordinatesChanged(item, index){
             this.$root.inputsArr.items[index] = item
             this.updateLocalStorage()
         },
 
         backChange () {
-            this.$root.inputsArr = _.cloneDeep(this.$root.changeHistory[++this.countChange])
+            this.$root.inputsArr = this.$_.cloneDeep(this.$root.changeHistory[++this.countChange])
             console.log(this.$root.changeHistory[this.countChange])
 
             this.$root.bgImg = this.$root.inputsArr.bgImg

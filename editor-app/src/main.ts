@@ -2,9 +2,17 @@ import Vue from 'vue';
 import { DirectiveOptions } from "vue";
 import App from './App.vue';
 
-// @ts-ignore
+import * as directives from './directives';
+
+// Register global directives
+Object.keys(directives).forEach(key => {
+  Vue.directive(key, (directives as { [key: string ]: DirectiveOptions })[key]);
+});
+
+import _ from 'lodash'
+Object.defineProperty(Vue.prototype, '$_', { value: _ });
+
 import tinymce from 'tinymce';
-// @ts-ignore
 import VueTinymce from '@packy-tang/vue-tinymce';
 
 import 'tinymce/skins/content/default/content.min.css';
@@ -21,29 +29,19 @@ import 'tinymce/plugins/lists';
 import 'tinymce/plugins/quickbars';
 import 'tinymce/plugins/fullscreen';
 
-import './utils/tinymce/langs/ko_KR.js';
+import '@/utils/tinymce/langs/ko_KR.js';
 
-import * as directives from './directives';
-
-// Register global directives
-Object.keys(directives).forEach(key => {
-  Vue.directive(key, (directives as { [key: string ]: DirectiveOptions })[key]);
-});
-
-Vue.prototype.$tinymce = tinymce;
+Object.defineProperty(Vue.prototype, '$tinymce', { value: tinymce });
 Vue.use(VueTinymce);
 
 
 import '@/assets/css/bootstrap.min.css';
 import '@/assets/css/style.css';
-// @ts-ignore
 import VueDraggableResizable from 'vue-draggable-resizable';
 // @ts-ignore
 import drr from '@minogin/vue-drag-resize-rotate';
-// @ts-ignore
-import dr from '@/components/drr';
+import dr from '@/components/drr.vue';
 
-// @ts-ignore
 import VueHtml2Canvas from 'vue-html2canvas';
 Vue.use(VueHtml2Canvas);
 

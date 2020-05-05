@@ -19,16 +19,18 @@
         @resize="onResize"
         @dragstop="onDragStop"
         >
-          <!-- rotate info  -->
-          <div ref="ddrInfo" :class="['ddr', {hidden:test}]"></div>
+        <!-- rotate info  -->
+        <div ref="ddrInfo" :class="['ddr', {hidden:test}]"></div>
         <template v-if="item.type == 'text'">
           <fitty ref="fitty">
             <template  v-slot:content>
-              <slot/>
+              <div v-html="item.src"></div>
             </template>
           </fitty>
         </template>
-        <img :src="item.src" alt="" v-if="item.src && item.type == 'image'" style="width: 100%; height: 100%; position: absolute">
+        <template v-if="item.type == 'image'">
+          <img :src="item.src" alt="" v-if="item.src && item.type == 'image'" style="width: 100%; height: 100%; position: absolute">
+        </template>
       </drr>
 
       <template  v-if="guideLine.active">
@@ -42,7 +44,6 @@
 
 <script>
 import Fitty from '@/components/vue-fitty/Fitty.vue'
-import _ from 'lodash'
 
 export default {
   mounted() {
@@ -110,32 +111,33 @@ export default {
         this.test = true
       }, 500)
     },
-
-    redrawText: _.debounce(function() {
-      console.log('onDragStop')
-      if(this.$refs.fitty)
-        this.$refs.fitty.fit()
-    }, 600),
-
-
+    redrawText(){
+      this.$_.debounce(function() {
+        console.log('onDragStop')
+        if(this.$refs.fitty)
+          this.$refs.fitty.fit()
+      }, 600)
+    },
     onDragStop(){
       this.redrawText()
     },
 
-    reSet: _.debounce(function() {
-      const w = document.querySelectorAll('.drr')
+    reSet(){
+      this.$_.debounce(function() {
+        const w = document.querySelectorAll('.drr')
 
-      for(const i in w){
-        if(Object.prototype.hasOwnProperty.call(w, i)){
-          w[i].className = 'drr inactive'
+        for(const i in w){
+          if(Object.prototype.hasOwnProperty.call(w, i)){
+            w[i].className = 'drr inactive'
+          }
         }
-      }
 
-      if(this.$refs.ddrContRef.children[0]) {
+        if(this.$refs.ddrContRef.children[0]) {
           this.$refs.ddrContRef.children[0].className = 'drr active'
-      }
-      this.guideLine.active = false
-    }, 600),
+        }
+        this.guideLine.active = false
+      }, 600)
+    },
     onChange(rect) {
       this.onRectChanged(rect)
     },

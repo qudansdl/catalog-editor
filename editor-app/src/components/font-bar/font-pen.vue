@@ -8,6 +8,7 @@
 
 <script>
 import { Chrome } from 'vue-color'
+
 export default {
     data() {
         return {
@@ -43,7 +44,7 @@ export default {
             localStorage.setItem('bgColor', item)
             localStorage.removeItem('bgImg')
 
-            const clone = _.cloneDeep(this.$root.inputsArr)
+            const clone = this.$_.cloneDeep(this.$root.inputsArr)
             // Har o'zgarishni arrayga qowiw
             this.$root.sequenceOfChange.unshift(clone)
         },
@@ -58,7 +59,7 @@ export default {
             localStorage.setItem('bgColor', item.hex8)
             localStorage.removeItem('bgImg')
 
-            const clone = _.cloneDeep(this.$root.inputsArr)
+            const clone = this.$_.cloneDeep(this.$root.inputsArr)
             // Har o'zgarishni arrayga qowiw
             this.$root.sequenceOfChange.unshift(clone)
         }

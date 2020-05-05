@@ -9,6 +9,7 @@
 </template>
 
 <script>
+
 export default {
     data() {
         return {
@@ -31,7 +32,7 @@ export default {
             localStorage.setItem('inputsArr', JSON.stringify(this.$root.inputsArr))
             localStorage.setItem('bgPtrn', JSON.stringify(this.$root.bgPtrn))
 
-            const clone = _.cloneDeep(this.$root.inputsArr)
+            const clone = this.$_.cloneDeep(this.$root.inputsArr)
             console.log('oldInputs before', clone)
             // Har o'zgarishni arrayga qowiw
             this.$root.sequenceOfChange.unshift(clone)

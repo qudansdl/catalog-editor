@@ -3,12 +3,30 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
 	id("org.springframework.boot") version "2.2.6.RELEASE"
 	id("io.spring.dependency-management") version "1.0.9.RELEASE"
+
+	id("com.google.cloud.tools.jib") version "2.1.0"
+	id("pl.allegro.tech.build.axion-release") version "1.11.0"
+	id("com.gorylenko.gradle-git-properties") version "2.2.2"
+
+
 	kotlin("jvm") version "1.3.72"
 	kotlin("plugin.spring") version "1.3.72"
 	kotlin("plugin.jpa") version "1.3.72"
 	kotlin("kapt") version "1.3.72"
 	idea
 }
+
+apply(plugin = "com.gorylenko.gradle-git-properties")
+apply(plugin = "pl.allegro.tech.build.axion-release")
+
+
+scmVersion {
+	versionIncrementer ("incrementPatch")
+	versionCreator ("versionWithBranch")
+
+}
+
+
 
 group = "com.basicit"
 version = "0.0.1-SNAPSHOT"
@@ -90,5 +108,32 @@ idea {
 		val kaptMain = file("build/generated/source/kapt/main")
 		sourceDirs.add(kaptMain)
 		generatedSourceDirs.add(kaptMain)
+	}
+}
+
+
+jib {
+	from {
+		image = "openjdk:14-jdk-alpine"
+		auth {
+			username = System.getenv("DOCKER_USERNAME")
+			password = System.getenv("DOCKER_PASSWORD")
+		}
+	}
+	to {
+		image = "catalog-editor-backend"
+		tags = setOf(project.version.toString(), "latest")
+		auth {
+			username = System.getenv("DOCKER_USERNAME")
+			password = System.getenv("DOCKER_PASSWORD")
+		}
+	}
+	container {
+		labels = mapOf(
+				"maintainer" to "poh<qudansdl@gmail.com>"
+		)
+		jvmFlags = listOf("-XX:+ExitOnOutOfMemoryError", "-Dfile.encoding=UTF-8", "-Duser.timezone=UTC", "-Xms256m", "-Djava.awt.headless=true")
+		mainClass = "com.basicit.GraphqlApplicationKt"
+		ports = listOf("8081")
 	}
 }

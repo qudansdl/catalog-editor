@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<springProperty scope="context" name="logfiledirectory"   source="logging.directory"       defaultValue="/data/logs" />
+	<springProperty scope="context" name="logfiledirectory"   source="logging.directory"       defaultValue="logs" />
 	<springProperty scope="context" name="logfile"            source="logging.log.file"        defaultValue="backend.log" />
 	<springProperty scope="context" name="maxFileSize"        source="logging.filesize.max"    defaultValue="100MB" />
 	<springProperty scope="context" name="maxArchiveSize"     source="logging.archivesize.max" defaultValue="10GB" />
