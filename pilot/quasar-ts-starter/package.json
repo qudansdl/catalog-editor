@@ -1,0 +1,58 @@
+{
+  "name": "quasar-ts-starter",
+  "version": "0.0.1",
+  "description": "A Quasar Framework app",
+  "productName": "Quasar App",
+  "cordovaId": "org.cordova.quasar.app",
+  "capacitorId": "",
+  "author": "Egyel",
+  "private": true,
+  "scripts": {
+    "dev": "quasar dev",
+    "lint": "tsc --noEmit && eslint --ext .ts,.js,.vue --ignore-path .gitignore src",
+    "test": "echo \"No test specified\" && exit 0",
+    "i18n": "vue-i18n-extract -v \"./src/**/*.?(ts|js|vue)\" -l \"./src/i18n/*.?(json)\"",
+    "i18n:extract": "vue-i18n-extract -v \"./src/**/*.?(ts|js|vue)\" -l \"./src/i18n/*.?(json)\" -o ./src/i18n/output.json"
+  },
+  "dependencies": {
+    "@quasar/extras": "^1.7.0",
+    "axios": "^0.18.1",
+    "quasar": "^1.10.5",
+    "vue": "^2.6.11",
+    "vue-class-component": "^7.2.3",
+    "vue-i18n": "^8.17.4",
+    "vue-property-decorator": "^8.4.2",
+    "vue-router": "^3.1.6",
+    "vuex": "^3.3.0"
+  },
+  "devDependencies": {
+    "@quasar/app": "^1.8.4",
+    "@types/node": "13.13.5",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
+    "@vue/eslint-config-airbnb": "^5.0.2",
+    "@vue/eslint-config-typescript": "^5.0.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-airbnb-typescript": "^7.2.1",
+    "eslint-import-resolver-typescript": "^2.0.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-plugin-import": "^2.20.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "eslint-plugin-vue-i18n": "^0.3.0",
+    "typescript": "^3.8.3",
+    "vue-i18n-extract": "^1.1.1"
+  },
+  "engines": {
+    "node": ">= 10.18.1",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  },
+  "browserslist": [
+    "last 1 version, not dead, ie >= 11"
+  ],
+  "resolutions": {
+    "@babel/parser": "7.7.5"
+  }
+}

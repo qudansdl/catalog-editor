@@ -79,6 +79,7 @@
 
 <script>
 import { v4 as uuidv4 } from 'uuid'
+import _ from 'lodash'
 
 import searchTab from './components/search'
 import textTab from './components/text'
@@ -200,8 +201,7 @@ export default {
             this.$root.inputsArr.items.push(item)
             this.updateLocalStorage()
         },
-        updateLocalStorage(){
-            this.$_.debounce(function() {
+        updateLocalStorage: _.debounce(function() {
                 this.$root.inputsArr.bgImg = this.$root.bgImg
                 this.$root.inputsArr.bgColor = this.$root.bgColor
                 this.$root.inputsArr.bgPtrn = this.$root.bgPtrn
@@ -215,8 +215,7 @@ export default {
                 ]
 
                 console.log(this.$root.changeHistory)
-            }, 300)
-        },
+        }, 300),
         onCoordinatesChanged(item, index){
             this.$root.inputsArr.items[index] = item
             this.updateLocalStorage()

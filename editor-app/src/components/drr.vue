@@ -44,6 +44,7 @@
 
 <script>
 import Fitty from '@/components/vue-fitty/Fitty.vue'
+import _ from 'lodash'
 
 export default {
   mounted() {
@@ -95,7 +96,7 @@ export default {
           this.x -= 1
         }
 
-      const item = {x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle, src:this.item.src, type: this.item.type}
+      const item = Object.assign(this.$_.cloneDeep(this.item), {x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle})
       this.$emit('coordinate', item, this.itemIndex)
       e.preventDefault()
     },
@@ -111,19 +112,16 @@ export default {
         this.test = true
       }, 500)
     },
-    redrawText(){
-      this.$_.debounce(function() {
-        console.log('onDragStop')
+    redrawText:  _.debounce(function() {
+        console.log('fit text 2')
         if(this.$refs.fitty)
           this.$refs.fitty.fit()
-      }, 600)
-    },
+    }, 600),
     onDragStop(){
       this.redrawText()
     },
 
-    reSet(){
-      this.$_.debounce(function() {
+    reSet: _.debounce(function() {
         const w = document.querySelectorAll('.drr')
 
         for(const i in w){
@@ -136,8 +134,7 @@ export default {
           this.$refs.ddrContRef.children[0].className = 'drr active'
         }
         this.guideLine.active = false
-      }, 600)
-    },
+    }, 600),
     onChange(rect) {
       this.onRectChanged(rect)
     },
@@ -181,7 +178,7 @@ export default {
       this.guideLine.posRight = Math.max(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x)
       this.guideLine.posTop = Math.max(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y)
 
-      const item = {x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle, src:this.item.src, type: this.item.type}
+      const item = Object.assign(this.$_.cloneDeep(this.item), {x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle})
       this.$emit('coordinate', item, this.itemIndex)
 
       this.redrawText()

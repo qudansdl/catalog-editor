@@ -1,0 +1,5 @@
+node_modules
+/dist
+.quasar
+babel.config.js
+quasar.conf.js
