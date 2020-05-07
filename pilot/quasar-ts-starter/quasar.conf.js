@@ -11,6 +11,7 @@ module.exports = function (ctx) {
     boot: [
       'i18n',
       'axios',
+      'tinymce',
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -88,6 +89,7 @@ module.exports = function (ctx) {
 
           // Add custom paths here
           store: path.resolve(__dirname, './src/store'),
+          '@': path.resolve(__dirname, './src'),
         };
         cfg.module.rules.push({
           enforce: 'pre',

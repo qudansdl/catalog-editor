@@ -69,6 +69,7 @@
 
     /* Paths */
     "paths": {         /*quasar*/     /* must be repeted here for eslint+airbnb+import to resolve imports */
+      "@/*": ["src/*"],
       "src/*": ["src/*"],
       "app/*": ["*"],
       "components/*": ["src/components/*"],

@@ -13,3 +13,11 @@ declare namespace NodeJS {
     VUE_ROUTER_BASE: string | undefined;
   }
 }
+
+declare module '@packy-tang/vue-tinymce';
+declare module 'vue-draggable-resizable';
+declare module 'vue-html2canvas';
+
+declare module 'clipboard' {
+  function on (type: 'success', handler: (e: ClipboardEvent) => void): any;
+}

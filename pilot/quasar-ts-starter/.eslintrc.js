@@ -80,6 +80,7 @@ module.exports = {
 
   // add your custom rules here
   rules: {
+    "max-len": 0,
     // allow raw text
     'vue-i18n/no-raw-text': 'off',
     // Some more strict i18n rules
