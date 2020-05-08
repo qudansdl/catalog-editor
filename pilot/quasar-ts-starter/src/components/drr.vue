@@ -9,6 +9,7 @@
         :w="width"
         :h="height"
         :angle="angle"
+        :selected="selected"
         :rotateable="true"
         :draggable="true"
 
@@ -18,6 +19,8 @@
         @drag="onDrag"
         @resize="onResize"
         @dragstop="onDragStop"
+        @select="onSelected"
+        @deselect="onDeselected"
         >
         <!-- rotate info  -->
         <div ref="ddrInfo" :class="['ddr', {hidden:test}]"></div>
@@ -72,6 +75,7 @@ export default {
       x: this.item.x,
       y: this.item.y,
       angle: this.item.angle,
+      selected: this.item.selected,
       test: true,
       guideLine: {
         active: false,
@@ -120,7 +124,12 @@ export default {
     onDragStop() {
       this.redrawText();
     },
-
+    onSelected() {
+      this.$emit('select', this.item);
+    },
+    onDeselected() {
+      this.$emit('deselect', this.item);
+    },
     reSet: debounce(function () {
       const w = document.querySelectorAll('.drr');
       w.forEach((i) => {

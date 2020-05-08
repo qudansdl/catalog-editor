@@ -5,8 +5,6 @@ import { v4 as uuidv4 } from 'uuid';
 import { debounce, cloneDeep } from 'lodash';
 import html2canvas from 'html2canvas';
 
-import '@/assets/css/bootstrap.min.css';
-import '@/assets/css/style.css';
 import VueDraggableResizable from 'vue-draggable-resizable';
 
 import drr from '@minogin/vue-drag-resize-rotate';
@@ -18,15 +16,16 @@ import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 import { Item, Configuration } from '@/types/types';
 
 import SearchTab from '@/components/search.vue';
-import TextTab from '@/components/text.vue';
 import ImagesTab from '@/components/images.vue';
 import FontTab from '@/components/font.vue';
 import TemplatesTab from '@/components/templates.vue';
 
+import EditText from './components/Text.vue';
+
 @Component({
   components: {
     SearchTab,
-    TextTab,
+    EditText,
     ImagesTab,
     FontTab,
     TemplatesTab,
@@ -36,30 +35,12 @@ import TemplatesTab from '@/components/templates.vue';
   },
 })
 export default class Index extends Vue {
-  isActive = false;
+  text = {
+    show: false,
+    content: '<p>여기에 내용을 입력하세요</p>',
+  };
 
-  selectedComponent = '';
-
-  asideTabs: Array<object> = [
-    {
-      name: 'search-tab', btnClass: 'search-btn', text: 'Search', icon: 'fa-search fa-2x',
-    },
-    {
-      name: 'text-tab', btnClass: 'text-btn', text: '텍스트', icon: 'fa-text-height fa-2x',
-    },
-    {
-      name: 'images-tab', btnClass: 'images-btn', text: '이미지', icon: 'fa-images fa-2x',
-    },
-    {
-      name: 'font-tab', btnClass: 'font-btn', text: '배경', icon: 'fa-fill-drip fa-2x',
-    },
-  ];
-
-  bottomTabs: Array<object> = [
-    {
-      name: 'templates-tab', btnClass: 'templates-btn', text: '템플릿', icon: 'fa-pen-square fa-2x',
-    },
-  ];
+  showMenu = false;
 
   countChange = 0;
 
@@ -72,6 +53,10 @@ export default class Index extends Vue {
     items: [],
   };
 
+  get enableDelete() {
+    return Math.random()
+  }
+
   public mounted(): void {
     const configuration = localStorage.getItem('configuration');
     if (configuration) {
@@ -81,9 +66,6 @@ export default class Index extends Vue {
 
   async print() {
     const el = this.$refs.printMe;
-    const options = {
-      type: 'dataURL',
-    };
     await html2canvas(el as HTMLElement).then(
       (canvas) => {
         console.log('canvas', canvas);
@@ -98,16 +80,7 @@ export default class Index extends Vue {
     );
   }
 
-  toggleAside() {
-    this.isActive = !this.isActive;
-  }
-
-  openAsideTop(name: string, text: string) {
-    this.isActive = true;
-    this.selectedComponent = name;
-  }
-
-  pushElement(value: string, type: string) {
+  addElement(newItem: Item) {
     const item: Item = {
       id: uuidv4().toUpperCase(),
       x: 100,
@@ -115,8 +88,9 @@ export default class Index extends Vue {
       w: 100,
       h: 100,
       angle: 0,
-      src: value,
-      type,
+      src: newItem.src,
+      type: newItem.type,
+      selected: true,
     };
 
     this.configuration.items.push(item);

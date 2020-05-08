@@ -1,6 +1,8 @@
-import { client } from '@/plugins/apolloClient';
 import { GET_CATEGORIES } from '@/api/graphql/category';
+import { Vue } from 'vue/types/vue';
 
-export const getCategories = () => client.query({
-  query: GET_CATEGORIES,
-});
+class Category {
+  getCategories = () => Vue.prototype.$apollo.query({
+    query: GET_CATEGORIES,
+  });
+}
