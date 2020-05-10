@@ -4,12 +4,11 @@
       ref="ddrContRef"
       >
       <drr
-        :x="x"
-        :y="y"
-        :w="width"
-        :h="height"
-        :angle="angle"
-        :selected="selected"
+        :x="item.x"
+        :y="item.y"
+        :w="item.w"
+        :h="item.h"
+        :angle="item.angle"
         :rotateable="true"
         :draggable="true"
 
@@ -45,157 +44,175 @@
     </div>
 </template>
 
-<script>
+<script lang="ts">
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { cloneDeep } from 'lodash';
+import { Item } from '@/types/types';
+import Fitty from 'components/vue-fitty/Fitty.vue';
 import drr from '@minogin/vue-drag-resize-rotate';
-import Fitty from '@/components/vue-fitty/Fitty.vue';
-import { cloneDeep, debounce } from 'lodash';
+import { FittyInstance } from 'fitty';
+import { Debounce } from 'vue-debounce-decorator';
 
-export default {
-  mounted() {
-    document.addEventListener('keydown', (e) => {
-      if (
-        this.$refs.ddrContRef
-      && this.$refs.ddrContRef.children
-      && this.$refs.ddrContRef.children.length
-      && this.$refs.ddrContRef.children[0].classList.contains('active')) {
-        this.moveFunc(e);
-      }
-    });
-  },
-  props: ['items', 'itemIndex', 'item'],
+interface Rect {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  angle: number;
+}
+
+@Component({
   components: {
     Fitty,
     drr,
   },
+})
+export default class Drr extends Vue {
+  @Prop() readonly item: Item | undefined;
 
-  data() {
-    return {
-      width: this.item.w,
-      height: this.item.w,
-      x: this.item.x,
-      y: this.item.y,
-      angle: this.item.angle,
-      selected: this.item.selected,
-      test: true,
-      guideLine: {
-        active: false,
-        posTop: 0,
-        posBottom: 0,
-        posRight: 0,
-        posLeft: 0,
-      },
-    };
-  },
+  selected = false;
 
-  methods: {
-    moveFunc(e) {
-      if (e.key === 'ArrowUp') {
-        this.y -= 1;
-      } else if (e.key === 'ArrowDown') {
-        this.y += 1;
-      } else if (e.key === 'ArrowRight') {
-        this.x += 1;
-      } else if (e.key === 'ArrowLeft') {
-        this.x -= 1;
+  test = true;
+
+  guideLine = {
+    active: false,
+    posTop: 0,
+    posBottom: 0,
+    posRight: 0,
+    posLeft: 0,
+  };
+
+  public mounted(): void {
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      const refContent = this.$refs.ddrContRef as Element;
+      if (
+        refContent
+        && refContent.children
+        && refContent.children.length
+        && refContent.children[0].classList.contains('active')) {
+        this.moveFunc(e);
       }
+    });
+  }
 
-      const item = Object.assign(cloneDeep(this.item), {
-        x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle,
-      });
-      this.$emit('coordinate', item, this.itemIndex);
-      e.preventDefault();
-    },
 
-    printRect(rect) {
-      const r = rect.angle;
-      this.$refs.ddrInfo.innerHTML = r < 0 ? Math.floor(360 + r) : Math.round(rect.angle);
-      this.test = false;
-    },
+  moveFunc(e: KeyboardEvent) {
+    const newItem = cloneDeep(this.item) as Item;
+    if (e.key === 'ArrowUp') {
+      newItem.y -= 1;
+    } else if (e.key === 'ArrowDown') {
+      newItem.y += 1;
+    } else if (e.key === 'ArrowRight') {
+      newItem.x += 1;
+    } else if (e.key === 'ArrowLeft') {
+      newItem.x -= 1;
+    }
 
-    rotateStop() {
-      setTimeout(() => {
-        this.test = true;
-      }, 500);
-    },
-    redrawText: debounce(function () {
-      console.log('fit text 2');
-      if (this.$refs.fitty) this.$refs.fitty.fit();
-    }, 600),
-    onDragStop() {
-      this.redrawText();
-    },
-    onSelected() {
-      this.$emit('select', this.item);
-    },
-    onDeselected() {
-      this.$emit('deselect', this.item);
-    },
-    reSet: debounce(function () {
-      const w = document.querySelectorAll('.drr');
-      w.forEach((i) => {
-        if (Object.prototype.hasOwnProperty.call(w, i)) {
-          w[i].className = 'drr inactive';
-        }
-      });
+    this.$emit('coordinate', newItem);
+    e.preventDefault();
+  }
 
-      if (this.$refs.ddrContRef.children[0]) {
-        this.$refs.ddrContRef.children[0].className = 'drr active';
-      }
-      this.guideLine.active = false;
-    }, 600),
-    onChange(rect) {
-      this.onRectChanged(rect);
-    },
-    onDrag(rect) {
-      this.onRectChanged(rect);
-    },
-    onResize(rect) {
-      this.onRectChanged(rect);
-    },
-    getRotatedPoint(x, y, ang, isDeg = true) {
-      // X = x*cos(θ) - y*sin(θ)
-      // Y = x*sin(θ) + y*cos(θ)
-      let radian = ang;
-      if (isDeg) radian = ang * (Math.PI / 180);
+  printRect(rect: Rect) {
+    const ddrInfo = this.$refs.ddrInfo as Element;
+    const r = rect.angle;
+    ddrInfo.innerHTML = (r < 0 ? Math.floor(360 + r) : Math.round(rect.angle)).toString();
+    this.test = false;
+  }
 
-      const sinAng = Math.sin(radian);
-      const cosAng = Math.cos(radian);
+  rotateStop() {
+    setTimeout(() => {
+      this.test = true;
+    }, 500);
+  }
 
-      const newX = x * cosAng - y * sinAng;
-      const newY = x * sinAng + y * cosAng;
+  @Debounce(600)
+  redrawText() {
+    const fitty: FittyInstance = this.$refs.fitty as any;
+    console.log('fit text');
+    if (fitty) fitty.fit();
+  }
 
-      return { x: newX, y: newY };
-    },
-    onRectChanged(rect) {
-      this.x = rect.x;
-      this.y = rect.y;
+  onDragStop() {
+    this.redrawText();
+  }
 
-      this.guideLine.active = false;
+  onSelected() {
+    this.$emit('select', this.item);
+  }
 
-      this.width = rect.w;
-      this.height = rect.h;
-      this.angle = rect.angle;
+  onDeselected() {
+    this.$emit('deselect', this.item);
+  }
 
-      const topLeft = this.getRotatedPoint(rect.x - rect.w / 2, rect.y + rect.h / 2, rect.angle);
-      const topRight = this.getRotatedPoint(rect.x + rect.w / 2, rect.y + rect.h / 2, rect.angle);
-      const bottomLeft = this.getRotatedPoint(rect.x - rect.w / 2, rect.y - rect.h / 2, rect.angle);
-      const bottomRight = this.getRotatedPoint(rect.x + rect.w / 2, rect.y - rect.h / 2, rect.angle);
+  @Debounce(600)
+  reSet() {
+    const ddrCont: Element = this.$refs.ddrContRef as any;
+    const { guideLine } = this;
+    const w = document.querySelectorAll('.drr');
+    Array.prototype.map.call(w, (element: Element) => {
+      // eslint-disable-next-line no-param-reassign
+      element.className = 'drr inactive';
+    });
 
-      this.guideLine.posLeft = Math.min(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x);
-      this.guideLine.posBottom = Math.min(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y);
-      this.guideLine.posRight = Math.max(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x);
-      this.guideLine.posTop = Math.max(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y);
+    if (ddrCont.children[0]) {
+      ddrCont.children[0].className = 'drr active';
+    }
+    guideLine.active = false;
+  }
 
-      const item = Object.assign(cloneDeep(this.item), {
-        x: this.x, y: this.y, w: this.width, h: this.height, angle: this.angle,
-      });
-      this.$emit('coordinate', item, this.itemIndex);
+  onChange(rect: Rect) {
+    this.onRectChanged(rect);
+  }
 
-      this.redrawText();
-    },
+  onDrag(rect: Rect) {
+    this.onRectChanged(rect);
+  }
 
-  },
-};
+  onResize(rect: Rect) {
+    this.onRectChanged(rect);
+  }
+
+  static getRotatedPoint(x: number, y: number, ang: number, isDeg = true) {
+    // X = x*cos(θ) - y*sin(θ)
+    // Y = x*sin(θ) + y*cos(θ)
+    let radian = ang;
+    if (isDeg) radian = ang * (Math.PI / 180);
+
+    const sinAng = Math.sin(radian);
+    const cosAng = Math.cos(radian);
+
+    const newX = x * cosAng - y * sinAng;
+    const newY = x * sinAng + y * cosAng;
+
+    return { x: newX, y: newY };
+  }
+
+  onRectChanged(rect: Rect) {
+    const item = cloneDeep(this.item) as Item;
+    item.x = rect.x;
+    item.y = rect.y;
+
+    this.guideLine.active = false;
+
+    item.w = rect.w;
+    item.h = rect.h;
+    item.angle = rect.angle;
+
+    const topLeft = Drr.getRotatedPoint(rect.x - rect.w / 2, rect.y + rect.h / 2, rect.angle);
+    const topRight = Drr.getRotatedPoint(rect.x + rect.w / 2, rect.y + rect.h / 2, rect.angle);
+    const bottomLeft = Drr.getRotatedPoint(rect.x - rect.w / 2, rect.y - rect.h / 2, rect.angle);
+    const bottomRight = Drr.getRotatedPoint(rect.x + rect.w / 2, rect.y - rect.h / 2, rect.angle);
+
+    this.guideLine.posLeft = Math.min(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x);
+    this.guideLine.posBottom = Math.min(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y);
+    this.guideLine.posRight = Math.max(topLeft.x, topRight.x, bottomLeft.x, bottomRight.x);
+    this.guideLine.posTop = Math.max(topLeft.y, topRight.y, bottomLeft.y, bottomRight.y);
+
+    this.$emit('coordinate', item);
+
+    this.redrawText();
+  }
+}
 </script>
 
 <style>

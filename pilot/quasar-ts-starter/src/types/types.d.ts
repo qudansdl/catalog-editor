@@ -1,6 +1,5 @@
 
 export interface Item {
-  selected: boolean;
   id: string;
   x: number;
   y: number;

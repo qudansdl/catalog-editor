@@ -6,6 +6,7 @@ import { debounce, cloneDeep } from 'lodash';
 import html2canvas from 'html2canvas';
 
 import VueDraggableResizable from 'vue-draggable-resizable';
+import { Debounce } from 'vue-debounce-decorator';
 
 import drr from '@minogin/vue-drag-resize-rotate';
 import dr from '@/components/drr.vue';
@@ -54,7 +55,7 @@ export default class Index extends Vue {
   };
 
   get enableDelete() {
-    return Math.random()
+    return this.showMenu;
   }
 
   public mounted(): void {
@@ -90,28 +91,34 @@ export default class Index extends Vue {
       angle: 0,
       src: newItem.src,
       type: newItem.type,
-      selected: true,
     };
 
     this.configuration.items.push(item);
     this.updateLocalStorage();
   }
 
+  @Debounce(300)
   updateLocalStorage() {
     const { configuration } = this;
-    debounce(() => {
-      localStorage.setItem('configuration', JSON.stringify(configuration));
+    localStorage.setItem('configuration', JSON.stringify(configuration));
 
-      const clone: Configuration = cloneDeep(configuration);
-      console.log('old config before', clone);
-      this.configurationHistory.unshift(clone);
-      console.log(this.configurationHistory);
-    }, 300);
+    const clone: Configuration = cloneDeep(configuration);
+    console.log('old config before', clone);
+    this.configurationHistory.unshift(clone);
+    console.log(this.configurationHistory);
   }
 
-  onCoordinatesChanged(item: Item, index: number) {
-    this.configuration.items[index] = item;
+  onCoordinatesChanged(newItem: Item) {
+    this.configuration.items = this.configuration.items.map((item) => (item.id === newItem.id ? newItem : item));
     this.updateLocalStorage();
+  }
+
+  onSelected() {
+    this.$emit('select');
+  }
+
+  onDeselected() {
+    this.$emit('deselect');
   }
 
   undo() {

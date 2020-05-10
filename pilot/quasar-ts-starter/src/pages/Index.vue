@@ -68,9 +68,11 @@
           <dr
             :key="item.id"
             :item="item"
-            @coordinate="onCoordinatesChanged"
             :items="configuration.items"
-            :itemIndex="idx">
+            :itemIndex="idx"
+            @coordinate="onCoordinatesChanged"
+            @select="onSelected"
+            @deselect="onDeselected">
           </dr>
         </template>
       </div>

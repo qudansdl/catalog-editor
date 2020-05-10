@@ -41,6 +41,7 @@
     "tinymce": "^5.1.2",
     "uuid": "^8.0.0",
     "vue": "^2.6.11",
+    "vue-debounce-decorator": "^1.0.1",
     "vue-class-component": "^7.2.3",
     "vue-color": "^2.7.1",
     "vue-draggable-resizable": "^2.2.0",
