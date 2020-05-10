@@ -31,8 +31,8 @@
             <q-item clickable v-ripple>
               <q-btn flat color="primary" label="Redo" icon="redo"/>
             </q-item>
-            <q-item clickable v-ripple>
-              <q-btn flat :disable="!enableDelete"  color="primary" label="Delete" icon="delete" />
+            <q-item v-ripple>
+              <q-btn flat :disable="!showDelete"  color="primary" label="Delete" icon="delete" @click="deleteSelected()"/>
             </q-item>
             <q-separator dark inset  color="orange" />
             <q-item clickable v-ripple>
@@ -64,12 +64,10 @@
         ref="printMe"
         :style="[{'background': configuration.backgroundPattern ? `url(${configuration.backgroundPattern}) repeat` : `${configuration.backgroundColor || '#ffffff'} url(${configuration.backgroundImg}) 0 0/cover no-repeat`}]">
 
-        <template v-for="(item, idx) in configuration.items">
+        <template v-for="(item) in configuration.items">
           <dr
             :key="item.id"
             :item="item"
-            :items="configuration.items"
-            :itemIndex="idx"
             @coordinate="onCoordinatesChanged"
             @select="onSelected"
             @deselect="onDeselected">
@@ -86,7 +84,180 @@
   </q-layout>
 </template>
 
-<script lang="ts" src="./Index.ts" />
+<script lang="ts">
+import Vue from 'vue';
+import Component from 'vue-class-component';
+
+import { v4 as uuidv4 } from 'uuid';
+import { cloneDeep } from 'lodash';
+import html2canvas from 'html2canvas';
+
+import VueDraggableResizable from 'vue-draggable-resizable';
+import { Debounce } from 'vue-debounce-decorator';
+
+// optionally import default styles
+import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
+
+import { Item, Configuration } from '@/types/types';
+
+import SearchTab from '@/components/search.vue';
+import ImagesTab from '@/components/images.vue';
+import FontTab from '@/components/font.vue';
+import TemplatesTab from '@/components/templates.vue';
+
+import EditText from './components/Text.vue';
+
+import dr from './components/DrrWrap.vue';
+
+@Component({
+  components: {
+    SearchTab,
+    EditText,
+    ImagesTab,
+    FontTab,
+    TemplatesTab,
+    VueDraggableResizable,
+    dr,
+  },
+})
+export default class Index extends Vue {
+  text = {
+    show: false,
+    content: '<p>여기에 내용을 입력하세요</p>',
+  };
+
+  showDelete = false;
+
+  showMenu = false;
+
+  countChange = 0;
+
+  configurationHistory = [] as Configuration[];
+
+  configuration: Configuration = {
+    backgroundColor: '',
+    backgroundImg: '',
+    backgroundPattern: '',
+    items: [],
+  };
+
+  private setShowDelete() {
+    this.$nextTick(function () {
+      this.showDelete = document.querySelectorAll('.drr.active').length > 0;
+      console.log(`showDelete :  + ${this.showDelete}`);
+    });
+  }
+
+  public mounted(): void {
+    const configuration = localStorage.getItem('configuration');
+    if (configuration) {
+      this.configuration = JSON.parse(configuration);
+    }
+  }
+
+  async print() {
+    const el = this.$refs.printMe;
+    await html2canvas(el as HTMLElement).then(
+      (canvas) => {
+        console.log('canvas', canvas);
+        console.log('dataUrl', canvas.toDataURL());
+
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL();
+        link.download = 'image.jpg';
+        document.body.appendChild(link);
+        link.click();
+      },
+    );
+  }
+
+  addElement(newItem: Item) {
+    const item: Item = {
+      id: uuidv4().toUpperCase(),
+      x: 100,
+      y: 100,
+      w: 100,
+      h: 100,
+      angle: 0,
+      src: newItem.src,
+      type: newItem.type,
+    };
+
+    this.configuration.items.push(item);
+    this.updateLocalStorage();
+  }
+
+  @Debounce(300)
+  updateLocalStorage() {
+    const { configuration } = this;
+    localStorage.setItem('configuration', JSON.stringify(configuration));
+
+    const clone: Configuration = cloneDeep(configuration);
+    console.log('old config before', clone);
+    this.configurationHistory.unshift(clone);
+    console.log(this.configurationHistory);
+  }
+
+  onCoordinatesChanged(newItem: Item) {
+    this.configuration.items = this.configuration.items.map((item) => (item.id === newItem.id ? newItem : item));
+    this.updateLocalStorage();
+  }
+
+  onSelected() {
+    this.setShowDelete();
+  }
+
+  onDeselected() {
+    this.setShowDelete();
+  }
+
+  // eslint-disable-next-line class-methods-use-this
+  deleteSelected() {
+    debugger;
+    const activeList = document.querySelectorAll('.drr.active');
+    if (activeList.length > 0) {
+      this.$q.dialog({
+        title: '삭제',
+        message: '선택된 내용을 삭제하시겠습니까?',
+        cancel: true,
+        persistent: true,
+      })
+        .onOk(() => {
+          // console.log('>>>> OK')
+        })
+        .onOk(() => {
+          // console.log('>>>> second OK catcher')
+        })
+        .onCancel(() => {
+          // console.log('>>>> Cancel')
+        })
+        .onDismiss(() => {
+          // console.log('I am triggered on both OK and Cancel')
+        });
+    }
+    // getAttribute
+
+    // this.setShowDelete();
+  }
+
+  undo() {
+    this.countChange += 1;
+    this.configuration = cloneDeep(this.configurationHistory[this.countChange]);
+    console.log(this.configurationHistory[this.countChange]);
+
+    console.log('back change', this.configurationHistory[this.countChange]);
+    this.updateLocalStorage();
+  }
+
+  redo() {
+    this.countChange -= 1;
+    this.configuration = this.configurationHistory[this.countChange];
+    console.log('front change', this.configurationHistory[this.countChange]);
+    this.updateLocalStorage();
+  }
+}
+
+</script>
 
 <style>
   *{

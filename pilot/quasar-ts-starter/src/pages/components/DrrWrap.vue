@@ -4,6 +4,7 @@
       ref="ddrContRef"
       >
       <drr
+        :id="item.id"
         :x="item.x"
         :y="item.y"
         :w="item.w"
@@ -49,9 +50,9 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { cloneDeep } from 'lodash';
 import { Item } from '@/types/types';
 import Fitty from 'components/vue-fitty/Fitty.vue';
-import drr from '@minogin/vue-drag-resize-rotate';
 import { FittyInstance } from 'fitty';
 import { Debounce } from 'vue-debounce-decorator';
+import drr from './drr.vue';
 
 interface Rect {
   x: number;
@@ -148,11 +149,6 @@ export default class Drr extends Vue {
   reSet() {
     const ddrCont: Element = this.$refs.ddrContRef as any;
     const { guideLine } = this;
-    const w = document.querySelectorAll('.drr');
-    Array.prototype.map.call(w, (element: Element) => {
-      // eslint-disable-next-line no-param-reassign
-      element.className = 'drr inactive';
-    });
 
     if (ddrCont.children[0]) {
       ddrCont.children[0].className = 'drr active';
