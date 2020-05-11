@@ -43,7 +43,7 @@ import { cloneDeep } from 'lodash';
     Tinymce,
   },
 })
-export default class Index extends Vue {
+export default class Text extends Vue {
   @Prop({ required: true }) private value!: any;
 
   private tinymceActive = false;

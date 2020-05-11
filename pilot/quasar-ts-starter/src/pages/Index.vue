@@ -15,7 +15,7 @@
               <q-btn flat color="primary" label="글자" icon="text_fields" @click="text.show = true"/>
             </q-item>
             <q-item clickable v-ripple>
-              <q-btn flat color="primary" label="그림" icon="image_search"/>
+              <q-btn flat color="primary" label="그림" icon="image_search" @click="image.show = true"/>
             </q-item>
             <q-item clickable v-ripple>
               <q-btn flat color="primary" label="배경" icon="grid_on"/>
@@ -81,6 +81,7 @@
     </q-page-container>
 
     <edit-text v-model="text" v-on:apply="addElement"></edit-text>
+    <edit-image v-model="image" v-on:apply="addElement"></edit-image>
   </q-layout>
 </template>
 
@@ -101,11 +102,11 @@ import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 import { Item, Configuration } from '@/types/types';
 
 import SearchTab from '@/components/search.vue';
-import ImagesTab from '@/components/images.vue';
 import FontTab from '@/components/font.vue';
 import TemplatesTab from '@/components/templates.vue';
 
 import EditText from './components/Text.vue';
+import EditImage from './components/Images.vue';
 
 import dr from './components/DrrWrap.vue';
 
@@ -113,7 +114,7 @@ import dr from './components/DrrWrap.vue';
   components: {
     SearchTab,
     EditText,
-    ImagesTab,
+    EditImage,
     FontTab,
     TemplatesTab,
     VueDraggableResizable,
@@ -124,6 +125,11 @@ export default class Index extends Vue {
   text = {
     show: false,
     content: '<p>여기에 내용을 입력하세요</p>',
+  };
+
+  image = {
+    show: false,
+    content: '',
   };
 
   showDelete = false;
@@ -213,7 +219,6 @@ export default class Index extends Vue {
 
   // eslint-disable-next-line class-methods-use-this
   deleteSelected() {
-    debugger;
     const activeList = document.querySelectorAll('.drr.active');
     if (activeList.length > 0) {
       this.$q.dialog({
@@ -223,21 +228,13 @@ export default class Index extends Vue {
         persistent: true,
       })
         .onOk(() => {
-          // console.log('>>>> OK')
-        })
-        .onOk(() => {
-          // console.log('>>>> second OK catcher')
-        })
-        .onCancel(() => {
-          // console.log('>>>> Cancel')
-        })
-        .onDismiss(() => {
-          // console.log('I am triggered on both OK and Cancel')
+          activeList.forEach((elem, index) => {
+            const id = elem.getAttribute('id');
+            console.log(`id = ${id}`);
+            this.configuration.items = this.configuration.items.filter((i) => i.id !== id);
+          });
         });
     }
-    // getAttribute
-
-    // this.setShowDelete();
   }
 
   undo() {

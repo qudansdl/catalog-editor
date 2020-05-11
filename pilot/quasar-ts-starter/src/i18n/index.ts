@@ -1,7 +1,5 @@
-import enUS from './en-us.json';
-import de from './de.json';
+import koKR from './ko-kr.json';
 
 export default {
-  'en-us': enUS,
-  de,
+  'en-us': koKR,
 };

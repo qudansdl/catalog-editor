@@ -1,7 +1,5 @@
-import { dateTime as enDtf } from './en-us';
-import { dateTime as deDtf } from './de';
+import { dateTime as krDtf } from './ko-kr';
 
 export default {
-  'en-us': enDtf,
-  de: deDtf,
+  'ko-kr': krDtf,
 };

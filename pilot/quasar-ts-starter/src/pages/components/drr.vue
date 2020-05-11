@@ -134,7 +134,8 @@
         bodyDrag: false,
         dragged: false,
         resized: false,
-        rotated: false
+        rotated: false,
+        eventElement: null
       }
     },
 
@@ -273,21 +274,17 @@
     },
 
     mounted: function () {
-      this.parentElement = this.$el.parentNode;
-      // this.parentWidth = this.parentW ? this.parentW : this.parentElement.clientWidth;
-      // this.parentHeight = this.parentH ? this.parentH : this.parentElement.clientHeight;
+      this.eventElement = document.querySelector(".printing-body");
 
-      /*
-      document.documentElement.addEventListener('mousemove', this.move);
-      document.documentElement.addEventListener('mouseup', this.up);
-      document.documentElement.addEventListener('mouseleave', this.up);
+      this.eventElement.addEventListener('mousemove', this.move);
+      this.eventElement.addEventListener('mouseup', this.up);
+      this.eventElement.addEventListener('mouseleave', this.up);
 
-      document.documentElement.addEventListener('mousedown', this.deselect);
+      this.eventElement.addEventListener('mousedown', this.deselect);
 
-      document.documentElement.addEventListener('touchmove', this.move, true);
-      document.documentElement.addEventListener('touchend touchcancel', this.up, true);
-      document.documentElement.addEventListener('touchstart', this.up, true);
-       */
+      this.eventElement.addEventListener('touchmove', this.move, true);
+      this.eventElement.addEventListener('touchend touchcancel', this.up, true);
+      this.eventElement.addEventListener('touchstart', this.up, true);
 
       if (this.dragHandle) {
         let dragHandles = Array.prototype.slice.call(this.$el.querySelectorAll(this.dragHandle));
@@ -305,17 +302,15 @@
     },
 
     beforeDestroy: function () {
-      /*
-      document.documentElement.removeEventListener('mousemove', this.move);
-      document.documentElement.removeEventListener('mouseup', this.up);
-      document.documentElement.removeEventListener('mouseleave', this.up);
+      this.eventElement.removeEventListener('mousemove', this.move);
+      this.eventElement.removeEventListener('mouseup', this.up);
+      this.eventElement.removeEventListener('mouseleave', this.up);
 
-      document.documentElement.removeEventListener('mousedown', this.deselect);
+      this.eventElement.removeEventListener('mousedown', this.deselect);
 
-      document.documentElement.removeEventListener('touchmove', this.move, true);
-      document.documentElement.removeEventListener('touchend touchcancel', this.up, true);
-      document.documentElement.removeEventListener('touchstart', this.up, true);
-       */
+      this.eventElement.removeEventListener('touchmove', this.move, true);
+      this.eventElement.removeEventListener('touchend touchcancel', this.up, true);
+      this.eventElement.removeEventListener('touchstart', this.up, true);
     },
 
     methods: {
