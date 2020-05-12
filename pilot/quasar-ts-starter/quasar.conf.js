@@ -5,6 +5,10 @@ const path = require('path')
 
 module.exports = function (ctx) {
   return {
+    sourceFiles: {
+      router: 'src/router/index.ts',
+      store: 'src/store/index.ts'
+    },
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
@@ -52,6 +56,7 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
+        'LocalStorage',
         'Cookies',
         'Dialog'
       ],

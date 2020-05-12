@@ -56,7 +56,7 @@ import url from '../../components/img-bar/img-url.vue';
     url,
   },
 })
-export default class Images extends Vue {
+export default class EditImage extends Vue {
   @Prop({ required: true }) private value!: any;
 
   private maximizedToggle = true;

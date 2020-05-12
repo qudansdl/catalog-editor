@@ -62,16 +62,16 @@
       <div
         class="printing-body absolute-center"
         ref="printMe"
-        :style="[{'background': configuration.backgroundPattern ? `url(${configuration.backgroundPattern}) repeat` : `${configuration.backgroundColor || '#ffffff'} url(${configuration.backgroundImg}) 0 0/cover no-repeat`}]">
+        :style="[{'background': status.backgroundPattern ? `url(${status.backgroundPattern}) repeat` : `${status.backgroundColor || '#ffffff'} url(${status.backgroundImg}) 0 0/cover no-repeat`}]">
 
-        <template v-for="(item) in configuration.items">
-          <dr
+        <template v-for="(item) in status.items">
+          <dw
             :key="item.id"
             :item="item"
             @coordinate="onCoordinatesChanged"
             @select="onSelected"
             @deselect="onDeselected">
-          </dr>
+          </dw>
         </template>
       </div>
 
@@ -86,8 +86,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import Component from 'vue-class-component';
+import { Vue, Component } from 'vue-property-decorator';
 
 import { v4 as uuidv4 } from 'uuid';
 import { cloneDeep } from 'lodash';
@@ -105,10 +104,11 @@ import SearchTab from '@/components/search.vue';
 import FontTab from '@/components/font.vue';
 import TemplatesTab from '@/components/templates.vue';
 
-import EditText from './components/Text.vue';
-import EditImage from './components/Images.vue';
+import { State } from 'vuex-class';
+import EditText from './components/EditText.vue';
+import EditImage from './components/EditImage.vue';
 
-import dr from './components/DrrWrap.vue';
+import dw from './components/DrrWrap.vue';
 
 @Component({
   components: {
@@ -118,7 +118,7 @@ import dr from './components/DrrWrap.vue';
     FontTab,
     TemplatesTab,
     VueDraggableResizable,
-    dr,
+    dw,
   },
 })
 export default class Index extends Vue {
@@ -138,27 +138,17 @@ export default class Index extends Vue {
 
   countChange = 0;
 
-  configurationHistory = [] as Configuration[];
+  @State('status', { namespace: 'AppStatus' })
+  public status!: Configuration;
 
-  configuration: Configuration = {
-    backgroundColor: '',
-    backgroundImg: '',
-    backgroundPattern: '',
-    items: [],
-  };
+  @State('history', { namespace: 'AppStatus' })
+  public history!: Configuration[];
 
   private setShowDelete() {
     this.$nextTick(function () {
       this.showDelete = document.querySelectorAll('.drr.active').length > 0;
       console.log(`showDelete :  + ${this.showDelete}`);
     });
-  }
-
-  public mounted(): void {
-    const configuration = localStorage.getItem('configuration');
-    if (configuration) {
-      this.configuration = JSON.parse(configuration);
-    }
   }
 
   async print() {
@@ -189,24 +179,21 @@ export default class Index extends Vue {
       type: newItem.type,
     };
 
-    this.configuration.items.push(item);
-    this.updateLocalStorage();
+    this.status.items.push(item);
+    this.addHistory();
   }
 
   @Debounce(300)
-  updateLocalStorage() {
-    const { configuration } = this;
-    localStorage.setItem('configuration', JSON.stringify(configuration));
-
-    const clone: Configuration = cloneDeep(configuration);
+  addHistory() {
+    const clone: Configuration = cloneDeep(this.status);
     console.log('old config before', clone);
-    this.configurationHistory.unshift(clone);
-    console.log(this.configurationHistory);
+    this.history.unshift(clone);
+    console.log(this.history);
   }
 
   onCoordinatesChanged(newItem: Item) {
-    this.configuration.items = this.configuration.items.map((item) => (item.id === newItem.id ? newItem : item));
-    this.updateLocalStorage();
+    this.status.items = this.status.items.map((item) => (item.id === newItem.id ? newItem : item));
+    this.addHistory();
   }
 
   onSelected() {
@@ -231,7 +218,7 @@ export default class Index extends Vue {
           activeList.forEach((elem, index) => {
             const id = elem.getAttribute('id');
             console.log(`id = ${id}`);
-            this.configuration.items = this.configuration.items.filter((i) => i.id !== id);
+            this.status.items = this.status.items.filter((i) => i.id !== id);
           });
         });
     }
@@ -239,18 +226,18 @@ export default class Index extends Vue {
 
   undo() {
     this.countChange += 1;
-    this.configuration = cloneDeep(this.configurationHistory[this.countChange]);
-    console.log(this.configurationHistory[this.countChange]);
+    this.status = cloneDeep(this.history[this.countChange]);
+    console.log(this.history[this.countChange]);
 
-    console.log('back change', this.configurationHistory[this.countChange]);
-    this.updateLocalStorage();
+    console.log('back change', this.history[this.countChange]);
+    this.addHistory();
   }
 
   redo() {
     this.countChange -= 1;
-    this.configuration = this.configurationHistory[this.countChange];
-    console.log('front change', this.configurationHistory[this.countChange]);
-    this.updateLocalStorage();
+    this.status = this.history[this.countChange];
+    console.log('front change', this.history[this.countChange]);
+    this.addHistory();
   }
 }
 

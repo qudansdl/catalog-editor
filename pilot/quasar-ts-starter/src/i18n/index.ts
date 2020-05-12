@@ -1,5 +1,7 @@
 import koKR from './ko-kr.json';
 
+export const getLocale = () => 'ko-kr';
+
 export default {
-  'en-us': koKR,
+  'ko-kr': koKR,
 };
