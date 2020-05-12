@@ -52,18 +52,20 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { cloneDeep } from 'lodash';
-import pc from '../../components/img-bar/img-pc.vue';
-import lib from '../../components/img-bar/img-lib.vue';
-import url from '../../components/img-bar/img-url.vue';
+import pc from '../../components/font-bar/font-pc.vue';
+import lib from '../../components/font-bar/font-lib.vue';
+import pen from '../../components/font-bar/font-pen.vue';
+import ptrn from '../../components/font-bar/font-ptrn.vue';
 
 @Component({
   components: {
     pc,
     lib,
-    url,
+    pen,
+    ptrn,
   },
 })
-export default class EditImage extends Vue {
+export default class EditBackground extends Vue {
   @Prop({ required: true }) private value!: any;
 
   private maximizedToggle = true;
@@ -73,7 +75,8 @@ export default class EditImage extends Vue {
   components = [
     { name: 'lib', label: '선택' },
     { name: 'pc', label: '업로드' },
-    { name: 'url', label: 'URL' },
+    { name: 'pen', label: '색상' },
+    { name: 'ptrn', label: '패' },
   ];
 
   apply() {

@@ -1,15 +1,18 @@
 <template>
-    <div>
-        <div v-for="n in images" :key="n">
-            <button @click="setBgImg(n)">
-                <img :src="n" alt="">
-            </button>
-        </div>
+  <div>
+    <div v-for="n in images" :key="n">
+      <q-btn :color="n === selected ? 'primary' : ''" @click="setSelected(n)">
+        <q-img
+          :src="n"
+          spinner-color="white"
+          style="height: 250px; width: 220px"
+        />
+      </q-btn>
     </div>
+  </div>
 </template>
 
 <script>
-import { cloneDeep } from 'lodash';
 import ptn1 from '@/assets/img/pattern/pattern1.jpg';
 import ptn2 from '@/assets/img/pattern/pattern2.jpg';
 import ptn3 from '@/assets/img/pattern/pattern3.jpg';
@@ -18,30 +21,37 @@ import ptn5 from '@/assets/img/pattern/1.jpg';
 import ptn6 from '@/assets/img/pattern/2.jpg';
 import ptn7 from '@/assets/img/pattern/images.jpg';
 
-
 export default {
   data() {
     return {
-      images: [ptn1, ptn2, ptn3, ptn4, ptn5, ptn6, ptn7],
+      images: [
+        ptn1, ptn2, ptn3, ptn4, ptn5, ptn6, ptn7,
+      ],
+      selected: null,
     };
   },
   methods: {
-    setBgImg(n) {
-      this.$root.bgPtrn = n;
-      this.$root.inputsArr.bgPtrn = n;
-
-      localStorage.setItem('inputsArr', JSON.stringify(this.$root.inputsArr));
-      localStorage.setItem('bgPtrn', JSON.stringify(this.$root.bgPtrn));
-
-      const clone = cloneDeep(this.$root.inputsArr);
-      console.log('oldInputs before', clone);
-
-      this.$root.sequenceOfChange.unshift(clone);
+    setSelected(img) {
+      this.selected = img;
+      this.$emit('imageSelected', img);
     },
   },
 };
 </script>
 
 <style>
+  img{
+    padding: 2px;
+    width: 100%;
+    z-index: 10000;
 
+    height: auto
+  }
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin: auto;
+    display: block;
+  }
 </style>

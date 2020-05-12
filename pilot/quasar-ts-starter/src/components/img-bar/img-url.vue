@@ -1,25 +1,24 @@
 <template>
     <div>
         <div class="img-url">
-            <input type="text" placeholder="enter url" v-model="urlText">
-            <button class="url-dwl" @click="dwnlImg">&dagger; </button>
+          <q-input outlined v-model="url" placeholder="Image Url" />
+
+          <q-btn dense flat icon="add" @click="addImage">
+            <q-tooltip content-class="bg-white text-primary">추가</q-tooltip>
+          </q-btn>
         </div>
         <div class="row p-0 m-0">
-            <div class=" col-6 p-0 m-0" v-for="(item, k) of $root.urlImg" :key="k" >
-                <div class=" img-btn"
-                @click="$emit('addText', item, 'img')"
-                :style="{
-                    height: '100px',
-                    width: '100%',
-                    backgroundImage : `url(${item})`,
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    }">
-                    <!-- <img id="Image" alt="" width="100%"> -->
-                </div>
-                <button class="delete-btn" @click="deleteBtn(k)">
-                    &times;
-                    </button>
+            <div class=" col-6 p-0 m-0" v-for="(item, k) of images" :key="k" >
+              <q-btn :color="item === selected ? 'primary' : ''" @click="setSelected(item)">
+                <q-img
+                  :src="item"
+                  spinner-color="white"
+                  style="height: 250px; width: 220px"
+                />
+              </q-btn>
+              <q-btn dense flat icon="delete" @click="deleteBtn(k)">
+                <q-tooltip content-class="bg-white text-primary">삭제</q-tooltip>
+              </q-btn>
             </div>
         </div>
     </div>
@@ -29,24 +28,37 @@
 export default {
   data() {
     return {
-      urlText: '',
+      url: '',
+      images: [],
+      selected: null,
     };
   },
   methods: {
-    dwnlImg() {
-      if (!this.urlText) {
-        alert('Please enter proper url');
-      } else if (this.checkURL()) {
-        alert('Please enter proper url');
+    setSelected(img) {
+      this.selected = img;
+      this.$emit('imageSelected', img);
+    },
+    addImage() {
+      if (!this.url) {
+        this.$q.dialog({
+          title: '안내',
+          message: 'URL을 입력하세요',
+        });
+      } else if (!this.validURL()) {
+        this.$q.dialog({
+          title: '안내',
+          message: 'URL을 입력하세요',
+        });
       } else {
-        this.$root.urlImg.push(this.urlText);
+        this.images.push(this.url);
+        this.url = '';
       }
     },
     deleteBtn(item) {
-      this.$root.urlImg.splice(item, 1);
+      this.images.splice(item, 1);
     },
-    checkURL() {
-      return (this.urlText.match(/\.(jpeg|jpg|gif|png)$/) != null);
+    validURL() {
+      return (this.url.match(/\.(jpeg|jpg|gif|png)$/) != null);
     },
   },
   computed: {

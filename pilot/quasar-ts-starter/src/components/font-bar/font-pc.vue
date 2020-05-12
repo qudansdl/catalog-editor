@@ -1,101 +1,75 @@
 <template>
-    <div class="p-2">
-        <input ref="refInput" type="file" multiple hidden="hidden" accept=".png, .jpg, .svg" @change="onInputChange">
-        <div class="continue_button" >
-            <a type="#" @click="fileUpload">Upload file</a>
-        </div>
+  <div class="p-2">
+    <q-file
+      v-model="file"
+      label="파일을 선택"
+      filled
+      style="max-width: 300px"
+    />
+    <q-btn @click="uploadFile()">업로드</q-btn>
 
-        <div class="row p-0 m-0">
-            <div class=" col-6 p-0 m-0" v-for="(item, k) of $root.bgPcImages" :key="k" >
-                <div class=" img-btn"
-                @click="setBgImg(item)"
-                :style="{
-                    height: '100px',
-                    width: '100%',
-                    backgroundImage : `url(${item})`,
-                    backgroundSize: 'cover',
-                    backgroundRepeat: 'no-repeat',
-                    }">
-                </div>
-                <button class="delete-btn" @click="deleteBtn(k)">
-                    &times;
-                    </button>
-            </div>
-        </div>
+    <div class="row p-0 m-0">
+      <div class=" col-6 p-0 m-0" v-for="(item, k) of images" :key="k" >
+        <q-btn :color="item === selected ? 'primary' : ''" @click="setSelected(item)">
+          <q-img
+            :src="item"
+            spinner-color="white"
+            style="height: 250px; width: 220px"
+          />
+        </q-btn>
+        <q-btn dense flat icon="delete" @click="deleteBtn(k)">
+          <q-tooltip content-class="bg-white text-primary">삭제</q-tooltip>
+        </q-btn>
+      </div>
     </div>
+  </div>
 </template>
 
 <script>
-import { cloneDeep } from 'lodash';
+import ApiImage from '@/api/images';
 
 export default {
   data() {
     return {
-      img2B64: '',
+      images: [],
+      file: null,
+      selected: null,
     };
   },
   methods: {
-    setBgImg(item) {
-      this.$root.bgImg = item;
-      this.$root.bgPtrn = '';
-      this.$root.inputsArr.bgImg = item;
+    async uploadFile() {
+      const { data } = await ApiImage.uploadImages(this.file);
 
-      localStorage.setItem('inputsArr', JSON.stringify(this.$root.inputsArr));
-      localStorage.removeItem('bgPtrn');
-      localStorage.setItem('bgImg', JSON.stringify(this.$root.bgImg));
-
-      const clone = cloneDeep(this.$root.inputsArr);
-      console.log('oldInputs before', clone);
-      // Har o'zgarishni arrayga qowiw
-      this.$root.sequenceOfChange.unshift(clone);
-    },
-    fileUpload() {
-      this.$refs.refInput.click();
-    },
-    onInputChange(e) {
-      if (e.target.files) {
-        Object.keys(e.target.files).forEach(function (key, index) {
-          const file = e.target.files[index];
-          const reader = new FileReader();
-          reader.onload = (f) => this.$root.bgPcImages.push(f.target.result);
-          reader.readAsDataURL(file);
-        });
-      }
+      const { content } = data.createImage;
+      this.images.push(content);
+      this.file = null;
     },
 
-    fileToImage(item) {
-      if (item) {
-        return URL.createObjectURL(item);
-      }
-      return null;
-    },
-    imgToBase(item) {
-      const reader = new FileReader();
-      reader.onload = (e) => { this.img2B64 = e.target.result; };
-      reader.readAsDataURL(item);
-      return this.img2B64;
+    setSelected(img) {
+      this.selected = img;
+      this.$emit('imageSelected', img);
     },
     deleteBtn(item) {
-      this.$root.bgPcImages.splice(item, 1);
+      this.images.splice(item, 1);
     },
   },
 };
 </script>
 
 <style>
-.img-btn {
+  .img-btn {
     cursor: pointer;
-}
-.delete-btn{
+  }
+  .delete-btn{
     position: absolute;
     width: 100%;
     right: 0;
     top: 0;
     color: transparent;
     font-size: 20px;
-}
-.delete-btn:hover {
+  }
+  .delete-btn:hover {
     background: rgba(0, 0, 0, 0.329);
     color: white;
-}
+  }
 </style>

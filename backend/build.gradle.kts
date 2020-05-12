@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	id("org.springframework.boot") version "2.2.6.RELEASE"
+	id("org.springframework.boot") version "2.2.7.RELEASE"
 	id("io.spring.dependency-management") version "1.0.9.RELEASE"
 
 	id("com.google.cloud.tools.jib") version "2.1.0"
@@ -65,8 +65,6 @@ dependencies {
 	implementation("com.mashape.unirest:unirest-java:1.4.9")
 	implementation("org.antlr:ST4:4.3")
 	implementation("org.flywaydb:flyway-core")
-	implementation("org.jetbrains.kotlin:kotlin-reflect")
-	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
 	implementation("org.graalvm.sdk:graal-sdk:20.0.0")
 	implementation("org.graalvm.js:js:20.0.0")

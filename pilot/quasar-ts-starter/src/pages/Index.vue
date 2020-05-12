@@ -82,6 +82,7 @@
 
     <edit-text v-model="text" v-on:apply="addElement"></edit-text>
     <edit-image v-model="image" v-on:apply="addElement"></edit-image>
+    <edit-background v-model="background" v-on:apply="applyBackground"></edit-background>
   </q-layout>
 </template>
 
@@ -105,13 +106,14 @@ import FontTab from '@/components/font.vue';
 import TemplatesTab from '@/components/templates.vue';
 
 import { State } from 'vuex-class';
+import EditBackground from 'pages/components/EditBackground.vue';
 import EditText from './components/EditText.vue';
 import EditImage from './components/EditImage.vue';
-
 import dw from './components/DrrWrap.vue';
 
 @Component({
   components: {
+    EditBackground,
     SearchTab,
     EditText,
     EditImage,
@@ -128,6 +130,11 @@ export default class Index extends Vue {
   };
 
   image = {
+    show: false,
+    content: '',
+  };
+
+  background = {
     show: false,
     content: '',
   };

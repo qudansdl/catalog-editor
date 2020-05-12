@@ -8,8 +8,9 @@ import { ApolloQueryResult, OperationVariables } from 'apollo-client/core/types'
 import { MutationOptions, QueryOptions } from 'apollo-client/core/watchQueryOptions';
 import { FetchResult } from 'apollo-link';
 
+console.log(JSON.stringify(process.env));
 const link = createUploadLink({
-  uri: process.env.VUE_APP_BASE_URL,
+  uri: process.env.VUE_APP_BASE_API,
   credentials: 'same-origin',
 });
 

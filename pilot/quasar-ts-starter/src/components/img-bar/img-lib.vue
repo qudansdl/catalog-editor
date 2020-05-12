@@ -1,9 +1,13 @@
 <template>
     <div>
         <div v-for="n in images" :key="n">
-            <button @click="addForm(n)">
-                <img :src="n" alt="">
-            </button>
+          <q-btn :color="n === selected ? 'primary' : ''" @click="setSelected(n)">
+              <q-img
+                :src="n"
+                spinner-color="white"
+                style="height: 250px; width: 220px"
+              />
+          </q-btn>
         </div>
     </div>
 </template>
@@ -17,11 +21,13 @@ export default {
   data() {
     return {
       images: [img1, img2, img3],
+      selected: null,
     };
   },
   methods: {
-    addForm(img) {
-      this.$emit('addText', img, 'img');
+    setSelected(img) {
+      this.selected = img;
+      this.$emit('imageSelected', img);
     },
   },
 };

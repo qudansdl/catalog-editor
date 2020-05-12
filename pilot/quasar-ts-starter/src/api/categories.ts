@@ -1,8 +1,8 @@
 import { GET_CATEGORIES } from '@/api/graphql/category';
-import { Vue } from 'vue/types/vue';
+import Vue from 'vue';
 
-class Category {
-  getCategories = () => Vue.prototype.$apollo.query({
+export default class ApiCategory {
+  static getCategories = () => Vue.prototype.$apollo.query({
     query: GET_CATEGORIES,
   });
 }

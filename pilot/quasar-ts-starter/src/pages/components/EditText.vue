@@ -28,7 +28,7 @@
       <q-card-actions align="right">
         <q-space />
         <q-btn color="primary" label="적용" @click="apply"/>
-        <q-btn color="brown-5" label="닫기"/>
+        <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
