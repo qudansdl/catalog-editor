@@ -2,6 +2,7 @@
     <div
       @mouseup="reSet"
       ref="ddrContRef"
+      class="drr-wrap"
       >
       <drr
         :id="item.id"
@@ -22,6 +23,7 @@
         @select="onSelected"
         @deselect="onDeselected"
         >
+        <button class="close" @click.stop.prevent="deleteItem()">&times;</button>
         <!-- rotate info  -->
         <div ref="ddrInfo" :class="['ddr', {hidden:test}]"></div>
         <template v-if="item.type == 'text'">
@@ -145,12 +147,16 @@ export default class Drr extends Vue {
     this.$emit('deselect', this.item);
   }
 
+  deleteItem() {
+    this.$emit('delete', this.item);
+  }
+
   @Debounce(600)
   reSet() {
     const ddrCont: Element = this.$refs.ddrContRef as any;
     const { guideLine } = this;
 
-    if (ddrCont.children[0]) {
+    if (ddrCont && ddrCont.children[0]) {
       ddrCont.children[0].className = 'drr active';
     }
     guideLine.active = false;
@@ -217,50 +223,7 @@ export default class Drr extends Vue {
       width: 100%;
       height: inherit;
   }
-  .ddr {
-    position: absolute;
-    top: -40px;
-    right: 48%;
-  }
-  .hidden {
-    display: none;
-  }
 
-  .dot-info  {
-    position: absolute;
-    padding: 4px;
-  }
-
-  .ddr-top {
-    top: 0;
-    left: 0;
-  }
-
-  .ddr-left {
-    top: 0;
-    right: 0;
-  }
-
-  .ddr-bottom {
-    bottom: 0;
-    right: 0;
-  }
-
-  .ddr-right {
-    bottom: 0;
-    left: 0;
-  }
-
-  .ddr-center {
-    bottom: 45%;
-    top: 45%;
-  }
-
-  .d-d {
-    width: 100%;
-     position: absolute;
-     border: 1px dashed;
-  }
   .hori{
     border-top: 1px dashed;
     width: 100%;
@@ -275,5 +238,26 @@ export default class Drr extends Vue {
       border-left: 1px dashed;
       height: 100%;
       position: absolute;
+  }
+
+
+  .drr-wrap .close {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    z-index: 11000;
+    background-color: #FFF;
+    padding: 5px 2px 2px;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    opacity: .2;
+    text-align: center;
+    font-size: 22px;
+    line-height: 10px;
+    border-radius: 50%;
+  }
+  .drr-wrap:hover .close {
+    opacity: 1;
   }
 </style>

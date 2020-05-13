@@ -18,7 +18,7 @@
               <q-btn flat color="primary" label="그림" icon="image_search" @click="image.show = true"/>
             </q-item>
             <q-item clickable v-ripple>
-              <q-btn flat color="primary" label="배경" icon="grid_on"/>
+              <q-btn flat color="primary" label="배경" icon="grid_on" @click="background.show = true"/>
             </q-item>
           </q-list>
         </q-header>
@@ -70,7 +70,8 @@
             :item="item"
             @coordinate="onCoordinatesChanged"
             @select="onSelected"
-            @deselect="onDeselected">
+            @deselect="onDeselected"
+            @delete="onDelete">
           </dw>
         </template>
       </div>
@@ -82,7 +83,12 @@
 
     <edit-text v-model="text" v-on:apply="addElement"></edit-text>
     <edit-image v-model="image" v-on:apply="addElement"></edit-image>
-    <edit-background v-model="background" v-on:apply="applyBackground"></edit-background>
+    <edit-background
+      v-model="background"
+      @applyBackground="applyBackground"
+      @applyBackgroundColor="applyBackgroundColor"
+      @applyBackgroundPattern="applyBackgroundPattern"
+    ></edit-background>
   </q-layout>
 </template>
 
@@ -190,6 +196,26 @@ export default class Index extends Vue {
     this.addHistory();
   }
 
+  applyBackground(img: string) {
+    this.status.backgroundImg = img;
+
+    this.status.backgroundPattern = '';
+    this.status.backgroundColor = '';
+  }
+
+  applyBackgroundColor(color: string) {
+    this.status.backgroundColor = color;
+
+    this.status.backgroundPattern = '';
+    this.status.backgroundImg = '';
+  }
+
+  applyBackgroundPattern(img: string) {
+    this.status.backgroundPattern = img;
+    this.status.backgroundColor = '';
+    this.status.backgroundImg = '';
+  }
+
   @Debounce(300)
   addHistory() {
     const clone: Configuration = cloneDeep(this.status);
@@ -209,6 +235,11 @@ export default class Index extends Vue {
 
   onDeselected() {
     this.setShowDelete();
+  }
+
+  onDelete(item: Item) {
+    const idx = this.status.items.findIndex((i) => i.id !== item.id);
+    this.status.items.splice(idx, 1);
   }
 
   // eslint-disable-next-line class-methods-use-this

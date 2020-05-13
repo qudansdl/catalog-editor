@@ -37,6 +37,8 @@
           :is="tab.name"
           :key="tab.name"
           @imageSelected="imageSelected"
+          @colorSelected="colorSelected"
+          @patternSelected="patternSelected"
         ></component>
       </q-tab-panel>
     </q-tab-panels>
@@ -72,19 +74,32 @@ export default class EditBackground extends Vue {
 
   private tab = 'lib';
 
+  private eventName = 'applyBackground';
+
   components = [
     { name: 'lib', label: '선택' },
     { name: 'pc', label: '업로드' },
     { name: 'pen', label: '색상' },
-    { name: 'ptrn', label: '패' },
+    { name: 'ptrn', label: '패턴' },
   ];
 
   apply() {
-    this.$emit('apply', { src: this.value.content, type: 'image' });
+    this.$emit(this.eventName, this.content);
     this.showDialog = false;
   }
 
+  colorSelected(color: string) {
+    this.eventName = 'applyBackgroundColor';
+    this.content = color;
+  }
+
+  patternSelected(img: string) {
+    this.eventName = 'applyBackgroundPattern';
+    this.content = img;
+  }
+
   imageSelected(img: any) {
+    this.eventName = 'applyBackground';
     this.content = img;
   }
 

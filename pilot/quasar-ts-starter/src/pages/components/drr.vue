@@ -148,7 +148,6 @@
           sticks.push('ro')
         return sticks
       },
-
       classObject() {
         return {
           active: this.active,

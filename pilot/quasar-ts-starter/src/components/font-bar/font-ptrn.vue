@@ -33,7 +33,7 @@ export default {
   methods: {
     setSelected(img) {
       this.selected = img;
-      this.$emit('imageSelected', img);
+      this.$emit('patternSelected', img);
     },
   },
 };
