@@ -45,7 +45,7 @@ class AppStatus extends VuexModule implements AppStatusI {
 
   public size = getSize() || 'medium';
 
-  public status = {
+  public status: Configuration = {
     backgroundColor: '',
     backgroundImg: '',
     backgroundPattern: '',
@@ -53,6 +53,11 @@ class AppStatus extends VuexModule implements AppStatusI {
   };
 
   public history = [] as Configuration[];
+
+  @Mutation
+  private SET_STATUS(status: Configuration) {
+    this.status = status;
+  }
 
   @Mutation
   private TOGGLE_SIDEBAR(withoutAnimation: boolean) {

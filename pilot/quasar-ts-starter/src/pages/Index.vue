@@ -26,10 +26,10 @@
         <q-footer elevated class="bg-white text-primary">
           <q-list>
             <q-item clickable v-ripple>
-              <q-btn flat color="primary" label="Undo" icon="undo"/>
+              <q-btn flat color="primary" label="Undo" icon="undo" @click="undo" :disable="changeIndex == 0"/>
             </q-item>
             <q-item clickable v-ripple>
-              <q-btn flat color="primary" label="Redo" icon="redo"/>
+              <q-btn flat color="primary" label="Redo" icon="redo" @click="redo" :disable="changeIndex + 1 >= history.length"/>
             </q-item>
             <q-item v-ripple>
               <q-btn flat :disable="!showDelete"  color="primary" label="Delete" icon="delete" @click="deleteSelected()"/>
@@ -111,7 +111,7 @@ import SearchTab from '@/components/search.vue';
 import FontTab from '@/components/font.vue';
 import TemplatesTab from '@/components/templates.vue';
 
-import { State } from 'vuex-class';
+import { Mutation, State } from 'vuex-class';
 import EditBackground from 'pages/components/EditBackground.vue';
 import EditText from './components/EditText.vue';
 import EditImage from './components/EditImage.vue';
@@ -149,13 +149,20 @@ export default class Index extends Vue {
 
   showMenu = false;
 
-  countChange = 0;
+  changeIndex = 0;
 
   @State('status', { namespace: 'AppStatus' })
   public status!: Configuration;
 
+  @Mutation('SET_STATUS', { namespace: 'AppStatus' })
+  public updateStatus!: Function;
+
   @State('history', { namespace: 'AppStatus' })
   public history!: Configuration[];
+
+  mounted() {
+    this.history.push(cloneDeep(this.status));
+  }
 
   private setShowDelete() {
     this.$nextTick(function () {
@@ -201,6 +208,8 @@ export default class Index extends Vue {
 
     this.status.backgroundPattern = '';
     this.status.backgroundColor = '';
+
+    this.addHistory();
   }
 
   applyBackgroundColor(color: string) {
@@ -208,20 +217,27 @@ export default class Index extends Vue {
 
     this.status.backgroundPattern = '';
     this.status.backgroundImg = '';
+
+    this.addHistory();
   }
 
   applyBackgroundPattern(img: string) {
     this.status.backgroundPattern = img;
     this.status.backgroundColor = '';
     this.status.backgroundImg = '';
+
+    this.addHistory();
   }
 
   @Debounce(300)
   addHistory() {
+    if (this.changeIndex < this.history.length - 1) {
+      this.history.length = this.changeIndex + 1;
+    }
     const clone: Configuration = cloneDeep(this.status);
-    console.log('old config before', clone);
-    this.history.unshift(clone);
-    console.log(this.history);
+    this.history.push(clone);
+    this.changeIndex += 1;
+    console.log('history index', this.changeIndex, this.history.length);
   }
 
   onCoordinatesChanged(newItem: Item) {
@@ -240,6 +256,7 @@ export default class Index extends Vue {
   onDelete(item: Item) {
     const idx = this.status.items.findIndex((i) => i.id !== item.id);
     this.status.items.splice(idx, 1);
+    this.addHistory();
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -263,19 +280,20 @@ export default class Index extends Vue {
   }
 
   undo() {
-    this.countChange += 1;
-    this.status = cloneDeep(this.history[this.countChange]);
-    console.log(this.history[this.countChange]);
+    this.changeIndex -= 1;
 
-    console.log('back change', this.history[this.countChange]);
-    this.addHistory();
+    const newStatus = cloneDeep(this.history[this.changeIndex]);
+    this.updateStatus(newStatus);
+
+    console.log('back change', this.changeIndex, this.history.length);
   }
 
   redo() {
-    this.countChange -= 1;
-    this.status = this.history[this.countChange];
-    console.log('front change', this.history[this.countChange]);
-    this.addHistory();
+    this.changeIndex += 1;
+    const newStatus = this.history[this.changeIndex];
+    this.updateStatus(newStatus);
+
+    console.log('front change', this.changeIndex, this.history.length);
   }
 }
 
