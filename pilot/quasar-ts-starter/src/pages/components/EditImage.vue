@@ -52,14 +52,14 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { cloneDeep } from 'lodash';
-import pc from '../../components/img-bar/img-pc.vue';
-import lib from '../../components/img-bar/img-lib.vue';
-import url from '../../components/img-bar/img-url.vue';
+import upload from './images/upload.vue';
+import library from './images/library.vue';
+import url from './images/url.vue';
 
 @Component({
   components: {
-    pc,
-    lib,
+    upload,
+    library,
     url,
   },
 })
@@ -68,11 +68,11 @@ export default class EditImage extends Vue {
 
   private maximizedToggle = true;
 
-  private tab = 'lib';
+  private tab = 'library';
 
   components = [
-    { name: 'lib', label: '선택' },
-    { name: 'pc', label: '업로드' },
+    { name: 'library', label: '선택' },
+    { name: 'upload', label: '업로드' },
     { name: 'url', label: 'URL' },
   ];
 

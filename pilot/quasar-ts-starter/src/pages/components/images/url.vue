@@ -25,6 +25,8 @@
 </template>
 
 <script>
+import imageToDataUri from '@/utils/image-to-data-uri';
+
 export default {
   data() {
     return {
@@ -34,9 +36,11 @@ export default {
     };
   },
   methods: {
-    setSelected(img) {
+    async setSelected(img) {
       this.selected = img;
-      this.$emit('imageSelected', img);
+      imageToDataUri(img, (err, uri) => {
+        this.$emit('imageSelected', uri);
+      });
     },
     addImage() {
       if (!this.url) {
@@ -68,33 +72,31 @@ export default {
 </script>
 
 <style>
-    .url-dwl {
-        width: 50px;
-        height: 50px;
-        background: darkblue;
-        font-size: 40px;
-        color: white;
-        transition-duration: 1s;
-    }
-    .url-dwl:hover {
-        background-color: red;
-        color: black;
-    }
-    .img-url {
-        display: flex;
-    }
-    img{
-        padding: 2px;
-        width: 100%;
-        z-index: 10000;
-
-        height: auto
-    }
-    button {
-        background: none;
-        border: none;
-        cursor: pointer;
-        margin: auto;
-        display: block;
-    }
+  .img-url {
+    display: flex;
+  }
+  img{
+    padding: 2px;
+    z-index: 10000;
+    width: 250px;
+    height: 200px;
+  }
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin: auto;
+    display: block;
+  }
+  .image {
+    float: left;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    border: 1px solid #ebebeb;
+    margin: 5px;
+  }
+  .vue-select-image__item {
+    margin-left: 0px !important;
+  }
 </style>

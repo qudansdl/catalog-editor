@@ -7,17 +7,17 @@
       content-class="bg-grey-1"
       side="right"
     >
-      <q-layout view="lhr lpr lfr">
+      <q-layout view="lhr lpr lfr" style="width: 90px;">
 
         <q-header elevated height-hint="98" class="bg-white text-primary">
           <q-list>
-            <q-item clickable v-ripple>
-              <q-btn flat color="primary" label="글자" icon="text_fields" @click="text.show = true"/>
+            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+              <q-btn flat color="primary" label="글자" icon="text_fields" @click="showEditText"/>
             </q-item>
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
               <q-btn flat color="primary" label="그림" icon="image_search" @click="image.show = true"/>
             </q-item>
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
               <q-btn flat color="primary" label="배경" icon="grid_on" @click="background.show = true"/>
             </q-item>
           </q-list>
@@ -25,29 +25,29 @@
 
         <q-footer elevated class="bg-white text-primary">
           <q-list>
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
               <q-btn flat color="primary" label="Undo" icon="undo" @click="undo" :disable="changeIndex == 0"/>
             </q-item>
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
               <q-btn flat color="primary" label="Redo" icon="redo" @click="redo" :disable="changeIndex + 1 >= history.length"/>
             </q-item>
-            <q-item v-ripple>
-              <q-btn flat :disable="!showDelete"  color="primary" label="Delete" icon="delete" @click="deleteSelected()"/>
+            <q-item v-ripple style="padding: 0px;min-height: 20px;">
+              <q-btn flat :disable="!showDelete"  color="primary" label="삭제" icon="delete" @click="deleteSelected()"/>
             </q-item>
             <q-separator dark inset  color="orange" />
-            <q-item clickable v-ripple>
-              <q-btn flat color="primary" label="Save" icon="save_alt" />
+            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+              <q-btn flat color="primary" label="저장" icon="save_alt" />
             </q-item>
             <q-separator dark inset  color="orange" />
-            <q-item clickable v-ripple>
-              <q-btn flat color="primary" label="Template" icon="file_copy" />
+            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+              <q-btn flat color="primary" label="템플릿" icon="file_copy" />
             </q-item>
-            <q-item clickable v-ripple>
+            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
               <q-btn
                 flat
                 color="primary"
                 icon="menu"
-                label="Hide Menu"
+                label="감추기"
                 @click="showMenu  = !showMenu"
               />
             </q-item>
@@ -64,16 +64,16 @@
         ref="printMe"
         :style="[{'background': status.backgroundPattern ? `url(${status.backgroundPattern}) repeat` : `${status.backgroundColor || '#ffffff'} url(${status.backgroundImg}) 0 0/cover no-repeat`}]">
 
-        <template v-for="(item) in status.items">
           <dw
+            v-for="(item) in status.items" ref="items"
             :key="item.id"
             :item="item"
             @coordinate="onCoordinatesChanged"
             @select="onSelected"
             @deselect="onDeselected"
-            @delete="onDelete">
+            @delete="onDelete"
+            @content-active="onContentActive">
           </dw>
-        </template>
       </div>
 
       <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="showMenu == false">
@@ -81,7 +81,7 @@
       </q-page-sticky>
     </q-page-container>
 
-    <edit-text v-model="text" v-on:apply="addElement"></edit-text>
+    <edit-text v-model="text" v-on:apply="setText"></edit-text>
     <edit-image v-model="image" v-on:apply="addElement"></edit-image>
     <edit-background
       v-model="background"
@@ -107,10 +107,6 @@ import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 
 import { Item, Configuration } from '@/types/types';
 
-import SearchTab from '@/components/search.vue';
-import FontTab from '@/components/font.vue';
-import TemplatesTab from '@/components/templates.vue';
-
 import { Mutation, State } from 'vuex-class';
 import EditBackground from 'pages/components/EditBackground.vue';
 import EditText from './components/EditText.vue';
@@ -120,11 +116,8 @@ import dw from './components/DrrWrap.vue';
 @Component({
   components: {
     EditBackground,
-    SearchTab,
     EditText,
     EditImage,
-    FontTab,
-    TemplatesTab,
     VueDraggableResizable,
     dw,
   },
@@ -132,7 +125,10 @@ import dw from './components/DrrWrap.vue';
 export default class Index extends Vue {
   text = {
     show: false,
-    content: '<p>여기에 내용을 입력하세요</p>',
+    item: {
+      src: '<p>여기에 내용을 입력하세요</p>',
+      type: 'text',
+    },
   };
 
   image = {
@@ -187,6 +183,39 @@ export default class Index extends Vue {
     );
   }
 
+  showEditText() {
+    this.text = {
+      show: true,
+      item: {
+        src: '<p>여기에 내용을 입력하세요</p>',
+        type: 'text',
+      },
+    };
+  }
+
+  setText(newItem: Item) {
+    if (newItem.id) {
+      const idx = this.status.items.findIndex((i) => i.id === newItem.id);
+      this.status.items[idx] = newItem;
+      this.$refs.items[idx].$emit('content-inactive');
+    } else {
+      const item: Item = {
+        id: uuidv4().toUpperCase(),
+        x: 100,
+        y: 100,
+        w: 100,
+        h: 100,
+        angle: 0,
+        src: newItem.src,
+        type: newItem.type,
+      };
+      this.status.items.push(item);
+    }
+
+    this.addHistory();
+  }
+
+
   addElement(newItem: Item) {
     const item: Item = {
       id: uuidv4().toUpperCase(),
@@ -208,7 +237,6 @@ export default class Index extends Vue {
 
     this.status.backgroundPattern = '';
     this.status.backgroundColor = '';
-
     this.addHistory();
   }
 
@@ -259,7 +287,11 @@ export default class Index extends Vue {
     this.addHistory();
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  onContentActive(item: Item) {
+    this.text.item = item;
+    this.text.show = true;
+  }
+
   deleteSelected() {
     const activeList = document.querySelectorAll('.drr.active');
     if (activeList.length > 0) {

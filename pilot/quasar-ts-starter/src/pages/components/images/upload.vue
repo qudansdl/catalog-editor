@@ -2,7 +2,7 @@
     <div class="p-2">
       <q-file
         v-model="file"
-        label="파일을 선택"
+        label="파일 선택"
         filled
         style="max-width: 300px"
       />

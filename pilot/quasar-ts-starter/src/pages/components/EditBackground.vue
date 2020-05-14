@@ -54,17 +54,17 @@
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator';
 import { cloneDeep } from 'lodash';
-import pc from '../../components/font-bar/font-pc.vue';
-import lib from '../../components/font-bar/font-lib.vue';
-import pen from '../../components/font-bar/font-pen.vue';
-import ptrn from '../../components/font-bar/font-ptrn.vue';
+import upload from './background/upload.vue';
+import library from './background/library.vue';
+import bgcolor from './background/color.vue';
+import bgpattern from './background/pattern.vue';
 
 @Component({
   components: {
-    pc,
-    lib,
-    pen,
-    ptrn,
+    upload,
+    library,
+    bgcolor,
+    bgpattern,
   },
 })
 export default class EditBackground extends Vue {
@@ -72,15 +72,15 @@ export default class EditBackground extends Vue {
 
   private maximizedToggle = true;
 
-  private tab = 'lib';
+  private tab = 'library';
 
   private eventName = 'applyBackground';
 
   components = [
-    { name: 'lib', label: '선택' },
-    { name: 'pc', label: '업로드' },
-    { name: 'pen', label: '색상' },
-    { name: 'ptrn', label: '패턴' },
+    { name: 'library', label: '선택' },
+    { name: 'upload', label: '업로드' },
+    { name: 'bgcolor', label: '색상' },
+    { name: 'bgpattern', label: '패턴' },
   ];
 
   apply() {

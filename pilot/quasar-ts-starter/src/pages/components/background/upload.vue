@@ -2,12 +2,11 @@
   <div class="p-2">
     <q-file
       v-model="file"
-      label="파일을 선택"
+      label="파일 선택"
       filled
       style="max-width: 300px"
     />
     <q-btn @click="uploadFile()">업로드</q-btn>
-
     <div class="row p-0 m-0">
       <div class=" col-6 p-0 m-0" v-for="(item, k) of images" :key="k" >
         <q-btn :color="item === selected ? 'primary' : ''" @click="setSelected(item)">

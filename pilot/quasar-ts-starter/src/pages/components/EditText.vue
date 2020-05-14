@@ -7,24 +7,12 @@
     transition-hide="slide-down"
   >
     <q-card>
-      <q-bar>
-        <q-space />
-        <q-btn dense flat icon="minimize" @click="maximizedToggle = false" :disable="!maximizedToggle">
-          <q-tooltip v-if="maximizedToggle" content-class="bg-white text-primary">Minimize</q-tooltip>
-        </q-btn>
-        <q-btn dense flat icon="crop_square" @click="maximizedToggle = true" :disable="maximizedToggle">
-          <q-tooltip v-if="!maximizedToggle" content-class="bg-white text-primary">Maximize</q-tooltip>
-        </q-btn>
-        <q-btn dense flat icon="close" v-close-popup>
-          <q-tooltip content-class="bg-white text-primary">Close</q-tooltip>
-        </q-btn>
-      </q-bar>
-        <tinymce
-            v-if="tinymceActive"
-            ref="editor"
-            v-model="content"
-            :menubar="false"
-        />
+      <tinymce
+          v-if="tinymceActive"
+          ref="editor"
+          v-model="content"
+          :menubar="false"
+      />
       <q-card-actions align="right">
         <q-space />
         <q-btn color="primary" label="적용" @click="apply"/>
@@ -50,12 +38,8 @@ export default class EditText extends Vue {
 
   private maximizedToggle = true;
 
-  // eslint-disable-next-line class-methods-use-this
-  mounted() {
-  }
-
   apply() {
-    this.$emit('apply', { src: this.value.content, type: 'text' });
+    this.$emit('apply', this.value.item);
     this.showDialog = false;
   }
 
@@ -68,12 +52,12 @@ export default class EditText extends Vue {
   }
 
   get content() {
-    return this.value.content;
+    return this.value.item.src;
   }
 
   set content(content) {
     const newValue = cloneDeep(this.value);
-    newValue.content = content;
+    newValue.item.src = content;
 
     this.$emit('input', newValue);
   }

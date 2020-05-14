@@ -5,6 +5,7 @@
       class="drr-wrap"
       >
       <drr
+        ref="drr"
         :id="item.id"
         :x="item.x"
         :y="item.y"
@@ -13,6 +14,7 @@
         :angle="item.angle"
         :rotateable="true"
         :draggable="true"
+        :hasActiveContent="item.type === 'text'"
 
         @rotate="printRect"
         @rotatestop="rotateStop"
@@ -22,6 +24,7 @@
         @dragstop="onDragStop"
         @select="onSelected"
         @deselect="onDeselected"
+        @content-active="onContentActive"
         >
         <button class="close" @click.stop.prevent="deleteItem()">&times;</button>
         <!-- rotate info  -->
@@ -96,8 +99,13 @@ export default class Drr extends Vue {
         this.moveFunc(e);
       }
     });
+
+    this.$on('content-inactive', this.onContentInactive);
   }
 
+  onContentInactive() {
+    this.$refs.drr.$emit('content-inactive');
+  }
 
   moveFunc(e: KeyboardEvent) {
     const newItem = cloneDeep(this.item) as Item;
@@ -145,6 +153,10 @@ export default class Drr extends Vue {
 
   onDeselected() {
     this.$emit('deselect', this.item);
+  }
+
+  onContentActive() {
+    this.$emit('content-active', this.item);
   }
 
   deleteItem() {
