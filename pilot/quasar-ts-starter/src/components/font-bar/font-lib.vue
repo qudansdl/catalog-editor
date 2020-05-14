@@ -16,6 +16,7 @@
 import img1 from '@/assets/img/download.jpg';
 import img2 from '@/assets/img/images.jpg';
 import img3 from '@/assets/img/1.jpg';
+import imageToDataUri from '@/utils/image-to-data-uri';
 
 export default {
   data() {
@@ -27,9 +28,11 @@ export default {
     };
   },
   methods: {
-    setSelected(img) {
+    async setSelected(img) {
       this.selected = img;
-      this.$emit('imageSelected', img);
+      imageToDataUri(img, (err, uri) => {
+        this.$emit('imageSelected', uri);
+      });
     },
   },
 };
