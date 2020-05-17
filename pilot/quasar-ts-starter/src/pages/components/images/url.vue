@@ -42,7 +42,7 @@ export default {
     };
   },
   methods: {
-    async setSelected(img) {
+    async onSelectImage(img) {
       this.selected = img;
       this.$emit('imageSelected', img.src);
     },
