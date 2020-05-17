@@ -17,11 +17,9 @@ import ptn5 from '@/assets/img/pattern/1.jpg';
 import ptn6 from '@/assets/img/pattern/2.jpg';
 import ptn7 from '@/assets/img/pattern/images.jpg';
 
-import VueSelectImage from 'vue-select-image';
+import VueSelectImage from '@/components/VueSelectImage/VueSelectImage.vue';
 
 import imageToDataUri from '@/utils/image-to-data-uri';
-
-require('vue-select-image/dist/vue-select-image.css');
 
 export default {
   data() {
@@ -86,12 +84,6 @@ export default {
 </script>
 
 <style>
-  img{
-    padding: 2px;
-    z-index: 10000;
-    width: 250px;
-    height: 200px;
-  }
   button {
     background: none;
     border: none;

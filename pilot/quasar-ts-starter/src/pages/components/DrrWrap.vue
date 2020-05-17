@@ -1,7 +1,7 @@
 <template>
     <div
       @mouseup="reSet"
-      ref="ddrContRef"
+      eventName
       class="drr-wrap"
       >
       <drr
@@ -231,9 +231,10 @@ export default class Drr extends Vue {
 
 <style>
   img{
-      padding: 2px;
-      width: 100%;
-      height: inherit;
+    padding: 2px;
+    z-index: 10000;
+    width: 250px;
+    height: 200px;
   }
 
   .hori{

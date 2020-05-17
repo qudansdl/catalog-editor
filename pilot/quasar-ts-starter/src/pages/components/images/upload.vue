@@ -1,32 +1,42 @@
 <template>
-    <div class="p-2">
-      <q-file
-        v-model="file"
-        label="파일 선택"
-        filled
-        style="max-width: 300px"
-      />
-      <q-btn @click="uploadFile()">업로드</q-btn>
-
-      <div class="row p-0 m-0">
-        <div class=" col-6 p-0 m-0" v-for="(item, k) of images" :key="k" >
-          <q-btn :color="item === selected ? 'primary' : ''" @click="setSelected(item)">
-            <q-img
-              :src="item"
-              spinner-color="white"
-              style="height: 250px; width: 220px"
+  <div class="q-pa-md">
+    <q-card>
+      <div class="row q-col-gutter-xs">
+        <div class="col">
+          <q-card-section>
+            <q-file
+              v-model="file"
+              label="파일 선택"
+              filled
             />
-          </q-btn>
-          <q-btn dense flat icon="delete" @click="deleteBtn(k)">
-            <q-tooltip content-class="bg-white text-primary">삭제</q-tooltip>
-          </q-btn>
+          </q-card-section>
+        </div>
+        <div class="col-auto">
+          <q-card-section>
+            <q-btn @click="uploadFile()">업로드</q-btn>
+          </q-card-section>
         </div>
       </div>
-    </div>
+      <div class="row q-col-gutter-xs">
+        <q-card-section>
+          <vue-select-image
+            :dataImages="images"
+            :w="'250px'"
+            :h="'200px'"
+            @onselectimage="onSelectImage"/>
+        </q-card-section>
+      </div>
+    </q-card>
+  </div>
 </template>
 
 <script>
+import VueSelectImage from '@/components/VueSelectImage/VueSelectImage.vue';
+import { v4 as uuidv4 } from 'uuid';
+
+import imageToDataUri from '@/utils/image-to-data-uri';
 import ApiImage from '@/api/images';
+import { Vue } from 'vue-property-decorator';
 
 export default {
   data() {
@@ -36,40 +46,25 @@ export default {
       selected: null,
     };
   },
+  components: {
+    VueSelectImage,
+  },
   methods: {
     async uploadFile() {
       const { data } = await ApiImage.uploadImages(this.file);
 
       const { content } = data.createImage;
-      this.images.push(content);
+
+      const img = { id: uuidv4().toUpperCase(), src: content };
+      this.images.push(img);
+      await this.onSelectImage(img);
       this.file = null;
     },
 
-    setSelected(img) {
-      this.selected = img;
-      this.$emit('imageSelected', img);
-    },
-    deleteBtn(item) {
-      this.images.splice(item, 1);
+    async onSelectImage(img) {
+      this.seleted = img;
+      this.$emit('imageSelected', img.src);
     },
   },
 };
 </script>
-
-<style>
-.img-btn {
-    cursor: pointer;
-}
-.delete-btn{
-    position: absolute;
-    width: 100%;
-    right: 0;
-    top: 0;
-    color: transparent;
-    font-size: 20px;
-}
-.delete-btn:hover {
-    background: rgba(0, 0, 0, 0.329);
-    color: white;
-}
-</style>

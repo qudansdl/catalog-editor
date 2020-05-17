@@ -46,9 +46,11 @@
     <q-card-actions align="right">
       <q-space />
       <q-btn color="primary" label="적용" @click="apply"/>
+      <q-btn color="secondary" label="잘라내기" @click="showCropp" v-if="tab == 'library' || tab == 'upload'"/>
       <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
     </q-card-actions>
   </q-card>
+    <cropp-image v-model="cropp" v-on:apply="applyCroppedImage"></cropp-image>
   </q-dialog>
 </template>
 <script lang="ts">
@@ -59,12 +61,15 @@ import library from './background/library.vue';
 import bgcolor from './background/color.vue';
 import bgpattern from './background/pattern.vue';
 
+import CroppImage from './Cropp.vue';
+
 @Component({
   components: {
     upload,
     library,
     bgcolor,
     bgpattern,
+    CroppImage,
   },
 })
 export default class EditBackground extends Vue {
@@ -73,6 +78,11 @@ export default class EditBackground extends Vue {
   private maximizedToggle = true;
 
   private tab = 'library';
+
+  private cropp = {
+    show: false,
+    image: '',
+  };
 
   private eventName = 'applyBackground';
 
@@ -86,6 +96,19 @@ export default class EditBackground extends Vue {
   apply() {
     this.$emit(this.eventName, this.content);
     this.showDialog = false;
+  }
+
+  applyCroppedImage(cropedImage: string) {
+    this.$emit(this.eventName, cropedImage.src);
+    this.cropp.show = false;
+    this.showDialog = false;
+  }
+
+  showCropp() {
+    this.cropp = {
+      show: true,
+      image: this.content,
+    };
   }
 
   colorSelected(color: string) {

@@ -1,31 +1,37 @@
 <template>
-    <div>
-        <div class="img-url">
-          <q-input outlined v-model="url" placeholder="Image Url" />
-
-          <q-btn dense flat icon="add" @click="addImage">
-            <q-tooltip content-class="bg-white text-primary">추가</q-tooltip>
-          </q-btn>
+  <div class="q-pa-md">
+    <q-card>
+      <div class="row q-col-gutter-xs">
+        <div class="col">
+          <q-card-section>
+            <q-input v-model="url" filled type="url" label="이미지 URL"/>
+          </q-card-section>
         </div>
-        <div class="row p-0 m-0">
-            <div class=" col-6 p-0 m-0" v-for="(item, k) of images" :key="k" >
-              <q-btn :color="item === selected ? 'primary' : ''" @click="setSelected(item)">
-                <q-img
-                  :src="item"
-                  spinner-color="white"
-                  style="height: 250px; width: 220px"
-                />
-              </q-btn>
-              <q-btn dense flat icon="delete" @click="deleteBtn(k)">
-                <q-tooltip content-class="bg-white text-primary">삭제</q-tooltip>
-              </q-btn>
-            </div>
+        <div class="col-auto">
+          <q-card-section>
+            <q-btn @click="addImage()">이미지 추가</q-btn>
+          </q-card-section>
         </div>
-    </div>
+      </div>
+      <div class="row q-col-gutter-xs">
+        <q-card-section>
+          <vue-select-image
+            :dataImages="images"
+            :w="'250px'"
+            :h="'200px'"
+            @onselectimage="onSelectImage"/>
+        </q-card-section>
+      </div>
+    </q-card>
+  </div>
 </template>
 
 <script>
+import VueSelectImage from '@/components/VueSelectImage/VueSelectImage.vue';
+import { v4 as uuidv4 } from 'uuid';
+
 import imageToDataUri from '@/utils/image-to-data-uri';
+import ApiImage from '@/api/images';
 
 export default {
   data() {
@@ -38,9 +44,7 @@ export default {
   methods: {
     async setSelected(img) {
       this.selected = img;
-      imageToDataUri(img, (err, uri) => {
-        this.$emit('imageSelected', uri);
-      });
+      this.$emit('imageSelected', img.src);
     },
     addImage() {
       if (!this.url) {
@@ -54,19 +58,17 @@ export default {
           message: 'URL을 입력하세요',
         });
       } else {
-        this.images.push(this.url);
-        this.url = '';
+        imageToDataUri(this.url, (err, uri) => {
+          const img = { id: uuidv4().toUpperCase(), src: uri };
+          this.images.push(img);
+          this.setSelected(img);
+          this.url = '';
+        });
       }
-    },
-    deleteBtn(item) {
-      this.images.splice(item, 1);
     },
     validURL() {
       return (this.url.match(/\.(jpeg|jpg|gif|png)$/) != null);
     },
-  },
-  computed: {
-
   },
 };
 </script>
@@ -74,12 +76,6 @@ export default {
 <style>
   .img-url {
     display: flex;
-  }
-  img{
-    padding: 2px;
-    z-index: 10000;
-    width: 250px;
-    height: 200px;
   }
   button {
     background: none;

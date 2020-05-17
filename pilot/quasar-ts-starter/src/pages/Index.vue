@@ -282,7 +282,7 @@ export default class Index extends Vue {
   }
 
   onDelete(item: Item) {
-    const idx = this.status.items.findIndex((i) => i.id !== item.id);
+    const idx = this.status.items.findIndex((i) => i.id === item.id);
     this.status.items.splice(idx, 1);
     this.addHistory();
   }
