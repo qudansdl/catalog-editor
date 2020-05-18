@@ -26,7 +26,7 @@
         @deselect="onDeselected"
         @content-active="onContentActive"
         >
-        <button class="close" @click.stop.prevent="deleteItem()">&times;</button>
+        <button class="close" @click.stop.prevent="deleteItem" v-touch="deleteItem">&times;</button>
         <!-- rotate info  -->
         <div ref="ddrInfo" :class="['ddr', {hidden:test}]"></div>
         <template v-if="item.type == 'text'">

@@ -6,19 +6,20 @@
       bordered
       content-class="bg-grey-1"
       side="right"
+      width="50"
     >
-      <q-layout view="lhr lpr lfr" style="width: 90px;">
+      <q-layout view="lhr lpr lfr">
 
         <q-header elevated height-hint="98" class="bg-white text-primary">
           <q-list>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" label="글자" icon="text_fields" @click="showEditText"/>
+              <q-btn flat color="primary" :label="$q.screen.gt.md ? '글자' : ''" icon="text_fields" @click="showEditText"/>
             </q-item>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" label="그림" icon="image_search" @click="image.show = true"/>
+              <q-btn flat color="primary" :label="$q.screen.gt.md ? '그' : ''" icon="image_search" @click="image.show = true"/>
             </q-item>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" label="배경" icon="grid_on" @click="background.show = true"/>
+              <q-btn flat color="primary" :label="$q.screen.gt.md ? '배' : ''" icon="grid_on" @click="background.show = true"/>
             </q-item>
           </q-list>
         </q-header>
@@ -26,28 +27,28 @@
         <q-footer elevated class="bg-white text-primary">
           <q-list>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" label="Undo" icon="undo" @click="undo" :disable="changeIndex == 0"/>
+              <q-btn flat color="primary" :label="$q.screen.gt.md ? 'Undo' : ''" icon="undo" @click="undo" :disable="changeIndex == 0"/>
             </q-item>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" label="Redo" icon="redo" @click="redo" :disable="changeIndex + 1 >= history.length"/>
+              <q-btn flat color="primary" :label="$q.screen.gt.md ? 'Redo' : ''" icon="redo" @click="redo" :disable="changeIndex + 1 >= history.length"/>
             </q-item>
             <q-item v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat :disable="!showDelete"  color="primary" label="삭제" icon="delete" @click="deleteSelected()"/>
+              <q-btn flat :disable="!showDelete"  color="primary" :label="$q.screen.gt.md ? '삭제' : ''" icon="delete" @click="deleteSelected()"/>
             </q-item>
             <q-separator dark inset  color="orange" />
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" label="저장" icon="save_alt" />
+              <q-btn flat color="primary" :label="$q.screen.gt.md ? '저장' : ''" icon="save_alt" />
             </q-item>
             <q-separator dark inset  color="orange" />
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" label="템플릿" icon="file_copy" />
+              <q-btn flat color="primary" :label="$q.screen.gt.md ? '템플릿' : ''" icon="file_copy" />
             </q-item>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
               <q-btn
                 flat
                 color="primary"
                 icon="menu"
-                label="감추기"
+                :label="$q.screen.gt.md ? '감추기' : ''"
                 @click="showMenu  = !showMenu"
               />
             </q-item>

@@ -96,7 +96,6 @@
     },
     watch: {
       selectedImages: function (val) {
-        debugger;
         this.setInitialSelection()
       },
     },
