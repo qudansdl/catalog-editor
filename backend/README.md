@@ -17,7 +17,7 @@ $ gradle bootRun
 ## Manual testing
 
 CRUD tests:
-Now you can test your changes on your API and go to the **Graph_i_QL** http://localhost:8080/graphiql
+Now you can test your changes on your API and go to the **Graph_i_QL** http://localhost:8081/graphiql
 
 Create:
 

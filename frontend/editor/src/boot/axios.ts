@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 

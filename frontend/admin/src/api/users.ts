@@ -7,12 +7,32 @@ export const getUsers = (params: any) =>
     params
   })
 
-export const getUserInfo = (data: any) =>
+export const getUserInfo = (data: any): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    resolve({
+      data:
+         {
+          user: {
+            id: 0,
+            username: 'admin',
+            password: 'any',
+            name: 'Super Admin',
+            avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
+            introduction: 'I am a super administrator',
+            email: 'admin@test.com',
+            phone: '1234567890',
+            roles: ['admin']
+          }
+        }})
+  })
+}
+/*
   request({
     url: '/users/info',
     method: 'post',
     data
   })
+*/
 
 export const getUserByName = (username: string) =>
   request({
@@ -33,12 +53,18 @@ export const deleteUser = (username: string) =>
     method: 'delete'
   })
 
-export const login = (data: any) =>
-  request({
+export const login = (data: any): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    resolve({ data: { accessToken: 'Success!' }})
+  })
+}
+/*
+request({
     url: '/users/login',
     method: 'post',
     data
   })
+*/
 
 export const logout = () =>
   request({

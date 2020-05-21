@@ -1,6 +1,3 @@
-import Vue from 'vue';
-import { boot } from 'quasar/wrappers';
-
 import { ApolloClient } from 'apollo-client';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 import { createUploadLink } from 'apollo-upload-client';
@@ -33,7 +30,5 @@ declare module 'vue/types/vue' {
   }
 }
 
-export default boot(({ Vue }) => {
-  // eslint-disable-next-line no-param-reassign
-  Vue.prototype.$apollo = apolloClient;
-});
+export default apolloClient
+

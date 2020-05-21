@@ -27,6 +27,14 @@ export default {
     barChart: '막대그래프',
     lineChart: '꺽은선그래프',
     mixedChart: '종합차트',
+
+    catalog: '카탈로그',
+    category: '카테고리',
+    image: '이미지',
+    text: '문구',
+    background: '배경',
+    template: '템플릿',
+
     example: '예시',
     nested: 'Nested Routes',
     menu1: '메뉴１',

@@ -2,7 +2,6 @@ scalar UUID
 scalar Upload
 scalar Long
 
-
 interface Entity {
   id: UUID
 }
@@ -10,14 +9,14 @@ interface Entity {
 input CategoryInput {
   id: UUID
   name: String
+  children: [CategoryInput]
 }
 
 type Category implements Entity {
   id: UUID
   name: String
+  children: [Category]
 }
-
-
 
 type Catalog  implements Entity {
   id: UUID
@@ -26,7 +25,6 @@ type Catalog  implements Entity {
   categories: [Category]
   blocks: [CatalogBlock]
 }
-
 
 type CatalogBlock  implements Entity  {
   id: UUID
@@ -154,7 +152,7 @@ type Query {
 }
 
 type Mutation {
-  createCategory(name: UUID): Category
+  createCategory(name: String, parentId: UUID): Category
   updateCategory(categoryId: UUID!, name: String): Category
   deleteCategory(categoryId: UUID!): Boolean
 

@@ -47,6 +47,9 @@ module.exports = {
         path.resolve(__dirname, 'src/styles/_variables.scss'),
         path.resolve(__dirname, 'src/styles/_mixins.scss')
       ]
+    },
+    apollo: {
+      lintGQL: true
     }
   },
   chainWebpack(config) {

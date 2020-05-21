@@ -30,8 +30,8 @@ class CategoryResource(private val categoryService: CategoryService) {
   @PutMapping("/{id}")
   fun updateCategoryById(
     @PathVariable(value = "id") categoryId: String,
-    @Valid @RequestBody newCategory: Category): ResponseEntity<Category> =
-    categoryService.putCategory(categoryId, newCategory)
+    @Valid @RequestBody name: String): ResponseEntity<Category> =
+    categoryService.putCategory(categoryId, name)
       .map { task -> ResponseEntity.ok().body(task) }
       .orElse(ResponseEntity.notFound().build())
 

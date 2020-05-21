@@ -27,6 +27,14 @@ export default {
     barChart: 'Bar Chart',
     lineChart: 'Line Chart',
     mixedChart: 'Mixed Chart',
+
+    catalog: 'Catalog',
+    category: 'Category',
+    image: 'Image',
+    text: 'Text',
+    background: 'Background',
+    template: 'Template',
+
     example: 'Example',
     nested: 'Nested Routes',
     menu1: 'Menu 1',
