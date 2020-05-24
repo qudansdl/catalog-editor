@@ -7,10 +7,11 @@ import com.basicit.model.Text
 import graphql.kickstart.tools.GraphQLQueryResolver
 import com.basicit.service.TextService
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component
 class TextQueryResolver (private val textService: TextService) : GraphQLQueryResolver {
   fun texts(input: DataTablesInput?): DataTablesOutput<Text> = textService.getTexts(input)
 
-  fun text(textId: String): Text = textService.getTextById(textId).orElse(null)
+  fun text(textId: UUID): Text = textService.getTextById(textId).orElse(null)
 }

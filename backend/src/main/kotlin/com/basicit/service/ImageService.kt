@@ -14,11 +14,11 @@ class ImageService(private val imageRepository: ImageRepository) {
 
   fun addImage(image: Image): Image = imageRepository.save(image)
 
-  fun getImageById(imageId: String): Optional<Image> =
+  fun getImageById(imageId: UUID): Optional<Image> =
           imageRepository.findById(imageId)
 
   fun putImage(
-          imageId: String,
+          imageId: UUID,
           newImage: Image
   ): Optional<Image> =
       imageRepository.findById(imageId).map { currentImage ->
@@ -30,7 +30,7 @@ class ImageService(private val imageRepository: ImageRepository) {
           imageRepository.save(updatedImage)
     }
 
-  fun deleteImage(imageId: String): Boolean =
+  fun deleteImage(imageId: UUID): Boolean =
           imageRepository.findById(imageId).map { image ->
               imageRepository.delete(image)
       true

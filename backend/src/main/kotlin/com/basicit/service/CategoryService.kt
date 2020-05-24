@@ -14,11 +14,11 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
 
   fun addCategory(category: Category): Category = categoryRepository.save(category)
 
-  fun getCategoryById(categoryId: String): Optional<Category> =
+  fun getCategoryById(categoryId: UUID): Optional<Category> =
       categoryRepository.findById(categoryId)
 
   fun putCategory(
-      categoryId: String,
+      categoryId: UUID,
       name: String
   ): Optional<Category> =
       categoryRepository.findById(categoryId).map { currentCategory ->
@@ -32,7 +32,7 @@ class CategoryService(private val categoryRepository: CategoryRepository) {
          categoryRepository.save(newCategory)
       }
 
-  fun deleteCategory(categoryId: String): Boolean =
+  fun deleteCategory(categoryId: UUID): Boolean =
           categoryRepository.findById(categoryId).map { category ->
               categoryRepository.delete(category)
       true

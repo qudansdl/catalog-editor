@@ -15,11 +15,11 @@ class CatalogService(private val catalogRepository: CatalogRepository) {
 
   fun addCatalog(catalog: Catalog): Catalog = catalogRepository.save(catalog)
 
-  fun getCatalogById(catalogId: String): Optional<Catalog> =
+  fun getCatalogById(catalogId: UUID): Optional<Catalog> =
           catalogRepository.findById(catalogId)
 
   fun putCatalog(
-          catalogId: String,
+          catalogId: UUID,
           newCatalog: Catalog
   ): Optional<Catalog> =
       catalogRepository.findById(catalogId).map { currentCatalog ->
@@ -33,7 +33,7 @@ class CatalogService(private val catalogRepository: CatalogRepository) {
           catalogRepository.save(updatedCatalog)
     }
 
-  fun deleteCatalog(catalogId: String): Boolean =
+  fun deleteCatalog(catalogId: UUID): Boolean =
           catalogRepository.findById(catalogId).map { catalog ->
               catalogRepository.delete(catalog)
       true

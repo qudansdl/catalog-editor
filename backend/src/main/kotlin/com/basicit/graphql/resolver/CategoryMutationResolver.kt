@@ -4,10 +4,11 @@ import com.basicit.model.Category
 import com.basicit.service.CategoryService
 import graphql.kickstart.tools.GraphQLMutationResolver
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component
 class CategoryMutationResolver (private val categoryService: CategoryService) : GraphQLMutationResolver {
-  fun createCategory(name: String, parentId: String?): Category {
+  fun createCategory(name: String, parentId: UUID?): Category {
 
     val parent = parentId?.let { categoryService.getCategoryById(parentId) }?.orElseGet { (null) }
 
@@ -16,9 +17,9 @@ class CategoryMutationResolver (private val categoryService: CategoryService) : 
     )
   }
 
-  fun updateCategory(categoryId: String, name: String): Category {
+  fun updateCategory(categoryId: UUID, name: String): Category {
     return categoryService.putCategory(categoryId, name).orElse(null)
   }
 
-  fun deleteCategory(categoryId: String): Boolean = categoryService.deleteCategory(categoryId)
+  fun deleteCategory(categoryId: UUID): Boolean = categoryService.deleteCategory(categoryId)
 }

@@ -36,11 +36,11 @@ class ImageMutationResolver (private val imageService: ImageService) : GraphQLMu
     )
    }
 
-  fun updateImage(imageId: String, part: Part): Image =
+  fun updateImage(imageId: UUID, part: Part): Image =
     imageService.putImage(
       imageId,
-      Image(id = UUID.fromString(imageId), content = createBase64Image(part))
+      Image(id = imageId, content = createBase64Image(part))
     ).orElse(null)
 
-  fun deleteImage(imageId: String): Boolean = imageService.deleteImage(imageId)
+  fun deleteImage(imageId: UUID): Boolean = imageService.deleteImage(imageId)
 }

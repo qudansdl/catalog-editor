@@ -7,11 +7,12 @@ import com.basicit.model.Category
 import com.basicit.service.CatalogService
 import graphql.kickstart.tools.GraphQLQueryResolver
 import org.springframework.stereotype.Component
+import java.util.*
 
 @Component
 class CatalogQueryResolver (
         private val catalogService: CatalogService
 ) : GraphQLQueryResolver {
   fun catalogs(input: DataTablesInput?): DataTablesOutput<Catalog> = catalogService.getCatalogs(input)
-  fun catalog(catalogId: String): Catalog = catalogService.getCatalogById(catalogId).orElse(null)
+  fun catalog(catalogId: UUID): Catalog = catalogService.getCatalogById(catalogId).orElse(null)
 }

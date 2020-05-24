@@ -3,12 +3,12 @@ import {
   GET_CATEGORIES,
   GET_CATEGORY_BY_ID
 } from '@/api/graphql/category';
-import Vue from 'vue';
+import apolloClient from "@/utils/vue-apollo";
 
 export default class ApiCategory {
   static createCategory = (name: string) => {
     console.log('Create Category');
-    return Vue.prototype.$apollo.mutate({
+    return apolloClient.mutate({
       mutation: CREATE_CATEGORY,
       variables: {
         name,
@@ -18,7 +18,7 @@ export default class ApiCategory {
 
   static getCategory = (id?: string) => {
     console.log('get Category');
-    return Vue.prototype.$apollo.query({
+    return apolloClient.query({
       query: GET_CATEGORY_BY_ID,
       variables: {
         id,

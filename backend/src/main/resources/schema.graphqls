@@ -139,7 +139,7 @@ type TextOutput implements DataTablesOutput {
 
 type Query {
   categories(input: DataTablesInput): CategoryOutput
-  category(categoryId: UUID!): Category
+  category(categoryId: UUID): Category
 
   catalogs(input: DataTablesInput): CatalogOutput
   catalog(catalogId: UUID!): Catalog

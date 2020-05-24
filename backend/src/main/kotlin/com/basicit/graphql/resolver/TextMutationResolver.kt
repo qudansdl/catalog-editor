@@ -13,11 +13,11 @@ class TextMutationResolver (private val textService: TextService) : GraphQLMutat
       Text(content = content)
     )
 
-  fun updateText(textId: String, content: String? = null): Text =
+  fun updateText(textId: UUID, content: String? = null): Text =
     textService.putText(
       textId,
-      Text(id = UUID.fromString(textId), content = content)
+      Text(id = textId, content = content)
     ).orElse(null)
 
-  fun deleteText(textId: String): Boolean = textService.deleteText(textId)
+  fun deleteText(textId: UUID): Boolean = textService.deleteText(textId)
 }

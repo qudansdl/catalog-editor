@@ -16,11 +16,11 @@ class TextService(private val textRepository: TextRepository) {
 
   fun addText(text: Text): Text = textRepository.save(text)
 
-  fun getTextById(textId: String): Optional<Text> =
+  fun getTextById(textId: UUID): Optional<Text> =
           textRepository.findById(textId)
 
   fun putText(
-          textId: String,
+          textId: UUID,
           newText: Text
   ): Optional<Text> =
       textRepository.findById(textId).map { currentText ->
@@ -32,7 +32,7 @@ class TextService(private val textRepository: TextRepository) {
           textRepository.save(updatedText)
     }
 
-  fun deleteText(textId: String): Boolean =
+  fun deleteText(textId: UUID): Boolean =
           textRepository.findById(textId).map { text ->
               textRepository.delete(text)
       true

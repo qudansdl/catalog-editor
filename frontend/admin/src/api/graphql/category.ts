@@ -18,12 +18,26 @@ export const GET_CATEGORIES = gql`query($input: DataTablesInput) {
 }`;
 
 
-export const GET_CATEGORY_BY_ID = gql`query($categoryId: UUID!) {
+export const GET_CATEGORY_BY_ID = gql`query($categoryId: UUID) {
   category(categoryId: $categoryId) {
-    data {
+    id
+    name
+    children {
       id
       name
-      children
+      children {
+        id
+        name
+        children {
+          id
+          name
+          children {
+            id
+            name
+          }
+        }
+      }
     }
+
   }
 }`;

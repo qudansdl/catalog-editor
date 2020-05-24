@@ -24,7 +24,7 @@ class CatalogMutationResolver (private val catalogService: CatalogService) : Gra
       )
     )
 
-  fun updateCatalog(catalogId: String,
+  fun updateCatalog(catalogId: UUID,
                     name: String? = null,
                     description: String? = null,
                     categories: MutableSet<Category> = mutableSetOf(),
@@ -32,7 +32,7 @@ class CatalogMutationResolver (private val catalogService: CatalogService) : Gra
     catalogService.putCatalog(
       catalogId,
       Catalog(
-          id = UUID.fromString(catalogId),
+          id = catalogId,
           name = name,
           description = description,
           categories = categories,
@@ -40,5 +40,5 @@ class CatalogMutationResolver (private val catalogService: CatalogService) : Gra
       )
     ).orElse(null)
 
-  fun deleteCatalog(catalogId: String): Boolean = catalogService.deleteCatalog(catalogId)
+  fun deleteCatalog(catalogId: UUID): Boolean = catalogService.deleteCatalog(catalogId)
 }

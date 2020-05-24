@@ -48,12 +48,13 @@ import CategoryNode from './CategoryNode'
   name: 'Category'
 })
 export default class extends Vue {
-  data: any
+  data: any = new Tree([])
   newTree: any
 
-  mounted() {
-    const root: any = ApiCategory.getCategory(undefined)
-    this.data = new Tree(new CategoryNode(root))
+  async mounted() {
+    const res: any = await ApiCategory.getCategory(null)
+    const root = res.data.category
+    this.data = new Tree([new CategoryNode(root)])
   }
 
   onDel(node: { remove: () => void }) {
@@ -80,7 +81,6 @@ export default class extends Vue {
   }
 
   getNewTree() {
-    const vm = this
     function _dfs(oldNode: any) {
       const newNode = {}
 
@@ -99,7 +99,7 @@ export default class extends Vue {
       return newNode
     }
 
-    vm.newTree = _dfs(vm.data)
+    this.newTree = _dfs(this.data)
   }
 }
 </script>
