@@ -7,6 +7,7 @@ import com.basicit.service.TextService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.validation.Valid
 
 @RestController
@@ -21,21 +22,21 @@ class TextResource(private val textService: TextService) {
     ResponseEntity.ok(textService.addText(text))
 
   @GetMapping("/{id}")
-  fun getTextById(@PathVariable(value = "id") textId: String): ResponseEntity<Text> =
+  fun getTextById(@PathVariable(value = "id") textId: UUID): ResponseEntity<Text> =
     textService.getTextById(textId).map { text ->
       ResponseEntity.ok(text)
     }.orElse(ResponseEntity.notFound().build())
 
   @PutMapping("/{id}")
   fun updateTextById(
-    @PathVariable(value = "id") textId: String,
-    @Valid @RequestBody newText: Text): ResponseEntity<Text> =
+          @PathVariable(value = "id") textId: UUID,
+          @Valid @RequestBody newText: Text): ResponseEntity<Text> =
     textService.putText(textId, newText)
       .map { task -> ResponseEntity.ok().body(task) }
       .orElse(ResponseEntity.notFound().build())
 
   @DeleteMapping("/{id}")
-  fun deleteTask(@PathVariable(value = "id") textId: String): ResponseEntity<Void> =
+  fun deleteTask(@PathVariable(value = "id") textId: UUID): ResponseEntity<Void> =
     if (textService.deleteText(textId))
       ResponseEntity<Void>(HttpStatus.ACCEPTED)
     else

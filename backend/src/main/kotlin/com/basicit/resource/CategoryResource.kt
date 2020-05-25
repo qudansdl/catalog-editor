@@ -7,6 +7,7 @@ import com.basicit.service.CategoryService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.validation.Valid
 
 @RestController
@@ -22,21 +23,21 @@ class CategoryResource(private val categoryService: CategoryService) {
     ResponseEntity.ok(categoryService.addCategory(category))
 
   @GetMapping("/{id}")
-  fun getCategoryById(@PathVariable(value = "id") categoryId: String): ResponseEntity<Category> =
+  fun getCategoryById(@PathVariable(value = "id") categoryId: UUID): ResponseEntity<Category> =
     categoryService.getCategoryById(categoryId).map { category ->
       ResponseEntity.ok(category)
     }.orElse(ResponseEntity.notFound().build())
 
   @PutMapping("/{id}")
   fun updateCategoryById(
-    @PathVariable(value = "id") categoryId: String,
-    @Valid @RequestBody name: String): ResponseEntity<Category> =
+          @PathVariable(value = "id") categoryId: UUID,
+          @Valid @RequestBody name: String): ResponseEntity<Category> =
     categoryService.putCategory(categoryId, name)
       .map { task -> ResponseEntity.ok().body(task) }
       .orElse(ResponseEntity.notFound().build())
 
   @DeleteMapping("/{id}")
-  fun deleteTask(@PathVariable(value = "id") categoryId: String): ResponseEntity<Void> =
+  fun deleteTask(@PathVariable(value = "id") categoryId: UUID): ResponseEntity<Void> =
     if (categoryService.deleteCategory(categoryId))
       ResponseEntity<Void>(HttpStatus.ACCEPTED)
     else

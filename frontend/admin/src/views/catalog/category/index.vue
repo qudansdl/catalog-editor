@@ -82,7 +82,7 @@ export default class extends Vue {
 
   getNewTree() {
     function _dfs(oldNode: any) {
-      const newNode = {}
+      const newNode: any = {}
 
       for (const k in oldNode) {
         if (k !== 'children' && k !== 'parent') {

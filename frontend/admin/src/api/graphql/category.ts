@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import gql from 'graphql-tag'
 
 export const CREATE_CATEGORY = gql`
   mutation CreateCategory($name: String){
@@ -6,7 +6,7 @@ export const CREATE_CATEGORY = gql`
       name
     }
   }
-`;
+`
 
 export const GET_CATEGORIES = gql`query($input: DataTablesInput) {
     categories(input: $input) {
@@ -15,8 +15,7 @@ export const GET_CATEGORIES = gql`query($input: DataTablesInput) {
             name
         }
     }
-}`;
-
+}`
 
 export const GET_CATEGORY_BY_ID = gql`query($categoryId: UUID) {
   category(categoryId: $categoryId) {
@@ -40,4 +39,4 @@ export const GET_CATEGORY_BY_ID = gql`query($categoryId: UUID) {
     }
 
   }
-}`;
+}`

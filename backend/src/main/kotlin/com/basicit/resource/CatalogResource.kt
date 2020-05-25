@@ -7,6 +7,7 @@ import com.basicit.service.CatalogService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.util.*
 import javax.validation.Valid
 
 @RestController
@@ -21,21 +22,21 @@ class CatalogResource(private val catalogService: CatalogService) {
     ResponseEntity.ok(catalogService.addCatalog(catalog))
 
   @GetMapping("/{id}")
-  fun getCatalogById(@PathVariable(value = "id") catalogId: String): ResponseEntity<Catalog> =
+  fun getCatalogById(@PathVariable(value = "id") catalogId: UUID): ResponseEntity<Catalog> =
     catalogService.getCatalogById(catalogId).map { catalog ->
       ResponseEntity.ok(catalog)
     }.orElse(ResponseEntity.notFound().build())
 
   @PutMapping("/{id}")
   fun updateCatalogById(
-    @PathVariable(value = "id") catalogId: String,
+    @PathVariable(value = "id") catalogId: UUID,
     @Valid @RequestBody newCatalog: Catalog): ResponseEntity<Catalog> =
     catalogService.putCatalog(catalogId, newCatalog)
       .map { task -> ResponseEntity.ok().body(task) }
       .orElse(ResponseEntity.notFound().build())
 
   @DeleteMapping("/{id}")
-  fun deleteTask(@PathVariable(value = "id") catalogId: String): ResponseEntity<Void> =
+  fun deleteTask(@PathVariable(value = "id") catalogId: UUID): ResponseEntity<Void> =
     if (catalogService.deleteCatalog(catalogId))
       ResponseEntity<Void>(HttpStatus.ACCEPTED)
     else
