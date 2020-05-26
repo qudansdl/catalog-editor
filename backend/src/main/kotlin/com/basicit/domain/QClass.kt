@@ -10,13 +10,13 @@ import java.util.*
 
 class QClass(
         private val entityClass: Class<AbstractEntity>,
-        private val qClass: Class<EntityPathBase<Any>>
+        private val qClass: Class<EntityPathBase<AbstractEntity>>
 ) {
-    val qClassInstance: EntityPathBase<AbstractEntity>
+    val instance: EntityPathBase<AbstractEntity>
     val id: ComparablePath<UUID>
 
     init {
-        qClassInstance = createQClassInstance()
+        instance = createQClassInstance()
         id = getIdPath()
 
     }
@@ -37,11 +37,11 @@ class QClass(
     }
 
     private fun getIdPath(): ComparablePath<UUID> {
-        return getPath<UUID>("id") as ComparablePath<UUID>
+        return getPath("id") as ComparablePath<UUID>
     }
 
-    fun <T> getPath(path: String): Path<T> {
+    fun getPath(path: String): Path<Comparable<*>> {
         val idField = FieldUtils.getField(qClass, path)
-        return idField.get(this.qClassInstance) as Path<T>
+        return idField.get(this.instance) as Path<Comparable<*>>
     }
 }

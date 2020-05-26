@@ -3,13 +3,11 @@ package com.basicit.datatables.repository
 import com.basicit.config.GraphQLConfig
 import com.basicit.datatables.mapping.DataTablesInput
 import com.basicit.datatables.mapping.DataTablesOutput
+import com.basicit.domain.QQuery
 import com.basicit.model.AbstractEntity
-import com.basicit.model.QCatalog
 import com.basicit.service.QClassService
-import com.basicit.util.SpringUtils
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.slf4j.LoggerFactory
-import org.springframework.core.convert.ConversionService
 import org.springframework.data.jpa.repository.support.JpaEntityInformation
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository
 import java.io.Serializable
@@ -21,8 +19,7 @@ import javax.persistence.EntityManager
  */
 class DataTablesRepositoryImpl<T, ID : Serializable, P: Comparable<P>>(
         val entityInformation: JpaEntityInformation<T, ID>,
-        val entityManager: EntityManager,
-        val qClassService: QClassService<T>
+        val entityManager: EntityManager
 ) :
         SimpleJpaRepository<T, ID>(entityInformation, entityManager),
         DataTablesRepository<T, ID>
@@ -30,21 +27,31 @@ class DataTablesRepositoryImpl<T, ID : Serializable, P: Comparable<P>>(
     private val logger = LoggerFactory.getLogger(GraphQLConfig::class.java.name)
 
     override fun <T> findAll(input: DataTablesInput?): DataTablesOutput<T> {
-        val qClass = qClassService.getQClass(entityInformation.javaType as Class<AbstractEntity>)
-
-        val conversionServiceList = SpringUtils.getBeans(ConversionService::class.java)
+        val qClass = QClassService.instance.getQClass(entityInformation.javaType as Class<AbstractEntity>)
 
         val queryFactory = JPAQueryFactory(entityManager)
-        val recordsTotal = queryFactory.from(qClass.qClassInstance).select(qClass.id.countDistinct()).fetchOne()
+        val recordsTotal = queryFactory.from(qClass.instance).select(qClass.id.countDistinct()).fetchOne()
+        val qQuery = QQuery(
+                queryFactory,
+                entityInformation.javaType as Class<AbstractEntity>,
+                QClassService.instance,
+                input)
 
-        input?.let {
-            input.columns.forEach { column ->
+        val totalCount = qQuery.query.select(qClass.id.countDistinct()).fetchOne()
 
-            }
-        }
+        val list = if(input == null)
+        {
+            qQuery.query.select(qClass.instance).fetch()
+        } else {
+            qQuery.query.select(qClass.instance).offset(input.start.toLong()).limit(input.length.toLong()).fetch()
+        } as List<T>
+
         val output = DataTablesOutput<T>()
-
+        output.recordsFiltered = totalCount!!
+        output.recordsTotal = recordsTotal!!
+        output.data = list
 
         return output
     }
+
 }

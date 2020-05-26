@@ -1,7 +1,6 @@
 package com.basicit.datatables.repository
 
 import com.basicit.datatables.filter.FilterCriteria
-import com.basicit.datatables.filter.FilterOperation
 import com.basicit.datatables.mapping.Column
 import com.basicit.datatables.mapping.DataTablesInput
 import com.basicit.datatables.mapping.DataTablesOutput
