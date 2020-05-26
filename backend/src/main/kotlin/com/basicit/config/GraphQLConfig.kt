@@ -3,6 +3,7 @@ package com.basicit.config
 import com.basicit.datatables.repository.DataTablesRepositoryFactoryBean
 import graphql.kickstart.servlet.apollo.ApolloScalars
 import graphql.language.StringValue
+import graphql.scalars.ExtendedScalars
 import graphql.schema.Coercing
 import graphql.schema.GraphQLScalarType
 import org.slf4j.LoggerFactory
@@ -88,50 +89,12 @@ class GraphQLConfig {
 
 
     @Bean
-    fun customScalarLocalDate(): GraphQLScalarType = GraphQLScalarType.newScalar()
-            .name("LocalDate")
-            .description("Simple LocalDate, i.e. 2017-12-01")
-            .coercing(object : Coercing<LocalDate, String> {
-                override fun parseLiteral(input: Any?): LocalDate? {
-                    return when (input) {
-                        is StringValue -> LocalDate.parse(input.value)
-                        is String -> LocalDate.parse(input)
-                        else -> null
-                    }
-                }
-
-                override fun parseValue(input: Any?): LocalDate? = parseLiteral(input)
-
-                override fun serialize(dataFetcherResult: Any?): String? = when (dataFetcherResult) {
-                    is String -> dataFetcherResult
-                    is LocalDate -> dataFetcherResult.toString()
-                    else -> null
-                }
-            }).build()
+    fun customScalarTime(): GraphQLScalarType = ExtendedScalars.Time
 
     @Bean
-    fun customScalarLocalTime(): GraphQLScalarType =
-            GraphQLScalarType.newScalar()
-                    .name("LocalTime")
-                    .description("Simple LocalTime, i.e. 19:37:21")
-                    .coercing(object : Coercing<LocalTime, String> {
-                        override fun parseLiteral(input: Any?): LocalTime? {
-                            return when (input) {
-                                is StringValue -> LocalTime.parse(input.value)
-                                is String -> LocalTime.parse(input)
-                                else -> null
-                            }
-                        }
-
-                        override fun parseValue(input: Any?): LocalTime? = parseLiteral(input)
-
-                        override fun serialize(dataFetcherResult: Any?): String? = when (dataFetcherResult) {
-                            is String -> dataFetcherResult
-                            is LocalTime -> dataFetcherResult.toString()
-                            else -> null
-                        }
-                    }).build()
+    fun customScalarDate(): GraphQLScalarType = ExtendedScalars.Date
 
 
-
+    @Bean
+    fun customScalarDateTime(): GraphQLScalarType = ExtendedScalars.DateTime
 }

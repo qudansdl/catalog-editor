@@ -4,6 +4,13 @@ import {
   GET_CATEGORY_BY_ID
 } from '@/api/graphql/category'
 import apolloClient from '@/utils/vue-apollo'
+import { ICategoryData } from "@/api/types";
+
+export const defaultCategoryData: ICategoryData = {
+  id: null,
+  name: ''
+}
+
 
 export default class ApiCategory {
   static createCategory = (name: string) => {
@@ -22,6 +29,16 @@ export default class ApiCategory {
       query: GET_CATEGORY_BY_ID,
       variables: {
         id
+      }
+    })
+  };
+
+  static getCategories = (input: any) => {
+    console.log('get Categories')
+    return apolloClient.query({
+      query: GET_CATEGORIES,
+      variables: {
+        input
       }
     })
   };

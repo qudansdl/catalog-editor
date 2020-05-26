@@ -1,6 +1,7 @@
 scalar UUID
 scalar Upload
 scalar Long
+scalar DateTime
 
 interface Entity {
   id: UUID
@@ -16,6 +17,8 @@ type Category implements Entity {
   id: UUID
   name: String
   children: [Category]
+  created: DateTime
+  updated: DateTime
 }
 
 type Catalog  implements Entity {
@@ -24,6 +27,8 @@ type Catalog  implements Entity {
   description: String
   categories: [Category]
   blocks: [CatalogBlock]
+  created: DateTime
+  updated: DateTime
 }
 
 type CatalogBlock  implements Entity  {
@@ -34,6 +39,8 @@ type CatalogBlock  implements Entity  {
   h: Int
   type: String
   content: String
+  created: DateTime
+  updated: DateTime
 }
 
 
@@ -62,6 +69,8 @@ type Image  implements Entity {
   id: UUID
   content: String
   categories: [Category]
+  created: DateTime
+  updated: DateTime
 }
 
 
@@ -74,11 +83,13 @@ type Text  implements Entity  {
   id: UUID
   content: String
   categories: [Category]
+  created: DateTime
+  updated: DateTime
 }
 
 
 input OrderInput {
-  column: Int
+  column: String
   dir: String
 }
 

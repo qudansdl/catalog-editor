@@ -5,11 +5,11 @@ export default class CategoryNode {
   name: string
   children: [CategoryNode]
 
-  dragDisabled = true
-  addTreeNodeDisabled = true
-  addLeafNodeDisabled = true
-  editNodeDisabled = true
-  delNodeDisabled = true
+  dragDisabled = false
+  addTreeNodeDisabled = false
+  addLeafNodeDisabled = false
+  editNodeDisabled = false
+  delNodeDisabled = false
   constructor(cate: any) {
     this.original = cate
     this.id = cate.id

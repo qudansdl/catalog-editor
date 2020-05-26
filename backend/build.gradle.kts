@@ -53,6 +53,7 @@ dependencies {
 
 	implementation("com.graphql-java-kickstart:graphql-spring-boot-starter:7.0.1")
 	implementation("com.graphql-java-kickstart:graphql-java-tools:6.0.2")
+	implementation("com.graphql-java:graphql-java-extended-scalars:1.0")
 
 	implementation("org.apache.tika:tika-core:1.24")
 

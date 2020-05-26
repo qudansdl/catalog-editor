@@ -18,6 +18,8 @@ export const GET_IMAGES = gql`query($input: DataTablesInput) {
         data {
             id
             content
+            created
+            updated
         }
     }
 }`;

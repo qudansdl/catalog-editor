@@ -2,6 +2,7 @@ package com.basicit.datatables.repository
 
 import com.basicit.datatables.mapping.DataTablesInput
 import com.basicit.datatables.mapping.DataTablesOutput
+import com.basicit.model.AbstractEntity
 import org.springframework.data.jpa.domain.Specification
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor
 import org.springframework.data.repository.NoRepositoryBean
@@ -23,6 +24,6 @@ interface DataTablesRepository<T, ID : Serializable> : PagingAndSortingRepositor
      * @param input the [DataTablesInput] mapped from the Ajax request
      * @return a [DataTablesOutput]
      */
-    fun findAll(input: DataTablesInput?): DataTablesOutput<T>
+    fun <T> findAll(input: DataTablesInput?): DataTablesOutput<T>
 
 }

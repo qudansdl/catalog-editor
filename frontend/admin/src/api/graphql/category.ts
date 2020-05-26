@@ -13,6 +13,8 @@ export const GET_CATEGORIES = gql`query($input: DataTablesInput) {
         data {
             id
             name
+            created
+            updated
         }
     }
 }`
@@ -21,18 +23,28 @@ export const GET_CATEGORY_BY_ID = gql`query($categoryId: UUID) {
   category(categoryId: $categoryId) {
     id
     name
+    created
+    updated
     children {
       id
       name
+      created
+      updated
       children {
         id
         name
+        created
+        updated
         children {
           id
           name
+          created
+          updated
           children {
             id
             name
+            created
+            updated
           }
         }
       }

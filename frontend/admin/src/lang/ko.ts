@@ -89,6 +89,18 @@ export default {
     thirdparty: '외부 ID로 로그인',
     thirdpartyTips: '로컬 환경에서 로그인 할 수 없습니다.'
   },
+  category: {
+    search: '검색',
+    add: '추가',
+    id: 'ID',
+    date: '날짜',
+    name: '이름',
+    actions: 'Actions',
+    edit: '수정',
+    delete: '삭제',
+    cancel: '취소',
+    confirm: '확인'
+  },
   documentation: {
     documentation: '문서',
     github: '깃허브 링크'

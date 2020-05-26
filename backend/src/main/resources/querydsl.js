@@ -21,6 +21,7 @@ function findAll()
     let list
     if(context.getInput())
     {
+        context.getQuery().orderBy()
         list = context.getQuery().select(context.getQClassInstance()).offset(context.getInput().getStart()).limit(context.getInput().getLength()).fetch()
     }else{
         list = context.getQuery().select(context.getQClassInstance()).fetch()

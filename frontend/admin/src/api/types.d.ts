@@ -1,3 +1,9 @@
+export interface ICategoryData {
+  id: string | null
+  name: string
+}
+
+
 export interface IArticleData {
   id: number
   status: string
