@@ -3,11 +3,15 @@ package com.basicit.domain
 import com.basicit.datatables.filter.FilterCriteria
 import com.basicit.datatables.mapping.Column
 import com.basicit.datatables.mapping.DataTablesInput
+import com.basicit.datatables.mapping.Order
 import com.basicit.model.AbstractEntity
+import com.basicit.model.QCatalog
 import com.basicit.service.QClassService
 import com.basicit.util.SpringUtils
 import com.querydsl.core.BooleanBuilder
+import com.querydsl.core.types.OrderSpecifier
 import com.querydsl.core.types.Predicate
+import com.querydsl.core.types.dsl.ComparableExpressionBase
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.apache.commons.lang3.reflect.ConstructorUtils
 import org.apache.commons.lang3.reflect.MethodUtils
@@ -22,12 +26,29 @@ class QQuery(
     private val conversionServiceList  = SpringUtils.getBeans(ConversionService::class.java)
     private val qClass = qClassService.getQClass(entityClass)
     private val where = BooleanBuilder()
+    private val order = mutableListOf<OrderSpecifier<*>>()
+
     val query = this.queryFactory.from(qClass.instance)
     init {
         input?.let {
-            input.columns.forEach { column ->
-                addWhere(column, qClass)
+            if(input.columns.size > 0) {
+                input.columns.forEach { column ->
+                    addWhere(column, qClass)
+                }
+                query.where(where)
             }
+        }
+    }
+
+    private fun addSort(order: Order, qClass: QClass)
+    {
+        val queryPath = qClass.getPath(order.column) as ComparableExpressionBase<*>
+
+        if(order.dir == "desc")
+        {
+            this.order.add(queryPath.desc())
+        }else {
+            this.order.add(queryPath.asc())
         }
     }
 
@@ -58,6 +79,27 @@ class QQuery(
             column.columns.forEach {
                 addWhere(it, subQClass)
             }
+        }
+    }
+
+    fun selectTotal(): Long {
+        return this.query.select(qClass.id.countDistinct()).fetchOne()!!
+    }
+
+    fun select(): List<*> {
+
+        if(input != null && input.order.size > 0) {
+            input.order.forEach { order ->
+                addSort(order, qClass)
+            }
+            query.orderBy(*order.toTypedArray())
+        }
+
+        return if(input == null)
+        {
+            this.query.select(qClass.instance).fetch()
+        } else {
+            this.query.select(qClass.instance).offset(input.start.toLong()).limit(input.length.toLong()).fetch()
         }
     }
 }

@@ -37,14 +37,9 @@ class DataTablesRepositoryImpl<T, ID : Serializable, P: Comparable<P>>(
                 QClassService.instance,
                 input)
 
-        val totalCount = qQuery.query.select(qClass.id.countDistinct()).fetchOne()
+        val totalCount = qQuery.selectTotal()
 
-        val list = if(input == null)
-        {
-            qQuery.query.select(qClass.instance).fetch()
-        } else {
-            qQuery.query.select(qClass.instance).offset(input.start.toLong()).limit(input.length.toLong()).fetch()
-        } as List<T>
+        val list =  qQuery.select() as List<T>
 
         val output = DataTablesOutput<T>()
         output.recordsFiltered = totalCount!!
