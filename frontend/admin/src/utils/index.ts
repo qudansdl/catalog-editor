@@ -1,3 +1,4 @@
+
 // Parse the time to string
 export const parseTime = (
   time?: object | string | number,
@@ -18,7 +19,7 @@ export const parseTime = (
       } else {
         // support safari
         // https://stackoverflow.com/questions/4310953/invalid-date-in-safari
-        time = time.replace(new RegExp(/-/gm), '/')
+        // time = time.replace(new RegExp(/-/gm), '/')
       }
     }
     if (typeof time === 'number' && time.toString().length === 10) {

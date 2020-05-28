@@ -56,20 +56,22 @@ class QQuery(
     {
         val queryPath = qClass.getPath(column.name)
         if (column.isLeaf()) {
-            val criteria = ConstructorUtils.invokeConstructor(FilterCriteria::class.java, column, queryPath.type, conversionServiceList!!)
+            if (!column.value.isNullOrBlank()) {
+                val criteria = ConstructorUtils.invokeConstructor(FilterCriteria::class.java, column, queryPath.type, conversionServiceList!!)
 
-            when (column.operation) {
-              "eq" -> MethodUtils.invokeMethod(queryPath, "eq", criteria.convertedSingleValue)
-              "neq" -> MethodUtils.invokeMethod(queryPath, "ne", criteria.convertedSingleValue)
-              "gt" -> MethodUtils.invokeMethod(queryPath, "gt", criteria.convertedSingleValue)
-              "gte" -> MethodUtils.invokeMethod(queryPath, "goe", criteria.convertedSingleValue)
-              "lte" ->  MethodUtils.invokeMethod(queryPath, "loe", criteria.convertedSingleValue)
-              "in" ->  MethodUtils.invokeMethod(queryPath, "in", criteria.convertedValues)
-              "nin" ->  MethodUtils.invokeMethod(queryPath, "notIn", criteria.convertedValues)
-              "btn" ->  MethodUtils.invokeMethod(queryPath, "between", criteria.minValue, criteria.maxValue)
-              "like" ->  MethodUtils.invokeMethod(queryPath, "like", "%" + criteria.convertedSingleValue + "%")
-              else -> null
-            }?.let {  where.and(it as Predicate)}
+                when (column.operation) {
+                  "eq" -> MethodUtils.invokeMethod(queryPath, "eq", criteria.convertedSingleValue)
+                  "neq" -> MethodUtils.invokeMethod(queryPath, "ne", criteria.convertedSingleValue)
+                  "gt" -> MethodUtils.invokeMethod(queryPath, "gt", criteria.convertedSingleValue)
+                  "gte" -> MethodUtils.invokeMethod(queryPath, "goe", criteria.convertedSingleValue)
+                  "lte" ->  MethodUtils.invokeMethod(queryPath, "loe", criteria.convertedSingleValue)
+                  "in" ->  MethodUtils.invokeMethod(queryPath, "in", criteria.convertedValues)
+                  "nin" ->  MethodUtils.invokeMethod(queryPath, "notIn", criteria.convertedValues)
+                  "btn" ->  MethodUtils.invokeMethod(queryPath, "between", criteria.minValue, criteria.maxValue)
+                  "like" ->  MethodUtils.invokeMethod(queryPath, "like", "%" + criteria.convertedSingleValue + "%")
+                  else -> null
+                }?.let {  where.and(it as Predicate)}
+            }
         }else {
             val elementType = MethodUtils.invokeMethod(queryPath, "getElementType") as Class<AbstractEntity>
             val subQClass = this.qClassService.getQClass(elementType)

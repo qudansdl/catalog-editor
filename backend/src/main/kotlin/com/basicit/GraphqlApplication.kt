@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @SpringBootApplication
 @EnableJpaRepositories(repositoryFactoryBeanClass = DataTablesRepositoryFactoryBean::class)
-@EnableJpaAuditing
 class GraphqlApplication
 
 fun main(args: Array<String>) {

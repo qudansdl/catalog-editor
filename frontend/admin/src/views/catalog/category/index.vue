@@ -2,14 +2,14 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input
-        v-model="listQuery.name"
+        v-model="listQuery.columns[0].value"
         :placeholder="$t('category.name')"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
       <el-select
-        v-model="listQuery.sort"
+        v-model="listQuery.order[0].dir"
         style="width: 140px"
         class="filter-item"
         @change="handleFilter"
@@ -18,7 +18,7 @@
           v-for="item in sortOptions"
           :key="item.key"
           :label="item.label"
-          :value="item.key"
+          :value="item.value"
         />
       </el-select>
       <el-button
@@ -113,7 +113,7 @@
       v-show="total>0"
       :total="total"
       :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
+      :limit.sync="listQuery.length"
       @pagination="getList"
     />
 
@@ -173,18 +173,25 @@ export default class extends Vue {
   private list: ICategoryData[] = []
   private total = 0
   private listLoading = true
+
   private listQuery = {
+    page: 1,
     start: 1,
     length: 20,
-    order: [
-      {column: }
-    ],
-    columns: [ColumnInput]
+    order: [{
+      column: 'created',
+      dir: 'desc'
+    }],
+    columns: [{
+      name: 'name',
+      operation: 'eq',
+      value: ''
+    }]
   }
 
   private sortOptions = [
-    { label: 'Name Ascending', key: '+name' },
-    { label: 'Name Descending', key: '-name' }
+    { label: 'Date Ascending', key: '+date', value: 'desc' },
+    { label: 'Date Descending', key: '-date', value: 'asc' }
   ]
 
   private dialogFormVisible = false
@@ -208,9 +215,15 @@ export default class extends Vue {
 
   private async getList() {
     this.listLoading = true
-    const { data } = await ApiCategory.getCategories(this.listQuery)
-    this.list = data.items
-    this.total = data.total
+    this.listQuery.start = (this.listQuery.page - 1) * this.listQuery.length + 1
+
+    const query = Object.assign({}, this.listQuery)
+    delete query.page
+
+    const { data } = await ApiCategory.getCategories(query)
+
+    this.list = data.categories.data
+    this.total = data.categories.recordsFiltered
     // Just to simulate the time of the request
     setTimeout(() => {
       this.listLoading = false
@@ -231,20 +244,20 @@ export default class extends Vue {
 
   private sortByID(order: string) {
     if (order === 'ascending') {
-      this.listQuery.sort = '+id'
+      this.listQuery.order[0].dir = 'asc'
     } else {
-      this.listQuery.sort = '-id'
+      this.listQuery.order[0].dir = 'desc'
     }
     this.handleFilter()
   }
 
   private getSortClass(key: string) {
-    const sort = this.listQuery.sort
-    return sort === `+${key}` ? 'ascending' : 'descending'
+    const sort = this.listQuery.order[0].dir
+    return sort === 'asc' ? 'ascending' : 'descending'
   }
 
   private resettempCategoryData() {
-    this.tempCategoryData = cloneDeep(defaultArticleData)
+    this.tempCategoryData = cloneDeep(defaultCategoryData)
   }
 
   private handleCreate() {
@@ -259,12 +272,8 @@ export default class extends Vue {
   private createData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
-        const articleData = this.tempCategoryData
-        articleData.id = Math.round(Math.random() * 100) + 1024 // mock a id
-        articleData.author = 'vue-typescript-admin'
-        const { data } = await createArticle({ article: articleData })
-        data.article.timestamp = Date.parse(data.article.timestamp)
-        this.list.unshift(data.article)
+        const { data } = await ApiCategory.createCategory(this.tempCategoryData.name)
+        this.getList()
         this.dialogFormVisible = false
         this.$notify({
           title: '성공',
@@ -278,7 +287,6 @@ export default class extends Vue {
 
   private handleUpdate(row: any) {
     this.tempCategoryData = Object.assign({}, row)
-    this.tempCategoryData.timestamp = +new Date(this.tempCategoryData.timestamp)
     this.dialogStatus = 'update'
     this.dialogFormVisible = true
     this.$nextTick(() => {
@@ -290,10 +298,8 @@ export default class extends Vue {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
         const tempData = Object.assign({}, this.tempCategoryData)
-        tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-        const { data } = await updateArticle(tempData.id, { article: tempData })
-        const index = this.list.findIndex(v => v.id === data.article.id)
-        this.list.splice(index, 1, data.article)
+        const { data } = await ApiCategory.updateCategory(tempData)
+        this.getList()
         this.dialogFormVisible = false
         this.$notify({
           title: '성공',
@@ -305,14 +311,14 @@ export default class extends Vue {
     })
   }
 
-  private handleDelete(row: any, index: number) {
+  private async handleDelete(row: any, index: number) {
+    const { data } = await ApiCategory.deleteCategory(row.id)
     this.$notify({
-      title: 'Success',
-      message: 'Delete Successfully',
+      title: '성공',
+      message: '삭제 했습니다',
       type: 'success',
       duration: 2000
     })
-    this.list.splice(index, 1)
   }
 }
 </script>

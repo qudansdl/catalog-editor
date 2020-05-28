@@ -10,12 +10,7 @@ import java.nio.file.Paths
 
 object DirectoryHelper {
     private val _logger = LoggerFactory.getLogger(DirectoryHelper::class.java)
-    val rootDirectory: String
-        get() {
-            val home = ApplicationHome(GraphqlApplication::class.java)
-            val path = home.source.parent
-            return if (path.contains("target")) Paths.get(path).parent.toString() else path
-        }
+    val rootDirectory: String = ""
 
     fun joinFromRoot(path: String): String {
         val out = "$rootDirectory/$path"

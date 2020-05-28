@@ -2,14 +2,37 @@ import gql from 'graphql-tag'
 
 export const CREATE_CATEGORY = gql`
   mutation CreateCategory($name: String){
-    createCategory(file: name) {
+    createCategory(name: $name) {
+      id
       name
+      created
+      updated
     }
+  }
+`
+
+export const UPDATE_CATEGORY = gql`
+  mutation UpdateCategory($categoryId: UUID, $name: String){
+    updateCategory(categoryId: $categoryId, name: $name) {
+      id
+      name
+      created
+      updated
+    }
+  }
+`
+
+export const DELETE_CATEGORY = gql`
+  mutation DeleteCategory($categoryId: UUID){
+    deleteCategory(categoryId: $categoryId)
   }
 `
 
 export const GET_CATEGORIES = gql`query($input: DataTablesInput) {
     categories(input: $input) {
+        recordsTotal
+        recordsFiltered
+        error
         data {
             id
             name

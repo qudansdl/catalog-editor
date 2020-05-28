@@ -2,6 +2,8 @@ package com.basicit.model
 
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
+import java.time.OffsetDateTime
 import java.util.*
 import javax.persistence.*
 
@@ -10,6 +12,7 @@ import javax.persistence.*
  * Kudos to https://jivimberg.io/blog/2018/11/05/using-uuid-on-spring-data-jpa-entities/
  */
 @MappedSuperclass
+@EntityListeners(AuditingEntityListener::class)
 abstract class AbstractEntity(givenId: UUID? = null) {
 
     @Id
@@ -17,11 +20,12 @@ abstract class AbstractEntity(givenId: UUID? = null) {
     val id: UUID = givenId ?: UUID.randomUUID()
 
     @CreatedDate
-    private val created: Date? = null
+    @Column(name = "created")
+    var created: OffsetDateTime? = null
 
     @LastModifiedDate
-    private val updated: Date? = null
-
+    @Column(name = "updated")
+    var updated: OffsetDateTime? = null
 
     @Transient
     var persisted: Boolean = givenId != null
