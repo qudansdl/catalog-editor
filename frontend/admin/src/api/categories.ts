@@ -8,16 +8,18 @@ import { ICategoryData } from '@/api/types'
 
 export const defaultCategoryData: ICategoryData = {
   id: null,
-  name: ''
+  name: '',
+  parent: null
 }
 
 export default class ApiCategory {
-  static createCategory = (name: string) => {
+  static createCategory = (name: string, parentId: string | null) => {
     console.log('Create Category')
     return apolloClient.mutate({
       mutation: CREATE_CATEGORY,
       variables: {
-        name
+        name,
+        parentId
       }
     })
   };
@@ -27,27 +29,28 @@ export default class ApiCategory {
     return apolloClient.mutate({
       mutation: UPDATE_CATEGORY,
       variables: {
-        name
+        categoryId: cat.id,
+        name: cat.name
       }
     })
   };
 
-  static deleteCategory = (id: string) => {
+  static deleteCategory = (categoryId: string) => {
     console.log('Delete Category')
     return apolloClient.mutate({
       mutation: DELETE_CATEGORY,
       variables: {
-        id
+        categoryId
       }
     })
   };
 
-  static getCategory = (id: string | null) => {
+  static getCategory = (categoryId: string | null) => {
     console.log('get Category')
     return apolloClient.query({
       query: GET_CATEGORY_BY_ID,
       variables: {
-        id
+        categoryId
       }
     })
   };

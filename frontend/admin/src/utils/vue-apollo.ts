@@ -1,4 +1,4 @@
-import { ApolloClient } from 'apollo-client'
+import { ApolloClient, DefaultOptions } from 'apollo-client'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { createUploadLink } from 'apollo-upload-client'
 
@@ -8,16 +8,30 @@ import { FetchResult } from 'apollo-link'
 
 console.log(JSON.stringify(process.env))
 
+const defaultOptions: DefaultOptions = {
+  watchQuery: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'ignore'
+  },
+  query: {
+    fetchPolicy: 'no-cache',
+    errorPolicy: 'all'
+  }
+}
+
 const link = createUploadLink({
   uri: process.env.VUE_APP_BASE_API,
   credentials: 'same-origin'
 })
 
+const cache = new InMemoryCache({
+  addTypename: false
+})
+
 const apolloClient = new ApolloClient({
   link,
-  cache: new InMemoryCache({
-    addTypename: false
-  })
+  cache,
+  defaultOptions
 })
 
 export interface IApolloInstance

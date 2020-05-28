@@ -1,8 +1,8 @@
 import gql from 'graphql-tag'
 
 export const CREATE_CATEGORY = gql`
-  mutation CreateCategory($name: String){
-    createCategory(name: $name) {
+  mutation CreateCategory($name: String, $parentId: UUID){
+    createCategory(name: $name, parentId: $parentId) {
       id
       name
       created
@@ -12,7 +12,7 @@ export const CREATE_CATEGORY = gql`
 `
 
 export const UPDATE_CATEGORY = gql`
-  mutation UpdateCategory($categoryId: UUID, $name: String){
+  mutation updateCategory($categoryId: UUID!, $name: String){
     updateCategory(categoryId: $categoryId, name: $name) {
       id
       name
@@ -23,7 +23,7 @@ export const UPDATE_CATEGORY = gql`
 `
 
 export const DELETE_CATEGORY = gql`
-  mutation DeleteCategory($categoryId: UUID){
+  mutation deleteCategory($categoryId: UUID!){
     deleteCategory(categoryId: $categoryId)
   }
 `
@@ -36,6 +36,10 @@ export const GET_CATEGORIES = gql`query($input: DataTablesInput) {
         data {
             id
             name
+            parent {
+              id
+              name
+            }
             created
             updated
         }

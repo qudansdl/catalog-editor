@@ -10,12 +10,14 @@ interface Entity {
 input CategoryInput {
   id: UUID
   name: String
+  parent: CategoryInput,
   children: [CategoryInput]
 }
 
 type Category implements Entity {
   id: UUID
   name: String
+  parent: Category,
   children: [Category]
   created: DateTime
   updated: DateTime
@@ -62,11 +64,13 @@ input CatalogBlockInput {
 
 input ImageInput {
   id: UUID
+  name: String
   content: String
 }
 
 type Image  implements Entity {
   id: UUID
+  name: String
   content: String
   categories: [Category]
   created: DateTime
@@ -181,8 +185,8 @@ type Mutation {
   deleteCatalog(catalogId: UUID!): Boolean
 
 
-  createImage(file: Upload): Image
-  updateImage(imageId: UUID!, file: Upload): Image
+  createImage(name: String, content: String): Image
+  updateImage(imageId: UUID!, name: String, content: String): Image
   deleteImage(imageId: UUID!): Boolean
 
 }

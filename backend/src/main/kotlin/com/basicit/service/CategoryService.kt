@@ -9,32 +9,23 @@ import java.util.*
 
 @Service
 class CategoryService(private val categoryRepository: CategoryRepository) {
-  fun getCategories(input: DataTablesInput?): DataTablesOutput<Category> =
-      categoryRepository.findAll(input)
+  fun getCategories(input: DataTablesInput?): DataTablesOutput<Category> = categoryRepository.findAll(input)
 
   fun addCategory(category: Category): Category = categoryRepository.save(category)
 
-  fun getCategoryById(categoryId: UUID): Optional<Category> =
-      categoryRepository.findById(categoryId)
+  fun getCategoryById(categoryId: UUID): Optional<Category> = categoryRepository.findById(categoryId)
 
   fun putCategory(
       categoryId: UUID,
       name: String
   ): Optional<Category> =
       categoryRepository.findById(categoryId).map { currentCategory ->
-          val newCategory = Category(
-                  id = currentCategory.id,
-                  name = name,
-                  parent = currentCategory.parent,
-                  children = currentCategory.children
-          )
+          currentCategory.name = name
 
-         categoryRepository.save(newCategory)
+         categoryRepository.save(currentCategory)
       }
 
-  fun deleteCategory(categoryId: UUID): Boolean =
-          categoryRepository.findById(categoryId).map { category ->
-              categoryRepository.delete(category)
+  fun deleteCategory(categoryId: UUID): Boolean = categoryRepository.findById(categoryId).map { category -> categoryRepository.delete(category)
       true
     }.orElse(false)
 }

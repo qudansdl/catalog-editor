@@ -92,9 +92,27 @@ export default {
   category: {
     search: '검색',
     add: '추가',
+    child: {
+      add: '자식 추가'
+    },
     id: 'ID',
     date: '날짜',
     name: '이름',
+    parent: '부모',
+    actions: 'Actions',
+    edit: '수정',
+    delete: '삭제',
+    cancel: '취소',
+    confirm: '확인'
+  },
+  image: {
+    search: '검색',
+    add: '추가',
+    id: 'ID',
+    date: '날짜',
+    name: '이름',
+    file: '파일',
+    preview: '미리보기',
     actions: 'Actions',
     edit: '수정',
     delete: '삭제',

@@ -41,16 +41,6 @@
     <el-row :gutter="8">
       <el-col
         :xs="{span: 24}"
-        :sm="{span: 24}"
-        :md="{span: 24}"
-        :lg="{span: 12}"
-        :xl="{span: 12}"
-        style="padding-right:8px;margin-bottom:30px;"
-      >
-        <transaction-table />
-      </el-col>
-      <el-col
-        :xs="{span: 24}"
         :sm="{span: 12}"
         :md="{span: 12}"
         :lg="{span: 6}"
@@ -84,7 +74,6 @@ import PanelGroup from './components/PanelGroup.vue'
 import PieChart from './components/PieChart.vue'
 import RadarChart from './components/RadarChart.vue'
 import TodoList from './components/TodoList/index.vue'
-import TransactionTable from './components/TransactionTable.vue'
 
 const lineChartData: { [type: string]: ILineChartData } = {
   newVisitis: {
@@ -115,8 +104,7 @@ const lineChartData: { [type: string]: ILineChartData } = {
     PanelGroup,
     PieChart,
     RadarChart,
-    TodoList,
-    TransactionTable
+    TodoList
   }
 })
 export default class extends Vue {

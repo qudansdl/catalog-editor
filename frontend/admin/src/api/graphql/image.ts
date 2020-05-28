@@ -1,14 +1,33 @@
-import gql from 'graphql-tag';
-import Mustache from 'mustache';
+import gql from 'graphql-tag'
+import Mustache from 'mustache'
 
 export const CREATE_IMAGE = gql`
-    mutation CreateImage($file: Upload!){
-        createImage(file: $file) {
+    mutation CreateImage($name: String, $content: String!){
+        createImage(name: $name, content: $content) {
             id,
+            name,
             content
         }
     }
-`;
+`
+
+export const UPDATE_IMAGE = gql`
+  mutation updateImage($imageId: UUID!, $name: String, $content: String!){
+    updateImage(imageId: $imageId, name: $name, content: $content) {
+      id
+      name
+      content
+      created
+      updated
+    }
+  }
+`
+
+export const DELETE_IMAGE = gql`
+  mutation deleteImage($imageId: UUID!){
+    deleteImage(imageId: $imageId)
+  }
+`
 
 export const GET_IMAGES = gql`query($input: DataTablesInput) {
     images(input: $input) {
@@ -17,12 +36,23 @@ export const GET_IMAGES = gql`query($input: DataTablesInput) {
         error
         data {
             id
+            name
             content
             created
             updated
         }
     }
-}`;
+}`
+
+export const GET_IMAGE_BY_ID = gql`query($imageId: UUID) {
+  image(imageId: $imageId) {
+    id
+    name
+    content
+    created
+    updated
+  }
+}`
 
 export function getImageVariable(category: string, pageSize: number, currentPage: number) {
   const variableTemplate = `{
@@ -39,9 +69,9 @@ export function getImageVariable(category: string, pageSize: number, currentPage
             }]
             {{/category}}
         }
-    }`;
+    }`
 
-  const start = (currentPage - 1) * pageSize;
-  const variables = Mustache.render(variableTemplate, { category, pageSize, start });
-  return JSON.parse(variables);
+  const start = (currentPage - 1) * pageSize
+  const variables = Mustache.render(variableTemplate, { category, pageSize, start })
+  return JSON.parse(variables)
 }

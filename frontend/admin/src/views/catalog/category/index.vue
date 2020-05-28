@@ -84,6 +84,14 @@
         </template>
       </el-table-column>
       <el-table-column
+        :label="$t('category.parent')"
+        min-width="150px"
+      >
+        <template slot-scope="{row}">
+          <span v-if="row.parent">{{ row.parent.name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
         :label="$t('category.actions')"
         align="center"
         width="230"
@@ -96,6 +104,13 @@
             @click="handleUpdate(row)"
           >
             {{ $t('category.edit') }}
+          </el-button>
+          <el-button
+            type="secondary"
+            size="mini"
+            @click="handleCreateChild(row)"
+          >
+            {{ $t('category.child.add') }}
           </el-button>
           <el-button
             v-if="row.status!=='deleted'"
@@ -129,6 +144,7 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
+        <el-input type="hidden" v-model="tempCategoryData.parent" />
         <el-form-item
           :label="$t('category.name')"
           prop="name"
@@ -156,7 +172,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { Form } from 'element-ui'
+import { Form, MessageBox } from 'element-ui'
 import { cloneDeep } from 'lodash'
 import ApiCategory, { defaultCategoryData } from '@/api/categories'
 import { ICategoryData } from '@/api/types'
@@ -202,9 +218,7 @@ export default class extends Vue {
   }
 
   private rules = {
-    type: [{ required: true, message: 'type is required', trigger: 'change' }],
-    timestamp: [{ required: true, message: 'timestamp is required', trigger: 'change' }],
-    title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+    name: [{ required: true, message: 'name is required', trigger: 'change' }]
   }
 
   private tempCategoryData = defaultCategoryData
@@ -215,7 +229,7 @@ export default class extends Vue {
 
   private async getList() {
     this.listLoading = true
-    this.listQuery.start = (this.listQuery.page - 1) * this.listQuery.length + 1
+    this.listQuery.start = (this.listQuery.page - 1) * this.listQuery.length
 
     const query = Object.assign({}, this.listQuery)
     delete query.page
@@ -256,12 +270,22 @@ export default class extends Vue {
     return sort === 'asc' ? 'ascending' : 'descending'
   }
 
-  private resettempCategoryData() {
+  private resetTempCategoryData() {
     this.tempCategoryData = cloneDeep(defaultCategoryData)
   }
 
+  private handleCreateChild(row: any) {
+    this.resetTempCategoryData()
+    this.tempCategoryData.parent = row.id
+    this.dialogStatus = 'create'
+    this.dialogFormVisible = true
+    this.$nextTick(() => {
+      (this.$refs.dataForm as Form).clearValidate()
+    })
+  }
+
   private handleCreate() {
-    this.resettempCategoryData()
+    this.resetTempCategoryData()
     this.dialogStatus = 'create'
     this.dialogFormVisible = true
     this.$nextTick(() => {
@@ -272,7 +296,10 @@ export default class extends Vue {
   private createData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
-        const { data } = await ApiCategory.createCategory(this.tempCategoryData.name)
+        const { data } = await ApiCategory.createCategory(
+          this.tempCategoryData.name,
+          this.tempCategoryData.parent
+        )
         this.getList()
         this.dialogFormVisible = false
         this.$notify({
@@ -299,7 +326,6 @@ export default class extends Vue {
       if (valid) {
         const tempData = Object.assign({}, this.tempCategoryData)
         const { data } = await ApiCategory.updateCategory(tempData)
-        this.getList()
         this.dialogFormVisible = false
         this.$notify({
           title: '성공',
@@ -307,17 +333,30 @@ export default class extends Vue {
           type: 'success',
           duration: 2000
         })
+        this.getList()
       }
     })
   }
 
   private async handleDelete(row: any, index: number) {
-    const { data } = await ApiCategory.deleteCategory(row.id)
-    this.$notify({
-      title: '성공',
-      message: '삭제 했습니다',
-      type: 'success',
-      duration: 2000
+    MessageBox.confirm(
+      '삭제하시겠습니까?',
+      '삭제확인',
+      {
+        confirmButtonText: '삭제',
+        cancelButtonText: '취소',
+        type: 'warning'
+      }
+    ).then(async() => {
+      debugger
+      const { data } = await ApiCategory.deleteCategory(row.id)
+      this.getList()
+      this.$notify({
+        title: '성공',
+        message: '삭제 했습니다',
+        type: 'success',
+        duration: 2000
+      })
     })
   }
 }

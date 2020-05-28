@@ -14,32 +14,23 @@ import javax.xml.bind.DatatypeConverter
 
 @Component
 class ImageMutationResolver (private val imageService: ImageService) : GraphQLMutationResolver {
-  fun createBase64Image(part: Part) : String
-  {
-    val contentType  = Tika().detect(part.submittedFileName)
-
-    part.inputStream.use {
-      val base64str = DatatypeConverter.printBase64Binary(it.readBytes())
-      val sb = StringBuilder()
-      sb.append("data:")
-      sb.append(contentType)
-      sb.append(";base64,")
-      sb.append(base64str)
-
-      return sb.toString()
-    }
-  }
-
-  fun createImage(part: Part): Image {
+  fun createImage(name: String?, content: String): Image {
     return imageService.addImage(
-      Image(content = createBase64Image(part))
+      Image(
+         name = name,
+         content = content
+      )
     )
    }
 
-  fun updateImage(imageId: UUID, part: Part): Image =
+  fun updateImage(imageId: UUID, name: String?, content: String): Image =
     imageService.putImage(
       imageId,
-      Image(id = imageId, content = createBase64Image(part))
+      Image(
+         id = imageId,
+         name = name,
+         content = content
+      )
     ).orElse(null)
 
   fun deleteImage(imageId: UUID): Boolean = imageService.deleteImage(imageId)

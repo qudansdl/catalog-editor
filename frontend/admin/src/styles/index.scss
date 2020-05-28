@@ -154,3 +154,9 @@ aside {
 .no-padding {
   padding: 0px !important;
 }
+
+#app .el-table .el-table__body td .cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

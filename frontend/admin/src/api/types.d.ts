@@ -1,6 +1,14 @@
+export interface IImageData {
+  id: string | null
+  name: string
+  content: string | null
+}
+
+
 export interface ICategoryData {
   id: string | null
   name: string
+  parent: string | null
 }
 
 

@@ -1,25 +1,71 @@
-import { CREATE_IMAGE, GET_IMAGES, getImageVariable } from '@/api/graphql/image';
-import apolloClient from "@/utils/vue-apollo";
+import {
+  CREATE_IMAGE,
+  DELETE_IMAGE,
+  GET_IMAGE_BY_ID,
+  GET_IMAGES,
+  UPDATE_IMAGE,
+  getImageVariable
+} from '@/api/graphql/image'
+import apolloClient from '@/utils/vue-apollo'
+import { IImageData } from '@/api/types'
+
+export const defaultImageData: IImageData = {
+  id: null,
+  name: '',
+  content: null
+}
 
 export default class ApiImage {
-  static uploadImages = (file: any) => {
-    console.log('Upload Images');
+  static createImage = (name: string, content: string) => {
+    console.log('Create Image')
     return apolloClient.mutate({
       mutation: CREATE_IMAGE,
       variables: {
-        file,
-      },
-      context: {
-        hasUpload: true, // Important!
-      },
-    });
+        name,
+        content
+      }
+    })
   };
 
-  static getImages = (category: string, pageSize: number, currentPage: number) => {
-    console.log('get images');
+  static updateImage = (imageId: string, name: string, content: string) => {
+    console.log('Update Image')
+    return apolloClient.mutate({
+      mutation: UPDATE_IMAGE,
+      variables: {
+        imageId,
+        name,
+        content
+      }
+    })
+  };
+
+  static deleteImage = (imageId: string) => {
+    console.log('Delete Image')
+    return apolloClient.mutate({
+      mutation: DELETE_IMAGE,
+      variables: {
+        imageId
+      }
+    })
+  };
+
+  static getImage = (imageId: string | null) => {
+    console.log('get Image')
+    return apolloClient.query({
+      query: GET_IMAGE_BY_ID,
+      variables: {
+        imageId
+      }
+    })
+  };
+
+  static getImages = (input: any) => {
+    console.log('get Images')
     return apolloClient.query({
       query: GET_IMAGES,
-      variables: getImageVariable(category, pageSize, currentPage),
-    });
+      variables: {
+        input
+      }
+    })
   };
 }

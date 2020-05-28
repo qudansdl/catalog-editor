@@ -15,6 +15,8 @@ import javax.persistence.*
 class Image(
         id: UUID? = null,
 
+        var name: String? = null,
+
         @ManyToMany(fetch = FetchType.EAGER)
         @JoinTable(name = "image_categories",
                 joinColumns = [JoinColumn(name = "image_id", nullable = false, updatable = false)],
@@ -23,5 +25,5 @@ class Image(
         @Fetch(FetchMode.SELECT)
         var categories: MutableSet<Category> = mutableSetOf(),
 
-        val content: String? = null
+        var content: String? = null
 ) : AbstractEntity(id)

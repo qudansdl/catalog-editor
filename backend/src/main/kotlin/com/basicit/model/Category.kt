@@ -13,11 +13,11 @@ import javax.persistence.*
 class Category(
     id: UUID? = null,
 
-    val name: String? = null,
+    var name: String? = null,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    val parent: Category?,
+    var parent: Category?,
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
-    val children: Set<Category>?
+    var children: Set<Category>?
 ) : AbstractEntity(id)
