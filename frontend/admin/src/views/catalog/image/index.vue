@@ -227,7 +227,6 @@ export default class extends Vue {
   private list: IImageData[] = []
   private total = 0
   private listLoading = true
-  private file: any
 
   private listQuery = {
     page: 1,
@@ -252,8 +251,8 @@ export default class extends Vue {
   private dialogFormVisible = false
   private dialogStatus = ''
   private textMap = {
-    update: 'Edit',
-    create: 'Create'
+    update: '수정',
+    create: '생성'
   }
 
   private rules = {

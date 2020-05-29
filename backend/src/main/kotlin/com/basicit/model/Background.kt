@@ -6,22 +6,21 @@ import java.util.*
 import javax.persistence.*
 
 /**
- * Text Entity
+ * Background Entity
  *
  * @author poh
  */
 @Entity
-@Table(name = "text")
-class Text(
+@Table(name = "background")
+class Background(
         id: UUID? = null,
 
         var name: String? = null,
 
         @ManyToMany(fetch = FetchType.EAGER)
-        @JoinTable(name = "text_categories",
-                joinColumns = [JoinColumn(name = "text_id")],
-                inverseJoinColumns = [JoinColumn(name = "category_id")]
-
+        @JoinTable(name = "image_categories",
+                joinColumns = [JoinColumn(name = "image_id", nullable = false, updatable = false)],
+                inverseJoinColumns = [JoinColumn(name = "category_id", nullable = false, updatable = false)]
         )
         @Fetch(FetchMode.SELECT)
         var categories: MutableSet<Category> = mutableSetOf(),

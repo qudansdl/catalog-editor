@@ -23,6 +23,8 @@ type Category implements Entity {
   updated: DateTime
 }
 
+
+
 type Catalog  implements Entity {
   id: UUID
   name: String
@@ -62,6 +64,65 @@ input CatalogBlockInput {
 
 
 
+
+type Template  implements Entity {
+  id: UUID
+  name: String
+  description: String
+  categories: [Category]
+  blocks: [TemplateBlock]
+  created: DateTime
+  updated: DateTime
+}
+
+type TemplateBlock  implements Entity  {
+  id: UUID
+  x: Int
+  y: Int
+  w: Int
+  h: Int
+  type: String
+  content: String
+  created: DateTime
+  updated: DateTime
+}
+
+
+
+input TemplateBlockInput {
+  id: UUID
+  x: Int
+  y: Int
+  w: Int
+  h: Int
+  type: String
+  content: String
+}
+
+
+
+
+
+
+
+input BackgroundInput {
+  id: UUID
+  name: String
+  content: String
+}
+
+type Background implements Entity {
+  id: UUID
+  name: String
+  content: String
+  categories: [Category]
+  created: DateTime
+  updated: DateTime
+}
+
+
+
+
 input ImageInput {
   id: UUID
   name: String
@@ -80,11 +141,13 @@ type Image  implements Entity {
 
 input TextInput {
   id: UUID
+  name: String
   content: String
 }
 
 type Text  implements Entity  {
   id: UUID
+  name: String
   content: String
   categories: [Category]
   created: DateTime
@@ -185,8 +248,27 @@ type Mutation {
   deleteCatalog(catalogId: UUID!): Boolean
 
 
+  createTemplate(name: String
+    description: String
+    categories: [CategoryInput]
+    blocks: [TemplateBlockInput]
+  ): Template
+  updateTemplate(catalogId: UUID!,
+    name: String
+    description: String
+    categories: [CategoryInput]
+    blocks: [TemplateBlockInput]
+  ): Template
+  deleteTemplate(templateId: UUID!): Boolean
+
+
   createImage(name: String, content: String): Image
   updateImage(imageId: UUID!, name: String, content: String): Image
   deleteImage(imageId: UUID!): Boolean
+
+
+  createBackground(name: String, content: String): Background
+  updateBackground(imageId: UUID!, name: String, content: String): Background
+  deleteBackground(imageId: UUID!): Boolean
 
 }

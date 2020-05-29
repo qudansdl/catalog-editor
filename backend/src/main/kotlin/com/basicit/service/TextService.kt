@@ -24,12 +24,10 @@ class TextService(private val textRepository: TextRepository) {
           newText: Text
   ): Optional<Text> =
       textRepository.findById(textId).map { currentText ->
-      val updatedText = Text(
-              currentText.id,
-              mutableSetOf(),
-              newText.content)
+          currentText.name = newText.name
+          currentText.content = newText.content
 
-          textRepository.save(updatedText)
+          textRepository.save(currentText)
     }
 
   fun deleteText(textId: UUID): Boolean =

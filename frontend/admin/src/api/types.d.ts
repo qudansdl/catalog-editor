@@ -1,3 +1,15 @@
+export interface ITextData {
+  id: string | null
+  name: string
+  content: string | null
+}
+
+export interface IBackgroundData {
+  id: string | null
+  name: string
+  content: string | null
+}
+
 export interface IImageData {
   id: string | null
   name: string
