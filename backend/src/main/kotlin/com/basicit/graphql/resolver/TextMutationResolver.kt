@@ -8,15 +8,15 @@ import java.util.*
 
 @Component
 class TextMutationResolver (private val textService: TextService) : GraphQLMutationResolver {
-  fun createText(content: String? = null): Text =
+  fun createText(name: String, content: String? = null): Text =
     textService.addText(
-      Text(content = content)
+      Text(name = name, content = content)
     )
 
-  fun updateText(textId: UUID, content: String? = null): Text =
+  fun updateText(textId: UUID, name: String, content: String? = null): Text =
     textService.putText(
       textId,
-      Text(id = textId, content = content)
+      Text(id = textId, name = name, content = content)
     ).orElse(null)
 
   fun deleteText(textId: UUID): Boolean = textService.deleteText(textId)

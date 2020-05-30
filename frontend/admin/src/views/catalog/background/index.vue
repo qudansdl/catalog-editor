@@ -208,7 +208,7 @@ import { cloneDeep } from 'lodash'
 import ApiBackground, { defaultBackgroundData } from '@/api/backgrounds'
 import { IBackgroundData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
-import BackgroundCropUpload from 'vue-image-crop-upload'
+import ImageCropUpload from 'vue-image-crop-upload'
 
 @Component({
   name: 'BackgroundTable',

@@ -195,6 +195,22 @@ type CatalogOutput implements DataTablesOutput {
 }
 
 
+type TemplateOutput implements DataTablesOutput {
+  recordsTotal: Long
+  recordsFiltered: Long
+  error: String
+  data: [Template]
+}
+
+type BackgroundOutput implements DataTablesOutput {
+  recordsTotal: Long
+  recordsFiltered: Long
+  error: String
+  data: [Background]
+}
+
+
+
 type ImageOutput implements DataTablesOutput {
   recordsTotal: Long
   recordsFiltered: Long
@@ -221,6 +237,12 @@ type Query {
 
   catalogs(input: DataTablesInput): CatalogOutput
   catalog(catalogId: UUID!): Catalog
+
+  templates(input: DataTablesInput): TemplateOutput
+  template(templateId: UUID!): Template
+
+  backgrounds(input: DataTablesInput): BackgroundOutput
+  background(imageId: UUID!): Background
 
   images(input: DataTablesInput): ImageOutput
   image(imageId: UUID!): Image
@@ -253,7 +275,7 @@ type Mutation {
     categories: [CategoryInput]
     blocks: [TemplateBlockInput]
   ): Template
-  updateTemplate(catalogId: UUID!,
+  updateTemplate(templateId: UUID!,
     name: String
     description: String
     categories: [CategoryInput]
@@ -266,9 +288,12 @@ type Mutation {
   updateImage(imageId: UUID!, name: String, content: String): Image
   deleteImage(imageId: UUID!): Boolean
 
+  createText(name: String, content: String): Text
+  updateText(textId: UUID!, name: String, content: String): Text
+  deleteText(textId: UUID!): Boolean
 
   createBackground(name: String, content: String): Background
-  updateBackground(imageId: UUID!, name: String, content: String): Background
-  deleteBackground(imageId: UUID!): Boolean
+  updateBackground(backgroundId: UUID!, name: String, content: String): Background
+  deleteBackground(backgroundId: UUID!): Boolean
 
 }

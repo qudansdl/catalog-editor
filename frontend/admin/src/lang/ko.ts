@@ -139,7 +139,7 @@ export default {
     id: 'ID',
     date: '날짜',
     name: '이름',
-    preview: '미리보기',
+    content: '내용',
     actions: '작업',
     edit: '수정',
     delete: '삭제',

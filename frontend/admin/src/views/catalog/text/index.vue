@@ -84,11 +84,11 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('text.preview')"
+        :label="$t('text.content')"
         min-width="150px"
       >
         <template slot-scope="{row}">
-
+          <span>{{ row.content }}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -137,7 +137,10 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-input type="hidden" v-model="tempTextData.parent" />
+        <el-input
+          v-model="tempTextData.parent"
+          type="hidden"
+        />
         <el-form-item
           :label="$t('text.name')"
           prop="name"
@@ -146,22 +149,14 @@
         </el-form-item>
 
         <el-form-item
-          :label="$t('text.file')"
-          prop="file"
+          :label="$t('text.content')"
+          prop="content"
         >
-          <el-button
-            type="primary"
-            @click="showUpload = true"
-          >
-            {{ $t('text.file') }}
-          </el-button>
-        </el-form-item>
-        <el-form-item
-          :label="$t('text.preview')"
-          prop="preview"
-          v-if="tempTextData.content"
-        >
-
+          <tinymce
+            v-if="tinymceActive"
+            v-model="tempTextData.content"
+            :height="400"
+          />
         </el-form-item>
       </el-form>
       <div
@@ -189,18 +184,17 @@ import { cloneDeep } from 'lodash'
 import ApiText, { defaultTextData } from '@/api/texts'
 import { ITextData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
+import Tinymce from '@/components/Tinymce/index.vue'
 
 @Component({
   name: 'TextTable',
   components: {
-    Pagination
+    Pagination,
+    Tinymce
   }
 })
 export default class extends Vue {
-  @Prop({ default: 300 }) private width!: number
-  @Prop({ default: 300 }) private height!: number
-
-  private showUpload = false
+  private tinymceActive = true
 
   private tableKey = 0
   private list: ITextData[] = []
@@ -242,6 +236,14 @@ export default class extends Vue {
 
   created() {
     this.getList()
+  }
+
+  deactivated() {
+    this.tinymceActive = false
+  }
+
+  activated() {
+    this.tinymceActive = true
   }
 
   private async getList() {
@@ -370,6 +372,5 @@ export default class extends Vue {
       await this.getList()
     })
   }
-
 }
 </script>

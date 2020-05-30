@@ -9,13 +9,6 @@
       v-model="tinymceContent"
       :init="initOptions"
     />
-    <div class="editor-custom-btn-container">
-      <editor-image-upload
-        :color="uploadButtonColor"
-        class="editor-upload-btn"
-        @successCBK="imageSuccessCBK"
-      />
-    </div>
   </div>
 </template>
 
@@ -61,7 +54,6 @@ import TinymceEditor from '@tinymce/tinymce-vue' // TinyMCE vue wrapper
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { AppModule } from '@/store/modules/app'
 import { SettingsModule } from '@/store/modules/settings'
-import EditorImageUpload, { IUploadObject } from './components/EditorImage.vue'
 import { plugins, toolbar } from './config'
 
 const defaultId = () => 'vue-tinymce-' + +new Date() + ((Math.random() * 1000).toFixed(0) + '')
@@ -69,7 +61,6 @@ const defaultId = () => 'vue-tinymce-' + +new Date() + ((Math.random() * 1000).t
 @Component({
   name: 'Tinymce',
   components: {
-    EditorImageUpload,
     TinymceEditor
   }
 })
@@ -77,7 +68,6 @@ export default class extends Vue {
   @Prop({ required: true }) private value!: string
   @Prop({ default: defaultId }) private id!: string
   @Prop({ default: () => [] }) private toolbar!: string[]
-  @Prop({ default: 'file edit insert view format table' }) private menubar!: string
   @Prop({ default: '360px' }) private height!: string | number
   @Prop({ default: 'auto' }) private width!: string | number
 
@@ -122,11 +112,12 @@ export default class extends Vue {
   get initOptions() {
     return {
       selector: `#${this.id}`,
+      menubar: false,
+      inline: true,
       height: this.height,
       body_class: 'panel-body ',
       object_resizing: false,
       toolbar: this.toolbar.length > 0 ? this.toolbar : toolbar,
-      menubar: this.menubar,
       plugins: plugins,
       language: this.language,
       language_url: this.language === 'en' ? '' : `${process.env.BASE_URL}tinymce/langs/${this.language}.js`,
@@ -175,13 +166,6 @@ export default class extends Vue {
       tinymceInstance.destroy()
     }
     this.$nextTick(() => tinymceManager.init(this.initOptions))
-  }
-
-  private imageSuccessCBK(arr: IUploadObject[]) {
-    const tinymce = (window as any).tinymce.get(this.id)
-    arr.forEach(v => {
-      tinymce.insertContent(`<img class="wscnph" src="${v.url}" >`)
-    })
   }
 }
 </script>
