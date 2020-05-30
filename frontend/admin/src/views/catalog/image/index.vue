@@ -21,6 +21,64 @@
           :value="item.value"
         />
       </el-select>
+      <template v-if="categories.length > 0">
+        <el-select
+          v-model="category1.id"
+          style="width: 140px"
+          class="filter-item"
+          @change="handleCategory1"
+        >
+          <el-option
+            :key="'default'"
+            :label="'선택'"
+            :value="''"
+          />
+          <el-option
+            v-for="cate in categories"
+            :key="cate.id"
+            :label="cate.name"
+            :value="cate.id"
+          />
+        </el-select>
+        <el-select
+          v-if="category1.children.length > 0"
+          v-model="category2.id"
+          style="width: 140px"
+          class="filter-item"
+          @change="handleCategory2"
+        >
+          <el-option
+            :key="''"
+            :label="'선택'"
+            :value="''"
+          />
+          <el-option
+            v-for="cate in category1.children"
+            :key="cate.id"
+            :label="cate.name"
+            :value="cate.id"
+          />
+        </el-select>
+        <el-select
+          v-if="category2.children.length > 0"
+          v-model="category3.id"
+          style="width: 140px"
+          class="filter-item"
+          @change="handleCategory3"
+        >
+          <el-option
+            :key="''"
+            :label="'선택'"
+            :value="''"
+          />
+          <el-option
+            v-for="cate in category2.children"
+            :key="cate.id"
+            :label="cate.name"
+            :value="cate.id"
+          />
+        </el-select>
+      </template>
       <el-button
         v-waves
         class="filter-item"
@@ -91,7 +149,8 @@
           <el-image
             style="width: 100px; height: 100px"
             :src="row.content"
-            :fit="'fill'"></el-image>
+            :fit="'fill'"
+          />
         </template>
       </el-table-column>
       <el-table-column
@@ -140,7 +199,10 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-input type="hidden" v-model="tempImageData.parent" />
+        <el-input
+          v-model="tempImageData.parent"
+          type="hidden"
+        />
         <el-form-item
           :label="$t('image.name')"
           prop="name"
@@ -160,14 +222,15 @@
           </el-button>
         </el-form-item>
         <el-form-item
+          v-if="tempImageData.content"
           :label="$t('image.preview')"
           prop="preview"
-          v-if="tempImageData.content"
         >
           <el-image
             style="width: 100px; height: 100px"
             :src="tempImageData.content"
-            :fit="'fill'"></el-image>
+            :fit="'fill'"
+          />
         </el-form-item>
       </el-form>
       <image-crop-upload
@@ -206,9 +269,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Form, MessageBox } from 'element-ui'
 import { cloneDeep } from 'lodash'
 import ApiImage, { defaultImageData } from '@/api/images'
-import { IImageData } from '@/api/types'
+import ApiCategory, { defaultCategoryData } from '@/api/categories'
+import { ICategoryData, IImageData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
-import ImageCropUpload from 'vue-image-crop-upload'
+import ImageCropUpload from '@/components/vue-image-crop-upload/upload-2.vue'
 
 @Component({
   name: 'ImageTable',
@@ -218,17 +282,38 @@ import ImageCropUpload from 'vue-image-crop-upload'
   }
 })
 export default class extends Vue {
-  @Prop({ default: 300 }) private width!: number
-  @Prop({ default: 300 }) private height!: number
+  @Prop({ default: 100 }) private width!: number
+  @Prop({ default: 100 }) private height!: number
 
   private showUpload = false
+
+  private defaultCategoryData = defaultCategoryData
+
+  private categories: ICategoryData[] = []
+  private category1: ICategoryData = defaultCategoryData
+  private category2: ICategoryData = defaultCategoryData
+  private category3: ICategoryData = defaultCategoryData
 
   private tableKey = 0
   private list: IImageData[] = []
   private total = 0
   private listLoading = true
 
-  private listQuery = {
+  private categoryQuery = {
+    start: 0,
+    length: 0,
+    order: [{
+      column: 'created',
+      dir: 'desc'
+    }],
+    columns: [{
+      name: 'parent',
+      operation: 'null',
+      value: ''
+    }]
+  }
+
+  private listQuery: any = {
     page: 1,
     start: 1,
     length: 20,
@@ -238,8 +323,9 @@ export default class extends Vue {
     }],
     columns: [{
       name: 'name',
-      operation: 'eq',
-      value: ''
+      operation: 'like',
+      value: '',
+      columns: []
     }]
   }
 
@@ -263,6 +349,12 @@ export default class extends Vue {
 
   created() {
     this.getList()
+    this.getCategoryList()
+  }
+
+  private async getCategoryList() {
+    const { data } = await ApiCategory.getCategories(this.categoryQuery)
+    this.categories = data.categories.data
   }
 
   private async getList() {
@@ -272,6 +364,28 @@ export default class extends Vue {
     const query = Object.assign({}, this.listQuery)
     delete query.page
 
+    const categories = []
+    if (this.category1.id) {
+      categories.push(this.category1.id)
+    }
+    if (this.category2.id) {
+      categories.push(this.category2.id)
+    }
+    if (this.category2.id) {
+      categories.push(this.category2.id)
+    }
+
+    query.columns.push({
+      name: 'categories',
+      operation: '',
+      value: '',
+      columns: [{
+        name: 'id',
+        operation: 'in',
+        value: categories.join(',')
+      }]
+    })
+
     const { data } = await ApiImage.getImages(query)
 
     this.list = data.images.data
@@ -280,6 +394,32 @@ export default class extends Vue {
     setTimeout(() => {
       this.listLoading = false
     }, 0.5 * 1000)
+  }
+
+  private async handleCategory1() {
+    if (this.category1.id) {
+      const { data } = await ApiCategory.getCategory(this.category1.id)
+      this.category1 = data.category
+    } else {
+      this.category2 = defaultCategoryData
+      this.category3 = defaultCategoryData
+    }
+  }
+
+  private async handleCategory2() {
+    if (this.category2.id) {
+      const { data } = await ApiCategory.getCategory(this.category2.id)
+      this.category2 = data.category
+    } else {
+      this.category3 = defaultCategoryData
+    }
+  }
+
+  private async handleCategory3() {
+    if (this.category3.id) {
+      const { data } = await ApiCategory.getCategory(this.category3.id)
+      this.category3 = data.category
+    }
   }
 
   private handleFilter() {
@@ -380,7 +520,6 @@ export default class extends Vue {
         type: 'warning'
       }
     ).then(async() => {
-      debugger
       const { data } = await ApiImage.deleteImage(row.id)
       this.$notify({
         title: '성공',

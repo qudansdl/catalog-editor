@@ -56,11 +56,12 @@ class QQuery(
     {
         val queryPath = qClass.getPath(column.name)
         if (column.isLeaf()) {
-            if (!column.value.isNullOrBlank()) {
+            if (!column.value.isNullOrBlank() || column.operation == "null" || column.operation == "notnull") {
                 val criteria = ConstructorUtils.invokeConstructor(FilterCriteria::class.java, column, queryPath.type, conversionServiceList!!)
-
                 when (column.operation) {
                   "eq" -> MethodUtils.invokeMethod(queryPath, "eq", criteria.convertedSingleValue)
+                  "null" -> MethodUtils.invokeMethod(queryPath, "isNull")
+                  "notnull" -> MethodUtils.invokeMethod(queryPath, "isNotNull")
                   "neq" -> MethodUtils.invokeMethod(queryPath, "ne", criteria.convertedSingleValue)
                   "gt" -> MethodUtils.invokeMethod(queryPath, "gt", criteria.convertedSingleValue)
                   "gte" -> MethodUtils.invokeMethod(queryPath, "goe", criteria.convertedSingleValue)
@@ -70,7 +71,9 @@ class QQuery(
                   "btn" ->  MethodUtils.invokeMethod(queryPath, "between", criteria.minValue, criteria.maxValue)
                   "like" ->  MethodUtils.invokeMethod(queryPath, "like", "%" + criteria.convertedSingleValue + "%")
                   else -> null
-                }?.let {  where.and(it as Predicate)}
+                }?.let {
+                    where.and(it as Predicate)
+                }
             }
         }else {
             val elementType = MethodUtils.invokeMethod(queryPath, "getElementType") as Class<AbstractEntity>
@@ -101,7 +104,14 @@ class QQuery(
         {
             this.query.select(qClass.instance).fetch()
         } else {
-            this.query.select(qClass.instance).offset(input.start.toLong()).limit(input.length.toLong()).fetch()
+            this.query.select(qClass.instance)
+            if(input.start > 0) {
+                this.query.offset(input.start.toLong())
+            }
+            if(input.length > 0) {
+                this.query.limit(input.length.toLong())
+            }
+            this.query.fetch()
         }
     }
 }

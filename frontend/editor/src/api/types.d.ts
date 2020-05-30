@@ -1,15 +1,9 @@
+/* eslint-disable */
 export interface ITextData {
   id: string | null
   name: string
   content: string | null
 }
-
-export interface IPatternData {
-  id: string | null
-  name: string
-  content: string | null
-}
-
 
 export interface IBackgroundData {
   id: string | null
@@ -27,7 +21,6 @@ export interface IImageData {
 export interface ICategoryData {
   id: string | null
   name: string
-  children: ICategoryData[] | null,
   parent: string | null
 }
 

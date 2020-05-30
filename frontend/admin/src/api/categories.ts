@@ -8,6 +8,7 @@ import { ICategoryData } from '@/api/types'
 
 export const defaultCategoryData: ICategoryData = {
   id: null,
+  children: [],
   name: '',
   parent: null
 }

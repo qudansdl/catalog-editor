@@ -120,9 +120,6 @@ type Background implements Entity {
   updated: DateTime
 }
 
-
-
-
 input ImageInput {
   id: UUID
   name: String
@@ -138,6 +135,21 @@ type Image  implements Entity {
   updated: DateTime
 }
 
+input PatternInput {
+  id: UUID
+  name: String
+  content: String
+}
+
+
+type Pattern  implements Entity {
+  id: UUID
+  name: String
+  content: String
+  categories: [Category]
+  created: DateTime
+  updated: DateTime
+}
 
 input TextInput {
   id: UUID
@@ -218,6 +230,14 @@ type ImageOutput implements DataTablesOutput {
   data: [Image]
 }
 
+type PatternOutput implements DataTablesOutput {
+  recordsTotal: Long
+  recordsFiltered: Long
+  error: String
+  data: [Pattern]
+}
+
+
 
 
 
@@ -246,6 +266,9 @@ type Query {
 
   images(input: DataTablesInput): ImageOutput
   image(imageId: UUID!): Image
+
+  patterns(input: DataTablesInput): PatternOutput
+  pattern(patternId: UUID!): Pattern
 
   texts(input: DataTablesInput): TextOutput
   text(textId: UUID!): Text
@@ -296,4 +319,7 @@ type Mutation {
   updateBackground(backgroundId: UUID!, name: String, content: String): Background
   deleteBackground(backgroundId: UUID!): Boolean
 
+  createPattern(name: String, content: String): Pattern
+  updatePattern(patternId: UUID!, name: String, content: String): Pattern
+  deletePattern(patternId: UUID!): Boolean
 }

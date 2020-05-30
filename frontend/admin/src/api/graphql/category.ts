@@ -40,6 +40,10 @@ export const GET_CATEGORIES = gql`query($input: DataTablesInput) {
               id
               name
             }
+            children {
+              id
+              name
+            }
             created
             updated
         }

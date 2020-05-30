@@ -60,7 +60,8 @@
     "vuex": "^3.3.0",
     "vuex-class": "^0.3.2",
     "vuex-module-decorators": "^0.17.0",
-    "vue2-touch-events": "^2.2.1"
+    "vue2-touch-events": "^2.2.1",
+    "vuejs-clipper": "^2.0.0"
   },
   "devDependencies": {
     "@quasar/app": "^1.8.6",

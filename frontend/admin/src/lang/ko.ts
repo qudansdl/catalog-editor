@@ -33,6 +33,7 @@ export default {
     image: '이미지',
     text: '문구',
     background: '배경',
+    pattern: '패턴',
     template: '템플릿',
 
     example: '예시',
@@ -120,6 +121,20 @@ export default {
     confirm: '확인'
   },
   background: {
+    search: '검색',
+    add: '추가',
+    id: 'ID',
+    date: '날짜',
+    name: '이름',
+    file: '파일',
+    preview: '미리보기',
+    actions: '작업',
+    edit: '수정',
+    delete: '삭제',
+    cancel: '취소',
+    confirm: '확인'
+  },
+  pattern: {
     search: '검색',
     add: '추가',
     id: 'ID',

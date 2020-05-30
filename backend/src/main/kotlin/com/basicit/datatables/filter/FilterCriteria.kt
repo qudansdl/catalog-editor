@@ -122,7 +122,7 @@ class FilterCriteria<T: Comparable<T>> {
 
         // Validations
         Validate.notEmpty(column.name, "Field name can't be empty")
-        Validate.notEmpty(column.value, "Filter criteria can't be empty")
+        // Validate.notEmpty(column.value, "Filter criteria can't be empty")
         Validate.notEmpty(column.operation, "Filter operation can't be empty")
 
         this.conversionServiceList = conversionServiceList
@@ -135,14 +135,20 @@ class FilterCriteria<T: Comparable<T>> {
         // Convert the operation name to enum
         this.operation = FilterOperation.fromValue(operation)!!
 
-        // Split the filter value as comma separated.
-        val operationValues = StringUtils.split(operationValue, ",")
-        require(operationValues.size >= 1) { "Operation value can't be empty" }
-        this.originalValues = listOf(*operationValues)
-        this.convertedValues = mutableListOf()
+        if(!operationValue.isNullOrBlank()) {
+            // Split the filter value as comma separated.
+            val operationValues = StringUtils.split(operationValue, ",")
+            require(operationValues.size >= 1) { "Operation value can't be empty" }
+            this.originalValues = listOf(*operationValues)
+            this.convertedValues = mutableListOf()
 
-        // Validate other conditions
-        validateAndAssign(operationValues)
+            // Validate other conditions
+            validateAndAssign(operationValues)
+        }else
+        {
+            this.originalValues = listOf()
+            this.convertedValues = mutableListOf()
+        }
     }
 
     private fun convert(value: Any, t: Class<*>): T? {
@@ -150,7 +156,7 @@ class FilterCriteria<T: Comparable<T>> {
         for(conversionService in this.conversionServiceList)
         {
             if(conversionService.canConvert(value.javaClass, t))
-            return conversionService.convert(value, t) as T
+             return conversionService.convert(value, t) as T
         }
         return null
     }
@@ -179,6 +185,7 @@ class FilterCriteria<T: Comparable<T>> {
             //For 'in' or 'nin' operation
         } else if (FilterOperation.IN == operation || FilterOperation.NOT_IN == operation) {
             convertedValues.addAll(originalValues.map { it ->  this.convert(it , javaType)!! })
+        } else if (FilterOperation.NULL == operation || FilterOperation.NOT_NULL == operation) {
         } else {
             //All other operation
             convertedSingleValue = this.convert(operationValues[0] , javaType)

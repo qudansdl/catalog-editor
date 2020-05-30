@@ -2,9 +2,9 @@
 import gql from 'graphql-tag'
 import Mustache from 'mustache'
 
-export const CREATE_IMAGE = gql`
-    mutation CreateImage($name: String, $content: String!){
-        createImage(name: $name, content: $content) {
+export const CREATE_TEXT = gql`
+    mutation CreateText($name: String, $content: String!){
+        createText(name: $name, content: $content) {
             id,
             name,
             content
@@ -12,9 +12,9 @@ export const CREATE_IMAGE = gql`
     }
 `
 
-export const UPDATE_IMAGE = gql`
-  mutation updateImage($imageId: UUID!, $name: String, $content: String!){
-    updateImage(imageId: $imageId, name: $name, content: $content) {
+export const UPDATE_TEXT = gql`
+  mutation updateText($textId: UUID!, $name: String, $content: String!){
+    updateText(textId: $textId, name: $name, content: $content) {
       id
       name
       content
@@ -24,14 +24,14 @@ export const UPDATE_IMAGE = gql`
   }
 `
 
-export const DELETE_IMAGE = gql`
-  mutation deleteImage($imageId: UUID!){
-    deleteImage(imageId: $imageId)
+export const DELETE_TEXT = gql`
+  mutation deleteText($textId: UUID!){
+    deleteText(textId: $textId)
   }
 `
 
-export const GET_IMAGES = gql`query($input: DataTablesInput) {
-    images(input: $input) {
+export const GET_TEXTS = gql`query($input: DataTablesInput) {
+    texts(input: $input) {
         recordsTotal
         recordsFiltered
         error
@@ -45,8 +45,8 @@ export const GET_IMAGES = gql`query($input: DataTablesInput) {
     }
 }`
 
-export const GET_IMAGE_BY_ID = gql`query($imageId: UUID) {
-  image(imageId: $imageId) {
+export const GET_TEXT_BY_ID = gql`query($textId: UUID) {
+  text(textId: $textId) {
     id
     name
     content
@@ -55,7 +55,7 @@ export const GET_IMAGE_BY_ID = gql`query($imageId: UUID) {
   }
 }`
 
-export function getImageVariable(category: string, pageSize: number, currentPage: number) {
+export function getTextVariable(category: string, pageSize: number, currentPage: number) {
   const variableTemplate = `{
         "input": {
             "start": {{start}},

@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-input
         v-model="listQuery.columns[0].value"
-        :placeholder="$t('background.name')"
+        :placeholder="$t('pattern.name')"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -28,7 +28,7 @@
         icon="el-icon-search"
         @click="handleFilter"
       >
-        {{ $t('background.search') }}
+        {{ $t('pattern.search') }}
       </el-button>
       <el-button
         class="filter-item"
@@ -37,7 +37,7 @@
         icon="el-icon-edit"
         @click="handleCreate"
       >
-        {{ $t('background.add') }}
+        {{ $t('pattern.add') }}
       </el-button>
     </div>
 
@@ -52,7 +52,7 @@
       @sort-change="sortChange"
     >
       <el-table-column
-        :label="$t('background.id')"
+        :label="$t('pattern.id')"
         prop="id"
         sortable="custom"
         align="center"
@@ -64,7 +64,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('background.date')"
+        :label="$t('pattern.date')"
         width="180px"
         align="center"
       >
@@ -73,7 +73,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('background.name')"
+        :label="$t('pattern.name')"
         min-width="150px"
       >
         <template slot-scope="{row}">
@@ -84,7 +84,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('background.preview')"
+        :label="$t('pattern.preview')"
         min-width="150px"
       >
         <template slot-scope="{row}">
@@ -95,7 +95,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('background.actions')"
+        :label="$t('pattern.actions')"
         align="center"
         width="230"
         class-name="fixed-width"
@@ -106,7 +106,7 @@
             size="mini"
             @click="handleUpdate(row)"
           >
-            {{ $t('background.edit') }}
+            {{ $t('pattern.edit') }}
           </el-button>
           <el-button
             v-if="row.status!=='deleted'"
@@ -114,7 +114,7 @@
             type="danger"
             @click="handleDelete(row, $index)"
           >
-            {{ $t('background.delete') }}
+            {{ $t('pattern.delete') }}
           </el-button>
         </template>
       </el-table-column>
@@ -135,38 +135,38 @@
       <el-form
         ref="dataForm"
         :rules="rules"
-        :model="tempBackgroundData"
+        :model="tempPatternData"
         label-position="left"
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-input type="hidden" v-model="tempBackgroundData.parent" />
+        <el-input type="hidden" v-model="tempPatternData.parent" />
         <el-form-item
-          :label="$t('background.name')"
+          :label="$t('pattern.name')"
           prop="name"
         >
-          <el-input v-model="tempBackgroundData.name" />
+          <el-input v-model="tempPatternData.name" />
         </el-form-item>
 
         <el-form-item
-          :label="$t('background.file')"
+          :label="$t('pattern.file')"
           prop="file"
         >
           <el-button
             type="primary"
             @click="showUpload = true"
           >
-            {{ $t('background.file') }}
+            {{ $t('pattern.file') }}
           </el-button>
         </el-form-item>
         <el-form-item
-          :label="$t('background.preview')"
+          :label="$t('pattern.preview')"
           prop="preview"
-          v-if="tempBackgroundData.content"
+          v-if="tempPatternData.content"
         >
           <el-image
             style="width: 100px; height: 100px"
-            :src="tempBackgroundData.content"
+            :src="tempPatternData.content"
             :fit="'fill'"></el-image>
         </el-form-item>
       </el-form>
@@ -188,13 +188,13 @@
         class="dialog-footer"
       >
         <el-button @click="dialogFormVisible = false">
-          {{ $t('background.cancel') }}
+          {{ $t('pattern.cancel') }}
         </el-button>
         <el-button
           type="primary"
           @click="dialogStatus==='create'?createData():updateData()"
         >
-          {{ $t('background.confirm') }}
+          {{ $t('pattern.confirm') }}
         </el-button>
       </div>
     </el-dialog>
@@ -205,13 +205,13 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Form, MessageBox } from 'element-ui'
 import { cloneDeep } from 'lodash'
-import ApiBackground, { defaultBackgroundData } from '@/api/backgrounds'
-import { IBackgroundData } from '@/api/types'
+import ApiPattern, { defaultPatternData } from '@/api/patterns'
+import { IPatternData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
 import ImageCropUpload from '@/components/vue-image-crop-upload/upload-2.vue'
 
 @Component({
-  name: 'BackgroundTable',
+  name: 'PatternTable',
   components: {
     Pagination,
     ImageCropUpload
@@ -224,7 +224,7 @@ export default class extends Vue {
   private showUpload = false
 
   private tableKey = 0
-  private list: IBackgroundData[] = []
+  private list: IPatternData[] = []
   private total = 0
   private listLoading = true
 
@@ -259,7 +259,7 @@ export default class extends Vue {
     name: [{ required: true, message: 'name is required', trigger: 'change' }]
   }
 
-  private tempBackgroundData = defaultBackgroundData
+  private tempPatternData = defaultPatternData
 
   created() {
     this.getList()
@@ -272,10 +272,10 @@ export default class extends Vue {
     const query = Object.assign({}, this.listQuery)
     delete query.page
 
-    const { data } = await ApiBackground.getBackgrounds(query)
+    const { data } = await ApiPattern.getPatterns(query)
 
-    this.list = data.backgrounds.data
-    this.total = data.backgrounds.recordsFiltered
+    this.list = data.patterns.data
+    this.total = data.patterns.recordsFiltered
     // Just to simulate the time of the request
     setTimeout(() => {
       this.listLoading = false
@@ -308,12 +308,12 @@ export default class extends Vue {
     return sort === 'asc' ? 'ascending' : 'descending'
   }
 
-  private resetTempBackgroundData() {
-    this.tempBackgroundData = cloneDeep(defaultBackgroundData)
+  private resetTempPatternData() {
+    this.tempPatternData = cloneDeep(defaultPatternData)
   }
 
   private handleCreate() {
-    this.resetTempBackgroundData()
+    this.resetTempPatternData()
     this.dialogStatus = 'create'
     this.dialogFormVisible = true
     this.$nextTick(() => {
@@ -324,9 +324,9 @@ export default class extends Vue {
   private createData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
-        const { data } = await ApiBackground.createBackground(
-          this.tempBackgroundData.name,
-          this.tempBackgroundData.content!
+        const { data } = await ApiPattern.createPattern(
+          this.tempPatternData.name,
+          this.tempPatternData.content!
         )
         this.dialogFormVisible = false
         this.$notify({
@@ -341,7 +341,7 @@ export default class extends Vue {
   }
 
   private handleUpdate(row: any) {
-    this.tempBackgroundData = Object.assign({}, row)
+    this.tempPatternData = Object.assign({}, row)
     this.dialogStatus = 'update'
     this.dialogFormVisible = true
     this.$nextTick(() => {
@@ -352,8 +352,8 @@ export default class extends Vue {
   private updateData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
-        const tempData = Object.assign({}, this.tempBackgroundData)
-        const { data } = await ApiBackground.updateBackground(
+        const tempData = Object.assign({}, this.tempPatternData)
+        const { data } = await ApiPattern.updatePattern(
           tempData.id!,
           tempData.name,
           tempData.content!
@@ -380,7 +380,7 @@ export default class extends Vue {
         type: 'warning'
       }
     ).then(async() => {
-      const { data } = await ApiBackground.deleteBackground(row.id)
+      const { data } = await ApiPattern.deletePattern(row.id)
       this.$notify({
         title: '성공',
         message: '삭제 했습니다',
@@ -396,7 +396,7 @@ export default class extends Vue {
   }
 
   private cropSuccess(imgDataUrl: string, field: string) {
-    this.tempBackgroundData.content = imgDataUrl
+    this.tempPatternData.content = imgDataUrl
     this.$emit('crop-success', imgDataUrl, field)
   }
 

@@ -361,7 +361,6 @@ export default class extends Vue {
         type: 'warning'
       }
     ).then(async() => {
-      debugger
       const { data } = await ApiText.deleteText(row.id)
       this.$notify({
         title: '성공',

@@ -4375,6 +4375,11 @@ execa@^1.0.0:
     signal-exit "^3.0.0"
     strip-eof "^1.0.0"
 
+exif-js@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/exif-js/-/exif-js-2.3.0.tgz#9d10819bf571f873813e7640241255ab9ce1a814"
+  integrity sha1-nRCBm/Vx+HOBPnZAJBJVq5zhqBQ=
+
 expand-brackets@^2.1.4:
   version "2.1.4"
   resolved "https://registry.yarnpkg.com/expand-brackets/-/expand-brackets-2.1.4.tgz#b77735e315ce30f6b6eff0f83b04151a22449622"
@@ -8614,7 +8619,7 @@ run-queue@^1.0.0, run-queue@^1.0.3:
   dependencies:
     aproba "^1.1.1"
 
-rxjs@^6.5.3:
+rxjs@^6.5.2, rxjs@^6.5.3:
   version "6.5.5"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.5.5.tgz#c5c884e3094c8cfee31bf27eb87e54ccfc87f9ec"
   integrity sha512-WfQI+1gohdf0Dai/Bbmk5L5ItH5tYqm3ki2c5GdWhKjalzjg93N3avFjVStyZZz+A2Em+ZxKH5bNghw9UeylGQ==
@@ -10184,6 +10189,11 @@ vue-router@3.1.6, vue-router@^3.1.6:
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.1.6.tgz#45f5a3a3843e31702c061dd829393554e4328f89"
   integrity sha512-GYhn2ynaZlysZMkFE5oCHRUTqE8BWs/a9YbKpNLi0i7xD6KG1EzDqpHQmv1F5gXjr8kL5iIVS8EOtRaVUEXTqA==
 
+vue-rx@^6.0.1:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/vue-rx/-/vue-rx-6.2.0.tgz#c3b86462b252626edd16417385bb9054a3a23acb"
+  integrity sha512-tpKUcqS5IUYS+HsdbR5TlE5LL9PK4zwlplEtmMeydnbqaUTa9ciLMplJXAtFSiQw1vuURoyEJmCXqMxaVEIloQ==
+
 vue-select-image@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/vue-select-image/-/vue-select-image-1.7.0.tgz#3d158ffc436b6e84223276e461b889a95ffa9ab2"
@@ -10235,6 +10245,16 @@ vue@2.6.11, vue@>=2.0.0, vue@^2.3.3, vue@^2.5.17, vue@^2.5.22, vue@^2.6.11:
   version "2.6.11"
   resolved "https://registry.yarnpkg.com/vue/-/vue-2.6.11.tgz#76594d877d4b12234406e84e35275c6d514125c5"
   integrity sha512-VfPwgcGABbGAue9+sfrD4PuwFar7gPb1yl1UK1MwXoQPAw0BKSqWfoYCT/ThFrdEVWoI51dBuyCoiNU9bZDZxQ==
+
+vuejs-clipper@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/vuejs-clipper/-/vuejs-clipper-2.0.0.tgz#c88ef51016a59d777e9a1fa03467c3137236bd78"
+  integrity sha512-8TEMAf4ekyH2or+FMRAKm8bzUtheGr0R+wGuHa9nQpO7oKB39XVQerzZRtDXvrtdqLJ7uDYP1Ms2DpbciE0NEw==
+  dependencies:
+    core-js "^3.6.4"
+    exif-js "^2.3.0"
+    rxjs "^6.5.2"
+    vue-rx "^6.0.1"
 
 vuex-class@^0.3.2:
   version "0.3.2"

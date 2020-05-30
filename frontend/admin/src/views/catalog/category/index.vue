@@ -348,7 +348,6 @@ export default class extends Vue {
         type: 'warning'
       }
     ).then(async() => {
-      debugger
       const { data } = await ApiCategory.deleteCategory(row.id)
       this.getList()
       this.$notify({

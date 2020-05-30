@@ -24,7 +24,18 @@ import com.fasterxml.jackson.annotation.JsonValue
  * @author Vijjayy
  */
 enum class FilterOperation(private val value: String) {
-    EQUAL("eq"), NOT_EQUAL("neq"), GREATER_THAN("gt"), GREATER_THAN_OR_EQUAL_TO("gte"), LESS_THAN("lt"), LESSTHAN_OR_EQUAL_TO("lte"), IN("in"), NOT_IN("nin"), BETWEEN("btn"), CONTAINS("like");
+    EQUAL("eq"),
+    NOT_EQUAL("neq"),
+    GREATER_THAN("gt"),
+    GREATER_THAN_OR_EQUAL_TO("gte"),
+    LESS_THAN("lt"),
+    LESSTHAN_OR_EQUAL_TO("lte"),
+    IN("in"),
+    NOT_IN("nin"),
+    BETWEEN("btn"),
+    NULL("null"),
+    NOT_NULL("notnull"),
+    CONTAINS("like");
 
     @JsonValue
     override fun toString(): String {
