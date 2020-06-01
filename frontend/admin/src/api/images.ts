@@ -7,34 +7,38 @@ import {
   getImageVariable
 } from '@/api/graphql/image'
 import apolloClient from '@/utils/vue-apollo'
-import { IImageData } from '@/api/types'
+import {ICategoryData, IImageData} from '@/api/types'
 
 export const defaultImageData: IImageData = {
   id: null,
   name: '',
-  content: null
+  content: null,
+  categories: []
 }
 
 export default class ApiImage {
-  static createImage = (name: string, content: string) => {
-    console.log('Create Image')
+  static createImage = (name: string, content: string, categories: ICategoryData[]) => {
+    debugger
+    console.log('Create Image : ' + name + ' ' + categories)
     return apolloClient.mutate({
       mutation: CREATE_IMAGE,
       variables: {
         name,
-        content
+        content,
+        categories
       }
     })
   };
 
-  static updateImage = (imageId: string, name: string, content: string) => {
+  static updateImage = (imageId: string, name: string, content: string, categories: ICategoryData[]) => {
     console.log('Update Image')
     return apolloClient.mutate({
       mutation: UPDATE_IMAGE,
       variables: {
         imageId,
         name,
-        content
+        content,
+        categories
       }
     })
   };

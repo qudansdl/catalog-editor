@@ -14,6 +14,7 @@ import com.querydsl.core.types.Predicate
 import com.querydsl.core.types.dsl.ComparableExpressionBase
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.apache.commons.lang3.reflect.ConstructorUtils
+import org.apache.commons.lang3.reflect.FieldUtils
 import org.apache.commons.lang3.reflect.MethodUtils
 import org.springframework.core.convert.ConversionService
 
@@ -76,7 +77,14 @@ class QQuery(
                 }
             }
         }else {
-            val elementType = MethodUtils.invokeMethod(queryPath, "getElementType") as Class<AbstractEntity>
+            // queryPath.type
+            var elementType:Class<*>
+            try {
+                elementType = MethodUtils.invokeMethod(queryPath, "getElementType") as Class<AbstractEntity>
+            }catch(e: NoSuchMethodException)
+            {
+                elementType = MethodUtils.invokeMethod(queryPath, "getType") as Class<AbstractEntity>
+            }
             val subQClass = this.qClassService.getQClass(elementType)
 
             MethodUtils.invokeMethod(this.query, "join", queryPath, subQClass.instance)

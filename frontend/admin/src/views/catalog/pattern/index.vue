@@ -8,6 +8,11 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
+      <el-cascader
+        v-model="categories"
+        :props="categoryProps"
+        clearable
+      />
       <el-select
         v-model="listQuery.order[0].dir"
         style="width: 140px"
@@ -149,6 +154,17 @@
         </el-form-item>
 
         <el-form-item
+          :label="$t('pattern.category')"
+          prop="categories"
+        >
+          <el-cascader
+            ref="formCategory"
+            :props="categoryProps"
+            clearable
+          />
+        </el-form-item>
+
+        <el-form-item
           :label="$t('pattern.file')"
           prop="file"
         >
@@ -206,9 +222,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Form, MessageBox } from 'element-ui'
 import { cloneDeep } from 'lodash'
 import ApiPattern, { defaultPatternData } from '@/api/patterns'
-import { IPatternData } from '@/api/types'
+import { IPatternData, ICategoryData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
 import ImageCropUpload from '@/components/vue-image-crop-upload/upload-2.vue'
+import ApiCategory from '@/api/categories'
 
 @Component({
   name: 'PatternTable',
@@ -222,6 +239,29 @@ export default class extends Vue {
   @Prop({ default: 100 }) private height!: number
 
   private showUpload = false
+
+  private categories: ICategoryData[] = []
+
+  private categoryQuery = {
+    start: 0,
+    length: 0,
+    order: [{
+      column: 'created',
+      dir: 'desc'
+    }],
+    columns: []
+  }
+
+  private categoryProps = {
+    value: 'id',
+    label: 'name',
+    children: 'children',
+    leaf: 'isLeaf',
+    lazy: true,
+    multiple: true,
+    checkStrictly: true,
+    lazyLoad: this.loadNode
+  }
 
   private tableKey = 0
   private list: IPatternData[] = []
@@ -238,8 +278,9 @@ export default class extends Vue {
     }],
     columns: [{
       name: 'name',
-      operation: 'eq',
-      value: ''
+      operation: 'like',
+      value: '',
+      columns: []
     }]
   }
 
@@ -265,12 +306,44 @@ export default class extends Vue {
     this.getList()
   }
 
+  private async loadNode(node: any, resolve: any) {
+    if (node.root) {
+      const { data } = await this.getCategoryList()
+      resolve(data.categories.data)
+    } else {
+      const rslt = await ApiCategory.getCategory(node.data.id)
+      resolve(rslt.data.category.children)
+    }
+  }
+
+  private async getCategoryList() {
+    const query = JSON.parse(JSON.stringify(this.categoryQuery))
+    query.columns.push({
+      name: 'parent',
+      operation: 'null',
+      value: ''
+    })
+    return ApiCategory.getCategories(query)
+  }
+
   private async getList() {
     this.listLoading = true
     this.listQuery.start = (this.listQuery.page - 1) * this.listQuery.length
 
-    const query = Object.assign({}, this.listQuery)
+    const query = JSON.parse(JSON.stringify(this.listQuery))
     delete query.page
+    if (this.categories.length > 0) {
+      query.columns.push({
+        name: 'categories',
+        operation: '',
+        value: '',
+        columns: [{
+          name: 'id',
+          operation: 'in',
+          value: this.categories.join(',')
+        }]
+      })
+    }
 
     const { data } = await ApiPattern.getPatterns(query)
 
@@ -324,9 +397,13 @@ export default class extends Vue {
   private createData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
+        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
+        const selectedCategories = selectedNodes.map((n: any) => n.data)
+
         const { data } = await ApiPattern.createPattern(
           this.tempPatternData.name,
-          this.tempPatternData.content!
+          this.tempPatternData.content!,
+          selectedCategories
         )
         this.dialogFormVisible = false
         this.$notify({
@@ -352,11 +429,15 @@ export default class extends Vue {
   private updateData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
+        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
+        const selectedCategories = selectedNodes.map((n: any) => n.data)
+
         const tempData = Object.assign({}, this.tempPatternData)
         const { data } = await ApiPattern.updatePattern(
           tempData.id!,
           tempData.name,
-          tempData.content!
+          tempData.content!,
+          selectedCategories
         )
         this.dialogFormVisible = false
         this.$notify({

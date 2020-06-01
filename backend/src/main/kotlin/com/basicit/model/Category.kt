@@ -21,3 +21,6 @@ class Category(
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "parent")
     var children: Set<Category>?
 ) : AbstractEntity(id)
+{
+   fun isLeaf(): Boolean = (if(children != null) children?.size else 0)  == 0
+}

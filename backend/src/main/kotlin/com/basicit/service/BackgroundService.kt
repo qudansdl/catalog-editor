@@ -23,6 +23,7 @@ class BackgroundService(private val backgroundRepository: BackgroundRepository) 
       backgroundRepository.findById(backgroundId).map { currentBackground ->
           currentBackground.name = newBackground.name
           currentBackground.content = newBackground.content
+          currentBackground.categories = newBackground.categories
           backgroundRepository.save(currentBackground)
     }
 

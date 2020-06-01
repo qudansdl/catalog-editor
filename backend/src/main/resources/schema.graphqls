@@ -10,13 +10,17 @@ interface Entity {
 input CategoryInput {
   id: UUID
   name: String
+  isLeaf: Boolean
   parent: CategoryInput,
   children: [CategoryInput]
+  created: DateTime
+  updated: DateTime
 }
 
 type Category implements Entity {
   id: UUID
   name: String
+  isLeaf: Boolean
   parent: Category,
   children: [Category]
   created: DateTime
@@ -307,19 +311,55 @@ type Mutation {
   deleteTemplate(templateId: UUID!): Boolean
 
 
-  createImage(name: String, content: String): Image
-  updateImage(imageId: UUID!, name: String, content: String): Image
+  createImage(
+    name: String,
+    content: String,
+    categories: [CategoryInput]
+  ): Image
+  updateImage(
+    imageId: UUID!,
+    name: String,
+    content: String,
+    categories: [CategoryInput]
+  ): Image
   deleteImage(imageId: UUID!): Boolean
 
-  createText(name: String, content: String): Text
-  updateText(textId: UUID!, name: String, content: String): Text
+  createText(
+    name: String,
+    content: String,
+    categories: [CategoryInput]
+  ): Text
+  updateText(
+    textId: UUID!,
+    name: String,
+    content: String,
+    categories: [CategoryInput]
+  ): Text
   deleteText(textId: UUID!): Boolean
 
-  createBackground(name: String, content: String): Background
-  updateBackground(backgroundId: UUID!, name: String, content: String): Background
+  createBackground(
+    name: String,
+    content: String,
+    categories: [CategoryInput]
+  ): Background
+  updateBackground(
+    backgroundId: UUID!,
+    name: String,
+    content: String,
+    categories: [CategoryInput]
+  ): Background
   deleteBackground(backgroundId: UUID!): Boolean
 
-  createPattern(name: String, content: String): Pattern
-  updatePattern(patternId: UUID!, name: String, content: String): Pattern
+  createPattern(
+    name: String,
+    content: String,
+    categories: [CategoryInput]
+  ): Pattern
+  updatePattern(
+    patternId: UUID!,
+    name: String,
+    content: String,
+    categories: [CategoryInput]
+  ): Pattern
   deletePattern(patternId: UUID!): Boolean
 }

@@ -8,6 +8,11 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
+      <el-cascader
+        v-model="categories"
+        :props="categoryProps"
+        clearable
+      />
       <el-select
         v-model="listQuery.order[0].dir"
         style="width: 140px"
@@ -21,64 +26,6 @@
           :value="item.value"
         />
       </el-select>
-      <template v-if="categories.length > 0">
-        <el-select
-          v-model="category1.id"
-          style="width: 140px"
-          class="filter-item"
-          @change="handleCategory1"
-        >
-          <el-option
-            :key="'default'"
-            :label="'선택'"
-            :value="''"
-          />
-          <el-option
-            v-for="cate in categories"
-            :key="cate.id"
-            :label="cate.name"
-            :value="cate.id"
-          />
-        </el-select>
-        <el-select
-          v-if="category1.children.length > 0"
-          v-model="category2.id"
-          style="width: 140px"
-          class="filter-item"
-          @change="handleCategory2"
-        >
-          <el-option
-            :key="''"
-            :label="'선택'"
-            :value="''"
-          />
-          <el-option
-            v-for="cate in category1.children"
-            :key="cate.id"
-            :label="cate.name"
-            :value="cate.id"
-          />
-        </el-select>
-        <el-select
-          v-if="category2.children.length > 0"
-          v-model="category3.id"
-          style="width: 140px"
-          class="filter-item"
-          @change="handleCategory3"
-        >
-          <el-option
-            :key="''"
-            :label="'선택'"
-            :value="''"
-          />
-          <el-option
-            v-for="cate in category2.children"
-            :key="cate.id"
-            :label="cate.name"
-            :value="cate.id"
-          />
-        </el-select>
-      </template>
       <el-button
         v-waves
         class="filter-item"
@@ -211,6 +158,17 @@
         </el-form-item>
 
         <el-form-item
+          :label="$t('image.category')"
+          prop="categories"
+        >
+          <el-cascader
+            ref="formCategory"
+            :props="categoryProps"
+            clearable
+          />
+        </el-form-item>
+
+        <el-form-item
           :label="$t('image.file')"
           prop="file"
         >
@@ -265,20 +223,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator'
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { Form, MessageBox } from 'element-ui'
 import { cloneDeep } from 'lodash'
 import ApiImage, { defaultImageData } from '@/api/images'
-import ApiCategory, { defaultCategoryData } from '@/api/categories'
+import Category from '@/components/Category/index.vue'
 import { ICategoryData, IImageData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
 import ImageCropUpload from '@/components/vue-image-crop-upload/upload-2.vue'
+import ApiCategory from '@/api/categories'
 
 @Component({
   name: 'ImageTable',
   components: {
     Pagination,
-    ImageCropUpload
+    ImageCropUpload,
+    Category
   }
 })
 export default class extends Vue {
@@ -287,17 +247,7 @@ export default class extends Vue {
 
   private showUpload = false
 
-  private defaultCategoryData = defaultCategoryData
-
   private categories: ICategoryData[] = []
-  private category1: ICategoryData = defaultCategoryData
-  private category2: ICategoryData = defaultCategoryData
-  private category3: ICategoryData = defaultCategoryData
-
-  private tableKey = 0
-  private list: IImageData[] = []
-  private total = 0
-  private listLoading = true
 
   private categoryQuery = {
     start: 0,
@@ -306,12 +256,24 @@ export default class extends Vue {
       column: 'created',
       dir: 'desc'
     }],
-    columns: [{
-      name: 'parent',
-      operation: 'null',
-      value: ''
-    }]
+    columns: []
   }
+
+  private categoryProps = {
+    value: 'id',
+    label: 'name',
+    children: 'children',
+    leaf: 'isLeaf',
+    lazy: true,
+    multiple: true,
+    checkStrictly: true,
+    lazyLoad: this.loadNode
+  }
+
+  private tableKey = 0
+  private list: IImageData[] = []
+  private total = 0
+  private listLoading = true
 
   private listQuery: any = {
     page: 1,
@@ -349,42 +311,46 @@ export default class extends Vue {
 
   created() {
     this.getList()
-    this.getCategoryList()
+  }
+
+  private async loadNode(node: any, resolve: any) {
+    if (node.root) {
+      const { data } = await this.getCategoryList()
+      resolve(data.categories.data)
+    } else {
+      const rslt = await ApiCategory.getCategory(node.data.id)
+      resolve(rslt.data.category.children)
+    }
   }
 
   private async getCategoryList() {
-    const { data } = await ApiCategory.getCategories(this.categoryQuery)
-    this.categories = data.categories.data
+    const query = JSON.parse(JSON.stringify(this.categoryQuery))
+    query.columns.push({
+      name: 'parent',
+      operation: 'null',
+      value: ''
+    })
+    return ApiCategory.getCategories(query)
   }
 
   private async getList() {
     this.listLoading = true
     this.listQuery.start = (this.listQuery.page - 1) * this.listQuery.length
 
-    const query = Object.assign({}, this.listQuery)
+    const query = JSON.parse(JSON.stringify(this.listQuery))
     delete query.page
-
-    const categories = []
-    if (this.category1.id) {
-      categories.push(this.category1.id)
+    if (this.categories.length > 0) {
+      query.columns.push({
+        name: 'categories',
+        operation: '',
+        value: '',
+        columns: [{
+          name: 'id',
+          operation: 'in',
+          value: this.categories.join(',')
+        }]
+      })
     }
-    if (this.category2.id) {
-      categories.push(this.category2.id)
-    }
-    if (this.category2.id) {
-      categories.push(this.category2.id)
-    }
-
-    query.columns.push({
-      name: 'categories',
-      operation: '',
-      value: '',
-      columns: [{
-        name: 'id',
-        operation: 'in',
-        value: categories.join(',')
-      }]
-    })
 
     const { data } = await ApiImage.getImages(query)
 
@@ -394,32 +360,6 @@ export default class extends Vue {
     setTimeout(() => {
       this.listLoading = false
     }, 0.5 * 1000)
-  }
-
-  private async handleCategory1() {
-    if (this.category1.id) {
-      const { data } = await ApiCategory.getCategory(this.category1.id)
-      this.category1 = data.category
-    } else {
-      this.category2 = defaultCategoryData
-      this.category3 = defaultCategoryData
-    }
-  }
-
-  private async handleCategory2() {
-    if (this.category2.id) {
-      const { data } = await ApiCategory.getCategory(this.category2.id)
-      this.category2 = data.category
-    } else {
-      this.category3 = defaultCategoryData
-    }
-  }
-
-  private async handleCategory3() {
-    if (this.category3.id) {
-      const { data } = await ApiCategory.getCategory(this.category3.id)
-      this.category3 = data.category
-    }
   }
 
   private handleFilter() {
@@ -464,9 +404,13 @@ export default class extends Vue {
   private createData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
+        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
+        const selectedCategories = selectedNodes.map((n: any) => n.data)
+
         const { data } = await ApiImage.createImage(
           this.tempImageData.name,
-          this.tempImageData.content!
+          this.tempImageData.content!,
+          selectedCategories
         )
         this.dialogFormVisible = false
         this.$notify({
@@ -492,11 +436,15 @@ export default class extends Vue {
   private updateData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
+        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
+        const selectedCategories = selectedNodes.map((n: any) => n.data)
+
         const tempData = Object.assign({}, this.tempImageData)
         const { data } = await ApiImage.updateImage(
           tempData.id!,
           tempData.name,
-          tempData.content!
+          tempData.content!,
+          selectedCategories
         )
         this.dialogFormVisible = false
         this.$notify({

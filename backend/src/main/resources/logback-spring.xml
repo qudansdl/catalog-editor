@@ -13,6 +13,8 @@
 				<pattern>%d{HH:mm:ss.SSS} %-5level %class \(%thread\) [%logger{36}] -- %msg%n</pattern>
 			</encoder>
 		</appender>
+		<logger name="org.hibernate.SQL" level="DEBUG" />
+		<logger name="org.hibernate.type" level="TRACE" />
 		<root level="${logLevel}" additivity="false">
 			<appender-ref ref="console" />
 		</root>

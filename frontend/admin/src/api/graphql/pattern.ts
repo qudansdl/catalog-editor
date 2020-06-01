@@ -2,8 +2,8 @@ import gql from 'graphql-tag'
 import Mustache from 'mustache'
 
 export const CREATE_IMAGE = gql`
-    mutation CreatePattern($name: String, $content: String!){
-        createPattern(name: $name, content: $content) {
+    mutation CreatePattern($name: String, $content: String!, $categories: [CategoryInput]){
+        createPattern(name: $name, content: $content, categories: $categories) {
             id,
             name,
             content
@@ -12,8 +12,8 @@ export const CREATE_IMAGE = gql`
 `
 
 export const UPDATE_IMAGE = gql`
-  mutation updatePattern($patternId: UUID!, $name: String, $content: String!){
-    updatePattern(patternId: $patternId, name: $name, content: $content) {
+  mutation updatePattern($patternId: UUID!, $name: String, $content: String!, $categories: [CategoryInput]){
+    updatePattern(patternId: $patternId, name: $name, content: $content, categories: $categories) {
       id
       name
       content

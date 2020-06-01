@@ -7,7 +7,7 @@ import {
   getPatternVariable
 } from '@/api/graphql/pattern'
 import apolloClient from '@/utils/vue-apollo'
-import { IPatternData } from '@/api/types'
+import {ICategoryData, IPatternData} from '@/api/types'
 
 export const defaultPatternData: IPatternData = {
   id: null,
@@ -16,25 +16,27 @@ export const defaultPatternData: IPatternData = {
 }
 
 export default class ApiPattern {
-  static createPattern = (name: string, content: string) => {
+  static createPattern = (name: string, content: string, categories: ICategoryData[]) => {
     console.log('Create Pattern')
     return apolloClient.mutate({
       mutation: CREATE_IMAGE,
       variables: {
         name,
-        content
+        content,
+        categories
       }
     })
   };
 
-  static updatePattern = (patternId: string, name: string, content: string) => {
+  static updatePattern = (patternId: string, name: string, content: string, categories: ICategoryData[]) => {
     console.log('Update Pattern')
     return apolloClient.mutate({
       mutation: UPDATE_IMAGE,
       variables: {
         patternId,
         name,
-        content
+        content,
+        categories
       }
     })
   };

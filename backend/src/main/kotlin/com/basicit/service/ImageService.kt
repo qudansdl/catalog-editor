@@ -23,6 +23,7 @@ class ImageService(private val imageRepository: ImageRepository) {
       imageRepository.findById(imageId).map { currentImage ->
           currentImage.name = newImage.name
           currentImage.content = newImage.content
+          currentImage.categories = newImage.categories
           imageRepository.save(currentImage)
     }
 

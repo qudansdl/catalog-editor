@@ -7,7 +7,7 @@ import {
   getTextVariable
 } from '@/api/graphql/text'
 import apolloClient from '@/utils/vue-apollo'
-import { ITextData } from '@/api/types'
+import {ICategoryData, ITextData} from '@/api/types'
 
 export const defaultTextData: ITextData = {
   id: null,
@@ -16,25 +16,27 @@ export const defaultTextData: ITextData = {
 }
 
 export default class ApiText {
-  static createText = (name: string, content: string) => {
+  static createText = (name: string, content: string, categories: ICategoryData[]) => {
     console.log('Create Text')
     return apolloClient.mutate({
       mutation: CREATE_TEXT,
       variables: {
         name,
-        content
+        content,
+        categories
       }
     })
   };
 
-  static updateText = (textId: string, name: string, content: string) => {
+  static updateText = (textId: string, name: string, content: string, categories: ICategoryData[]) => {
     console.log('Update Text')
     return apolloClient.mutate({
       mutation: UPDATE_TEXT,
       variables: {
         textId,
         name,
-        content
+        content,
+        categories
       }
     })
   };

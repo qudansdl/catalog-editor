@@ -36,11 +36,8 @@ export const GET_CATEGORIES = gql`query($input: DataTablesInput) {
         data {
             id
             name
+            isLeaf
             parent {
-              id
-              name
-            }
-            children {
               id
               name
             }
@@ -59,27 +56,9 @@ export const GET_CATEGORY_BY_ID = gql`query($categoryId: UUID) {
     children {
       id
       name
+      isLeaf
       created
       updated
-      children {
-        id
-        name
-        created
-        updated
-        children {
-          id
-          name
-          created
-          updated
-          children {
-            id
-            name
-            created
-            updated
-          }
-        }
-      }
     }
-
   }
 }`

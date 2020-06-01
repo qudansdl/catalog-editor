@@ -23,6 +23,7 @@ class PatternService(private val patternRepository: PatternRepository) {
       patternRepository.findById(patternId).map { currentPattern ->
           currentPattern.name = newPattern.name
           currentPattern.content = newPattern.content
+          currentPattern.categories = newPattern.categories
           patternRepository.save(currentPattern)
     }
 

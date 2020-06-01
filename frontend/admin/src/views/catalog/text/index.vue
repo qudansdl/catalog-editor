@@ -8,6 +8,11 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
+      <el-cascader
+        v-model="categories"
+        :props="categoryProps"
+        clearable
+      />
       <el-select
         v-model="listQuery.order[0].dir"
         style="width: 140px"
@@ -147,6 +152,16 @@
         >
           <el-input v-model="tempTextData.name" />
         </el-form-item>
+        <el-form-item
+          :label="$t('text.category')"
+          prop="categories"
+        >
+          <el-cascader
+            ref="formCategory"
+            :props="categoryProps"
+            clearable
+          />
+        </el-form-item>
 
         <el-form-item
           :label="$t('text.content')"
@@ -182,9 +197,10 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Form, MessageBox } from 'element-ui'
 import { cloneDeep } from 'lodash'
 import ApiText, { defaultTextData } from '@/api/texts'
-import { ITextData } from '@/api/types'
+import { ICategoryData, ITextData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
 import Tinymce from '@/components/Tinymce/index.vue'
+import ApiCategory from '@/api/categories'
 
 @Component({
   name: 'TextTable',
@@ -195,6 +211,29 @@ import Tinymce from '@/components/Tinymce/index.vue'
 })
 export default class extends Vue {
   private tinymceActive = true
+
+  private categories: ICategoryData[] = []
+
+  private categoryQuery = {
+    start: 0,
+    length: 0,
+    order: [{
+      column: 'created',
+      dir: 'desc'
+    }],
+    columns: []
+  }
+
+  private categoryProps = {
+    value: 'id',
+    label: 'name',
+    children: 'children',
+    leaf: 'isLeaf',
+    lazy: true,
+    multiple: true,
+    checkStrictly: true,
+    lazyLoad: this.loadNode
+  }
 
   private tableKey = 0
   private list: ITextData[] = []
@@ -211,8 +250,9 @@ export default class extends Vue {
     }],
     columns: [{
       name: 'name',
-      operation: 'eq',
-      value: ''
+      operation: 'like',
+      value: '',
+      columns: []
     }]
   }
 
@@ -246,12 +286,44 @@ export default class extends Vue {
     this.tinymceActive = true
   }
 
+  private async loadNode(node: any, resolve: any) {
+    if (node.root) {
+      const { data } = await this.getCategoryList()
+      resolve(data.categories.data)
+    } else {
+      const rslt = await ApiCategory.getCategory(node.data.id)
+      resolve(rslt.data.category.children)
+    }
+  }
+
+  private async getCategoryList() {
+    const query = JSON.parse(JSON.stringify(this.categoryQuery))
+    query.columns.push({
+      name: 'parent',
+      operation: 'null',
+      value: ''
+    })
+    return ApiCategory.getCategories(query)
+  }
+
   private async getList() {
     this.listLoading = true
     this.listQuery.start = (this.listQuery.page - 1) * this.listQuery.length
 
-    const query = Object.assign({}, this.listQuery)
+    const query = JSON.parse(JSON.stringify(this.listQuery))
     delete query.page
+    if (this.categories.length > 0) {
+      query.columns.push({
+        name: 'categories',
+        operation: '',
+        value: '',
+        columns: [{
+          name: 'id',
+          operation: 'in',
+          value: this.categories.join(',')
+        }]
+      })
+    }
 
     const { data } = await ApiText.getTexts(query)
 
@@ -305,9 +377,13 @@ export default class extends Vue {
   private createData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
+        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
+        const selectedCategories = selectedNodes.map((n: any) => n.data)
+
         const { data } = await ApiText.createText(
           this.tempTextData.name,
-          this.tempTextData.content!
+          this.tempTextData.content!,
+          selectedCategories
         )
         this.dialogFormVisible = false
         this.$notify({
@@ -333,11 +409,15 @@ export default class extends Vue {
   private updateData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
+        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
+        const selectedCategories = selectedNodes.map((n: any) => n.data)
+
         const tempData = Object.assign({}, this.tempTextData)
         const { data } = await ApiText.updateText(
           tempData.id!,
           tempData.name,
-          tempData.content!
+          tempData.content!,
+          selectedCategories
         )
         this.dialogFormVisible = false
         this.$notify({

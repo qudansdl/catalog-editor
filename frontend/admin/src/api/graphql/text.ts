@@ -2,8 +2,8 @@ import gql from 'graphql-tag'
 import Mustache from 'mustache'
 
 export const CREATE_TEXT = gql`
-    mutation CreateText($name: String, $content: String!){
-        createText(name: $name, content: $content) {
+    mutation CreateText($name: String, $content: String!, $categories: [CategoryInput]){
+        createText(name: $name, content: $content, categories: $categories) {
             id,
             name,
             content
@@ -12,8 +12,8 @@ export const CREATE_TEXT = gql`
 `
 
 export const UPDATE_TEXT = gql`
-  mutation updateText($textId: UUID!, $name: String, $content: String!){
-    updateText(textId: $textId, name: $name, content: $content) {
+  mutation updateText($textId: UUID!, $name: String, $content: String!, $categories: [CategoryInput]){
+    updateText(textId: $textId, name: $name, content: $content, categories: $categories) {
       id
       name
       content

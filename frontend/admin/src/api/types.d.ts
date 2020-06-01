@@ -21,6 +21,7 @@ export interface IImageData {
   id: string | null
   name: string
   content: string | null
+  categories: ICategoryData[] | null | undefined
 }
 
 

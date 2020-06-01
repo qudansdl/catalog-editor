@@ -3,11 +3,10 @@ import {
   DELETE_BACKGROUND,
   GET_BACKGROUND_BY_ID,
   GET_BACKGROUNDS,
-  UPDATE_BACKGROUND,
-  getBackgroundVariable
+  UPDATE_BACKGROUND
 } from '@/api/graphql/background'
 import apolloClient from '@/utils/vue-apollo'
-import { IBackgroundData } from '@/api/types'
+import { IBackgroundData, ICategoryData } from '@/api/types'
 
 export const defaultBackgroundData: IBackgroundData = {
   id: null,
@@ -16,25 +15,27 @@ export const defaultBackgroundData: IBackgroundData = {
 }
 
 export default class ApiBackground {
-  static createBackground = (name: string, content: string) => {
+  static createBackground = (name: string, content: string, categories: ICategoryData[]) => {
     console.log('Create Background')
     return apolloClient.mutate({
       mutation: CREATE_BACKGROUND,
       variables: {
         name,
-        content
+        content,
+        categories
       }
     })
   };
 
-  static updateBackground = (backgroundId: string, name: string, content: string) => {
+  static updateBackground = (backgroundId: string, name: string, content: string, categories: ICategoryData[]) => {
     console.log('Update Background')
     return apolloClient.mutate({
       mutation: UPDATE_BACKGROUND,
       variables: {
         backgroundId,
         name,
-        content
+        content,
+        categories
       }
     })
   };

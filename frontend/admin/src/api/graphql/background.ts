@@ -2,8 +2,8 @@ import gql from 'graphql-tag'
 import Mustache from 'mustache'
 
 export const CREATE_BACKGROUND = gql`
-    mutation CreateBackground($name: String, $content: String!){
-        createBackground(name: $name, content: $content) {
+    mutation CreateBackground($name: String, $content: String!, $categories: [CategoryInput]){
+        createBackground(name: $name, content: $content, categories: $categories) {
             id,
             name,
             content
@@ -12,8 +12,8 @@ export const CREATE_BACKGROUND = gql`
 `
 
 export const UPDATE_BACKGROUND = gql`
-  mutation updateBackground($backgroundId: UUID!, $name: String, $content: String!){
-    updateBackground(backgroundId: $backgroundId, name: $name, content: $content) {
+  mutation updateBackground($backgroundId: UUID!, $name: String, $content: String!, $categories: [CategoryInput]){
+    updateBackground(backgroundId: $backgroundId, name: $name, content: $content, categories: $categories) {
       id
       name
       content

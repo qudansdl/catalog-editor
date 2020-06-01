@@ -26,6 +26,7 @@ class TextService(private val textRepository: TextRepository) {
       textRepository.findById(textId).map { currentText ->
           currentText.name = newText.name
           currentText.content = newText.content
+          currentText.categories = newText.categories
 
           textRepository.save(currentText)
     }

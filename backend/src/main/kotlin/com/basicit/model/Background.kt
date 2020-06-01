@@ -18,8 +18,8 @@ class Background(
         var name: String? = null,
 
         @ManyToMany(fetch = FetchType.EAGER)
-        @JoinTable(name = "image_categories",
-                joinColumns = [JoinColumn(name = "image_id", nullable = false, updatable = false)],
+        @JoinTable(name = "background_categories",
+                joinColumns = [JoinColumn(name = "background_id", nullable = false, updatable = false)],
                 inverseJoinColumns = [JoinColumn(name = "category_id", nullable = false, updatable = false)]
         )
         @Fetch(FetchMode.SELECT)
