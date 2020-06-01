@@ -41,17 +41,17 @@ export default class CroppImage extends Vue {
 
 
   cropImage() {
-    const cropImg = this.$refs.cropper.getCroppedCanvas().toDataURL();
+    const cropImg = (this.$refs.cropper as any).getCroppedCanvas().toDataURL();
     this.$emit('apply', { src: cropImg, type: 'image' });
     this.showDialog = false;
   }
 
   get image() {
-    return this.value.image;
+    return (this.value as any).image;
   }
 
   set image(image) {
-    const newValue = cloneDeep(this.value);
+    const newValue = cloneDeep(this.value) as any;
     newValue.image = image;
 
     this.$emit('input', newValue);

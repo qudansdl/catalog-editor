@@ -131,6 +131,7 @@
     />
 
     <el-dialog
+      width="75%"
       :title="textMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
     >
@@ -140,7 +141,7 @@
         :model="tempTextData"
         label-position="left"
         label-width="100px"
-        style="width: 400px; margin-left:50px;"
+        style="width: 90%; margin-left:10px;"
       >
         <el-input
           v-model="tempTextData.parent"
@@ -167,10 +168,9 @@
           :label="$t('text.content')"
           prop="content"
         >
-          <tinymce
-            v-if="tinymceActive"
-            v-model="tempTextData.content"
-            :height="400"
+          <quill-editor
+            :content="tempTextData.content"
+            @change="onEditorChange($event)"
           />
         </el-form-item>
       </el-form>
@@ -310,8 +310,9 @@ export default class extends Vue {
     this.listLoading = true
     this.listQuery.start = (this.listQuery.page - 1) * this.listQuery.length
 
+    console.log('aaaaa')
     const query = JSON.parse(JSON.stringify(this.listQuery))
-    delete query.page
+    console.log('aaaaa', query)
     if (this.categories.length > 0) {
       query.columns.push({
         name: 'categories',
@@ -374,6 +375,11 @@ export default class extends Vue {
     })
   }
 
+  onEditorChange(quill: any, html: string, text: string) {
+    console.log('editor change!', quill, html, text)
+    this.tempTextData.content = html
+  }
+
   private createData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
@@ -413,6 +419,7 @@ export default class extends Vue {
         const selectedCategories = selectedNodes.map((n: any) => n.data)
 
         const tempData = Object.assign({}, this.tempTextData)
+        debugger
         const { data } = await ApiText.updateText(
           tempData.id!,
           tempData.name,

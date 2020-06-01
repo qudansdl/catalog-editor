@@ -6,7 +6,7 @@
       bordered
       content-class="bg-grey-1"
       side="right"
-      width="50"
+      :width="50"
     >
       <q-layout view="lhr lpr lfr">
 

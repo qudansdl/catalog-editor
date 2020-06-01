@@ -37,10 +37,12 @@ export default boot(async ({ app }) => {
   try {
     await import(/* webpackInclude: /(de|en-us)\.js$/ */ `quasar/lang/${langIso}`).then(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (l) => { (Quasar as any).lang.set(l.default); },
+      (l) => {
+        (Quasar as any).lang.set(l.default);
+        },
     );
   } catch (err) {
-    console.error('Requested Quasar Language Pack does not exist');
+    console.warn('Requested Quasar Language Pack does not exist');
   }
 });
 
