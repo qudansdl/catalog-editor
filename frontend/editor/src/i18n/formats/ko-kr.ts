@@ -4,5 +4,4 @@ const dateTime = {
   },
 };
 
-// eslint-disable-next-line import/prefer-default-export
 export { dateTime };

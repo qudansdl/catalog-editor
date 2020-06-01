@@ -73,7 +73,7 @@ export default {
     VueSelectImage,
   },
   methods: {
-    async onSelectImage(img) {
+    onSelectImage(img) {
       this.selected = img;
       imageToDataUri(img.src, (err, uri) => {
         this.$emit('imageSelected', uri);

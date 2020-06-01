@@ -2,8 +2,9 @@ const path = require('path')
 
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
+const { configure } = require('quasar/wrappers');
 
-module.exports = function (ctx) {
+module.exports = configure(function (ctx) {
   return {
     sourceFiles: {
       router: 'src/router/index.ts',
@@ -211,4 +212,4 @@ module.exports = function (ctx) {
       },
     },
   };
-};
+});

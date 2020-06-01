@@ -61,7 +61,7 @@ export default {
       this.file = null;
     },
 
-    async onSelectImage(img) {
+    onSelectImage(img) {
       this.selected = img;
       this.$emit('imageSelected', img.src);
     },

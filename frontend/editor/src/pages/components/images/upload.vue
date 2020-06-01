@@ -57,11 +57,11 @@ export default {
 
       const img = { id: uuidv4().toUpperCase(), src: content };
       this.images.push(img);
-      await this.onSelectImage(img);
+      this.onSelectImage(img);
       this.file = null;
     },
 
-    async onSelectImage(img) {
+    onSelectImage(img) {
       this.seleted = img;
       this.$emit('imageSelected', img.src);
     },

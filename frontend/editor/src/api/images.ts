@@ -4,8 +4,7 @@ import {
   DELETE_IMAGE,
   GET_IMAGE_BY_ID,
   GET_IMAGES,
-  UPDATE_IMAGE,
-  getImageVariable
+  UPDATE_IMAGE
 } from '@/api/graphql/image'
 import { IImageData } from '@/api/types'
 import Vue from 'vue';

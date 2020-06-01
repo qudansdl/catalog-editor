@@ -152,7 +152,7 @@ export default class Index extends Vue {
   public status!: Configuration;
 
   @Mutation('SET_STATUS', { namespace: 'AppStatus' })
-  public updateStatus!: Function;
+  public updateStatus!: any;
 
   @State('history', { namespace: 'AppStatus' })
   public history!: Configuration[];
