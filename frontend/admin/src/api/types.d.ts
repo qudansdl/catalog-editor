@@ -1,3 +1,10 @@
+export interface ITemplateData {
+  id: string | null
+  name: string
+  description: string | null
+}
+
+
 export interface ITextData {
   id: string | null
   name: string

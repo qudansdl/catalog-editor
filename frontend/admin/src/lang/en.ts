@@ -165,6 +165,20 @@ export default {
     cancel: '취소',
     confirm: '확인'
   },
+  template: {
+    search: '검색',
+    add: '추가',
+    id: 'ID',
+    date: '날짜',
+    name: '이름',
+    category: '카테고리',
+    description: '설명',
+    actions: '작업',
+    edit: '수정',
+    delete: '삭제',
+    cancel: '취소',
+    confirm: '확인'
+  },
   documentation: {
     documentation: '문서',
     github: '깃허브 링크'

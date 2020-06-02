@@ -210,8 +210,6 @@ import ApiCategory from '@/api/categories'
   }
 })
 export default class extends Vue {
-  private tinymceActive = true
-
   private categories: ICategoryData[] = []
 
   private categoryQuery = {
@@ -278,14 +276,6 @@ export default class extends Vue {
     this.getList()
   }
 
-  deactivated() {
-    this.tinymceActive = false
-  }
-
-  activated() {
-    this.tinymceActive = true
-  }
-
   private async loadNode(node: any, resolve: any) {
     if (node.root) {
       const { data } = await this.getCategoryList()
@@ -310,9 +300,8 @@ export default class extends Vue {
     this.listLoading = true
     this.listQuery.start = (this.listQuery.page - 1) * this.listQuery.length
 
-    console.log('aaaaa')
     const query = JSON.parse(JSON.stringify(this.listQuery))
-    console.log('aaaaa', query)
+    delete query.page
     if (this.categories.length > 0) {
       query.columns.push({
         name: 'categories',
@@ -330,10 +319,7 @@ export default class extends Vue {
 
     this.list = data.texts.data
     this.total = data.texts.recordsFiltered
-    // Just to simulate the time of the request
-    setTimeout(() => {
-      this.listLoading = false
-    }, 0.5 * 1000)
+    this.listLoading = false
   }
 
   private handleFilter() {
@@ -375,9 +361,9 @@ export default class extends Vue {
     })
   }
 
-  onEditorChange(quill: any, html: string, text: string) {
-    console.log('editor change!', quill, html, text)
-    this.tempTextData.content = html
+  onEditorChange(quill: any) {
+    console.log('editor change!', quill, quill.html, quill.text)
+    this.tempTextData.content = quill.html
   }
 
   private createData() {
@@ -419,7 +405,6 @@ export default class extends Vue {
         const selectedCategories = selectedNodes.map((n: any) => n.data)
 
         const tempData = Object.assign({}, this.tempTextData)
-        debugger
         const { data } = await ApiText.updateText(
           tempData.id!,
           tempData.name,
