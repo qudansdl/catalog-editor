@@ -5,6 +5,12 @@ export interface ITextData {
   content: string | null
 }
 
+export interface IPatternData {
+  id: string | null
+  name: string
+  content: string | null
+}
+
 export interface IBackgroundData {
   id: string | null
   name: string

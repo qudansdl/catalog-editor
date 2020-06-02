@@ -30,41 +30,45 @@
   </div>
 </template>
 
-<script>
-import VueSelectImage from '@/components/VueSelectImage/VueSelectImage.vue';
-import { v4 as uuidv4 } from 'uuid';
 
-import imageToDataUri from '@/utils/image-to-data-uri';
-import ApiImage from '@/api/images';
-import { Vue } from 'vue-property-decorator';
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
 
-export default {
-  data() {
-    return {
-      images: [],
-      file: null,
-      selected: null,
-    };
-  },
+import VueSelectImage from "@/components/VueSelectImage/VueSelectImage.vue";
+import imageToDataUri from "@/utils/image-to-data-uri";
+import {v4 as uuidv4} from "uuid";
+import { IImageData } from '@/api/types';
+
+@Component({
   components: {
-    VueSelectImage,
-  },
-  methods: {
-    async uploadFile() {
-      const { data } = await ApiImage.uploadImages(this.file);
+    VueSelectImage
+  }
+})
+export default class UploadImage extends Vue {
+  private images: IImageData[] = []
+  private file: any = null
+  private selected: IImageData | null = null
 
-      const { content } = data.createImage;
 
-      const img = { id: uuidv4().toUpperCase(), src: content };
-      this.images.push(img);
-      this.onSelectImage(img);
-      this.file = null;
-    },
+  uploadFile() {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const dataURI = e.target.result;
+      if (dataURI) {
+        const img = { id: uuidv4().toUpperCase(), content: dataURI } as IImageData;
+        this.images.push(img);
+        this.onSelectImage(img);
+        this.file = null;
+      }
+    };
 
-    onSelectImage(img) {
-      this.seleted = img;
-      this.$emit('imageSelected', img.src);
-    },
-  },
+    // read blob url from file data
+    reader.readAsDataURL(this.file);
+  }
+
+  onSelectImage(img: IImageData) {
+    this.selected = img;
+    this.$emit('imageSelected', img.content);
+  }
 };
 </script>

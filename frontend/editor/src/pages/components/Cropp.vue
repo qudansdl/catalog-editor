@@ -2,7 +2,7 @@
   <q-dialog
     v-model="showDialog"
     persistent
-    :maximized="maximizedToggle"
+    :maximized="true"
     transition-show="slide-up"
     transition-hide="slide-down"
   >

@@ -24,9 +24,9 @@ import { Component, Vue } from 'vue-property-decorator';
 export default class WriteText extends Vue {
   content = '';
 
-  onEditorChange(quill, html, text) {
-    console.log('editor change!', quill, html, text)
-    this.$emit('textSelected', html);
+  onEditorChange(quill) {
+    console.log('editor change!', quill, quill.html, quill.text)
+    this.$emit('textSelected', quill.html);
   }
 };
 </script>

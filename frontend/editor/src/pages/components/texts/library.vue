@@ -38,7 +38,7 @@
         <div class="col">
           <q-card-section>
             <q-list bordered separator>
-              <q-item clickable v-ripple v-for="text in texts" :key="text.id">
+              <q-item clickable v-ripple v-for="text in texts" :key="text.id" @click="textSelected(text)">
                 <q-item-section>{{text.content}}</q-item-section>
               </q-item>
             </q-list>
@@ -61,7 +61,7 @@ export default class SelectText extends Vue {
 
   categories: ICategoryData[] = []
 
-  private texts: ITextData[] = {}
+  private texts: ITextData[] = []
 
   isLoading = false
   private categoryQuery = {
@@ -88,6 +88,9 @@ export default class SelectText extends Vue {
     return ` ${count} 선택됨`
   }
 
+  textSelected (text: ITextData) {
+    this.$emit('textSelected', text.content);
+  }
 
   private async getList() {
     this.isLoading = true

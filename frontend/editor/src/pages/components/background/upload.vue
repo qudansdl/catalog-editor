@@ -18,53 +18,57 @@
         </div>
       </div>
       <div class="row q-col-gutter-xs">
-          <q-card-section>
-            <vue-select-image
-              :dataImages="images"
-              :w="'250px'"
-              :h="'200px'"
-              @onselectimage="onSelectImage"/>
-          </q-card-section>
+        <q-card-section>
+          <vue-select-image
+            :dataImages="images"
+            :w="'250px'"
+            :h="'200px'"
+            @onselectimage="onSelectImage"/>
+        </q-card-section>
       </div>
     </q-card>
   </div>
 </template>
 
-<script>
-import VueSelectImage from '@/components/VueSelectImage/VueSelectImage.vue';
 
-import { v4 as uuidv4 } from 'uuid';
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
 
-import imageToDataUri from '@/utils/image-to-data-uri';
-import ApiImage from '@/api/images';
+import VueSelectImage from "@/components/VueSelectImage/VueSelectImage.vue";
+import imageToDataUri from "@/utils/image-to-data-uri";
+import { v4 as uuidv4 } from "uuid";
+import { IBackgroundData } from '@/api/types';
 
-export default {
-  data() {
-    return {
-      images: [],
-      file: null,
-      selected: null,
-    };
-  },
+@Component({
   components: {
-    VueSelectImage,
-  },
-  methods: {
-    async uploadFile() {
-      const { data } = await ApiImage.uploadImages(this.file);
+    VueSelectImage
+  }
+})
+export default class UploadImage extends Vue {
+  private images: IBackgroundData[] = []
+  private file: any = null
+  private selected: IBackgroundData | null = null
 
-      const { content } = data.createImage;
 
-      const img = { id: uuidv4().toUpperCase(), src: content };
-      this.images.push(img);
-      this.onSelectImage(img);
-      this.file = null;
-    },
+  uploadFile() {
+    const reader = new FileReader();
+    reader.onload = (e: any) => {
+      const dataURI = e.target.result;
+      if (dataURI) {
+        const img = { id: uuidv4().toUpperCase(), content: dataURI } as IBackgroundData;
+        this.images.push(img);
+        this.onSelectImage(img);
+        this.file = null;
+      }
+    };
 
-    onSelectImage(img) {
-      this.selected = img;
-      this.$emit('imageSelected', img.src);
-    },
-  },
+    // read blob url from file data
+    reader.readAsDataURL(this.file);
+  }
+
+  onSelectImage(img: IBackgroundData) {
+    this.selected = img;
+    this.$emit('imageSelected', img.content);
+  }
 };
 </script>

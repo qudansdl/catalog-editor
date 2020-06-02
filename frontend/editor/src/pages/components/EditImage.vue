@@ -90,7 +90,7 @@ export default class EditImage extends Vue {
     this.showDialog = false;
   }
 
-  applyCroppedImage(cropedImage: string) {
+  applyCroppedImage(cropedImage: any) {
     this.$emit('apply', { src: cropedImage.src, type: 'image' });
     this.cropp.show = false;
     this.showDialog = false;

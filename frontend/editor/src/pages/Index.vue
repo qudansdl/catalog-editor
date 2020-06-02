@@ -6,20 +6,20 @@
       bordered
       content-class="bg-grey-1"
       side="right"
-      :width="50"
+      class="right-menu"
     >
       <q-layout view="lhr lpr lfr">
 
         <q-header elevated height-hint="98" class="bg-white text-primary">
           <q-list>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" :label="$q.screen.gt.md ? '글자' : ''" icon="text_fields" @click="showEditText"/>
+              <q-btn flat color="primary" icon="text_fields" @click="showEditText"/>
             </q-item>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" :label="$q.screen.gt.md ? '그림' : ''" icon="image_search" @click="image.show = true"/>
+              <q-btn flat color="primary" icon="image_search" @click="image.show = true"/>
             </q-item>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" :label="$q.screen.gt.md ? '배경' : ''" icon="grid_on" @click="background.show = true"/>
+              <q-btn flat color="primary" icon="grid_on" @click="background.show = true"/>
             </q-item>
           </q-list>
         </q-header>
@@ -27,28 +27,27 @@
         <q-footer elevated class="bg-white text-primary">
           <q-list>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" :label="$q.screen.gt.md ? 'Undo' : ''" icon="undo" @click="undo" :disable="changeIndex == 0"/>
+              <q-btn flat color="primary" icon="undo" @click="undo" :disable="changeIndex == 0"/>
             </q-item>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" :label="$q.screen.gt.md ? 'Redo' : ''" icon="redo" @click="redo" :disable="changeIndex + 1 >= history.length"/>
+              <q-btn flat color="primary" icon="redo" @click="redo" :disable="changeIndex + 1 >= history.length"/>
             </q-item>
             <q-item v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat :disable="!showDelete"  color="primary" :label="$q.screen.gt.md ? '삭제' : ''" icon="delete" @click="deleteSelected()"/>
+              <q-btn flat :disable="!showDelete"  color="primary" icon="delete" @click="deleteSelected()"/>
             </q-item>
             <q-separator dark inset  color="orange" />
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" :label="$q.screen.gt.md ? '저장' : ''" icon="save_alt" />
+              <q-btn flat color="primary" icon="save_alt" />
             </q-item>
             <q-separator dark inset  color="orange" />
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" :label="$q.screen.gt.md ? '템플릿' : ''" icon="file_copy" />
+              <q-btn flat color="primary" icon="file_copy" />
             </q-item>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
               <q-btn
                 flat
                 color="primary"
                 icon="menu"
-                :label="$q.screen.gt.md ? '감추기' : ''"
                 @click="showMenu  = !showMenu"
               />
             </q-item>
@@ -343,8 +342,8 @@ export default class Index extends Vue {
     border: 8px solid #ccc;
     overflow: hidden;
   }
-  .img-url {
-    display: flex;
+  .right-menu {
+    width: calc(100% - 80px);
   }
   button {
     background: none;

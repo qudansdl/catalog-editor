@@ -1,84 +1,145 @@
 <template>
-  <div class="layout-padding">
-    <vue-select-image
-      :dataImages="images"
-      :w="'250px'"
-      :h="'200px'"
-      @onselectimage="onSelectImage"/>
+  <div class="q-pa-md">
+    <q-card>
+      <div class="row q-col-gutter-xs">
+        <div class="col">
+          <q-card-section>
+            <multiselect
+              v-model="selectedCategories"
+              id="ajax"
+              label="name"
+              track-by="id"
+              placeholder="Type to search"
+              open-direction="bottom"
+              :options="categories"
+              :multiple="true"
+              :searchable="true"
+              :loading="isLoading"
+              :internal-search="false"
+              :clear-on-select="false"
+              :close-on-select="false"
+              :options-limit="300"
+              :limit="10"
+              :limit-text="limitText"
+              :max-height="600"
+              :show-no-results="false"
+              :hide-selected="true"
+              @select="getList"
+              @search-change="getCategories">
+              <template slot="tag" slot-scope="{ option, remove }"><span class="custom__tag"><span>{{ option.name }}</span><span class="custom__remove" @click="remove(option)">❌</span></span></template>
+              <template slot="clear" slot-scope="props">
+                <div class="multiselect__clear" v-if="selectedCategories.length" @mousedown.prevent.stop="clearAll(props.search)"></div>
+              </template><span slot="noResult">Oops! No elements found. Consider changing the search query.</span>
+            </multiselect>
+          </q-card-section>
+        </div>
+      </div>
+      <div class="row q-col-gutter-xs">
+        <div class="col">
+          <q-card-section>
+            <vue-select-image
+              :dataImages="patterns"
+              :w="'250px'"
+              :h="'200px'"
+              @onselectimage="onSelectImage"/>
+          </q-card-section>
+        </div>
+      </div>
+    </q-card>
   </div>
+
 </template>
 
-<script>
-import ptn1 from '@/assets/img/pattern/pattern1.jpg';
-import ptn2 from '@/assets/img/pattern/pattern2.jpg';
-import ptn3 from '@/assets/img/pattern/pattern3.jpg';
-import ptn4 from '@/assets/img/pattern/pattern4.png';
-import ptn5 from '@/assets/img/pattern/1.jpg';
-import ptn6 from '@/assets/img/pattern/2.jpg';
-import ptn7 from '@/assets/img/pattern/images.jpg';
 
-import VueSelectImage from '@/components/VueSelectImage/VueSelectImage.vue';
+<script lang="ts">
+  import { Component, Vue } from 'vue-property-decorator';
+  import { IPatternData, ICategoryData } from '@/api/types'
+  import ApiCategory from '@/api/categories';
+  import VueSelectImage from "@/components/VueSelectImage/VueSelectImage.vue";
+  import imageToDataUri from "@/utils/image-to-data-uri";
+  import ApiPattern from "@/api/patterns";
 
-import imageToDataUri from '@/utils/image-to-data-uri';
+  @Component({
+    components: {
+      VueSelectImage
+    }
+  })
+  export default class SelectImage extends Vue {
+    private selectedCategories: ICategoryData[] = []
 
-export default {
-  data() {
-    return {
-      images: [
-        { id: `${ptn1}1`, src: ptn1, alt: ptn1 },
-        { id: `${ptn2}2`, src: ptn2, alt: ptn2 },
-        { id: `${ptn3}3`, src: ptn3, alt: ptn3 },
-        { id: `${ptn4}4`, src: ptn4, alt: ptn4 },
-        { id: `${ptn5}5`, src: ptn5, alt: ptn5 },
-        { id: `${ptn6}6`, src: ptn6, alt: ptn6 },
-        { id: `${ptn7}7`, src: ptn7, alt: ptn7 },
+    private categories: ICategoryData[] = []
 
-        { id: `${ptn1}8`, src: ptn1, alt: ptn1 },
-        { id: `${ptn2}9`, src: ptn2, alt: ptn2 },
-        { id: `${ptn3}10`, src: ptn3, alt: ptn3 },
-        { id: `${ptn4}11`, src: ptn4, alt: ptn4 },
-        { id: `${ptn5}12`, src: ptn5, alt: ptn5 },
-        { id: `${ptn6}13`, src: ptn6, alt: ptn6 },
-        { id: `${ptn7}14`, src: ptn7, alt: ptn7 },
+    private patterns: IPatternData[] = []
+    private selected: IPatternData | null = null
 
-        { id: `${ptn1}15`, src: ptn1, alt: ptn1 },
-        { id: `${ptn2}16`, src: ptn2, alt: ptn2 },
-        { id: `${ptn3}17`, src: ptn3, alt: ptn3 },
-        { id: `${ptn4}18`, src: ptn4, alt: ptn4 },
-        { id: `${ptn5}19`, src: ptn5, alt: ptn5 },
-        { id: `${ptn6}20`, src: ptn6, alt: ptn6 },
-        { id: `${ptn7}21`, src: ptn7, alt: ptn7 },
+    isLoading = false
+    private categoryQuery = {
+      start: 0,
+      length: 0,
+      order: [{
+        column: 'created',
+        dir: 'desc'
+      }],
+      columns: []
+    }
 
-        { id: `${ptn1}22`, src: ptn1, alt: ptn1 },
-        { id: `${ptn2}23`, src: ptn2, alt: ptn2 },
-        { id: `${ptn3}24`, src: ptn3, alt: ptn3 },
-        { id: `${ptn4}25`, src: ptn4, alt: ptn4 },
-        { id: `${ptn5}26`, src: ptn5, alt: ptn5 },
-        { id: `${ptn6}27`, src: ptn6, alt: ptn6 },
-        { id: `${ptn7}28`, src: ptn7, alt: ptn7 },
+    private listQuery = {
+      start: 0,
+      length: 0,
+      order: [{
+        column: 'created',
+        dir: 'desc'
+      }],
+      columns: []
+    }
 
-        { id: `${ptn1}29`, src: ptn1, alt: ptn1 },
-        { id: `${ptn2}30`, src: ptn2, alt: ptn2 },
-        { id: `${ptn3}31`, src: ptn3, alt: ptn3 },
-        { id: `${ptn4}32`, src: ptn4, alt: ptn4 },
-        { id: `${ptn5}33`, src: ptn5, alt: ptn5 },
-        { id: `${ptn6}34`, src: ptn6, alt: ptn6 },
-        { id: `${ptn7}34`, src: ptn7, alt: ptn7 },
-      ],
-      selected: null,
-      index: null,
-    };
-  },
-  components: {
-    VueSelectImage,
-  },
-  methods: {
-    onSelectImage(img) {
+    limitText (count: number) {
+      return ` ${count} 선택됨`
+    }
+
+    onSelectImage(img: IPatternData) {
       this.selected = img;
-      imageToDataUri(img.src, (err, uri) => {
+      imageToDataUri(img.content!, (err: any, uri: any) => {
         this.$emit('imageSelected', uri);
       });
-    },
-  },
-};
+    }
+
+    private async getList() {
+      this.isLoading = true
+      const query = JSON.parse(JSON.stringify(this.listQuery))
+      if (this.categories.length > 0) {
+        query.columns.push({
+          name: 'categories',
+          operation: '',
+          value: '',
+          columns: [{
+            name: 'id',
+            operation: 'in',
+            value: this.categories.map(c => c.id).join(',')
+          }]
+        })
+      }
+      const { data } = await ApiPattern.getPatterns(query)
+      this.patterns = data.patterns.data
+      this.isLoading = false
+    }
+
+
+    async getCategories (search: string) {
+      this.isLoading = true
+      const query = JSON.parse(JSON.stringify(this.categoryQuery))
+      query.columns.push({
+        name: 'name',
+        operation: 'like',
+        value: search
+      })
+      const { data } = await ApiCategory.getCategories(query)
+      this.categories = data.categories.data
+      this.isLoading = false
+    }
+
+    clearAll () {
+      this.selectedCategories = []
+    }
+  };
 </script>

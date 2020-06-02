@@ -86,7 +86,6 @@ export default class EditText extends Vue {
   set content(content) {
     const newValue = cloneDeep(this.value);
     newValue.item.src = content;
-
     this.$emit('input', newValue);
   }
 
@@ -99,11 +98,6 @@ export default class EditText extends Vue {
     newValue.show = show;
 
     this.$emit('input', newValue);
-  }
-
-  onEditorChange(quill: any, html: any, text: any) {
-    console.log('editor change!', quill, html, text)
-    this.content = html
   }
 
   textSelected(text: any) {

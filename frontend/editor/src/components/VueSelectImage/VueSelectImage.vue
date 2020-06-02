@@ -9,15 +9,15 @@
           :class="classThumbnail(singleSelected.id, dataImage.id)"
           @click="onSelectImage(dataImage)"
           v-if="!isMultiple">
-          <img :src="dataImage.src"
-               :alt="dataImage.alt"
+          <img :src="dataImage.content"
+               :alt="dataImage.name"
                :height="h"
                :width="w"
                :class="rootClass + '__img'">
 
           <label v-if="useLabel"
                  :class="rootClass + '__lbl'">
-            {{dataImage.alt}}
+            {{dataImage.name}}
           </label>
         </div>
 
@@ -26,15 +26,15 @@
           @click="onSelectMultipleImage(dataImage)"
           v-if="isMultiple">
 
-          <img :src="dataImage.src"
-               :alt="dataImage.alt"
+          <img :src="dataImage.content"
+               :alt="dataImage.name"
                :height="h"
                :width="w"
                :class="rootClass + '__img'">
 
           <label v-if="useLabel"
                  :class="rootClass + '__lbl'">
-            {{dataImage.alt}}
+            {{dataImage.name}}
           </label>
         </div>
 
