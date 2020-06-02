@@ -197,7 +197,7 @@ export default class Index extends Vue {
     if (newItem.id) {
       const idx = this.status.items.findIndex((i) => i.id === newItem.id);
       this.status.items[idx] = newItem;
-      this.$refs.items[idx].$emit('content-inactive');
+      (this.$refs.items as [any])[idx].$emit('content-inactive');
     } else {
       const item: Item = {
         id: uuidv4().toUpperCase(),

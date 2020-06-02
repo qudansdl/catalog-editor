@@ -104,7 +104,7 @@ export default class Drr extends Vue {
   }
 
   onContentInactive() {
-    this.$refs.drr.$emit('content-inactive');
+    (this.$refs.drr as any).$emit('content-inactive');
   }
 
   moveFunc(e: KeyboardEvent) {

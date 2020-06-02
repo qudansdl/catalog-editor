@@ -58,11 +58,11 @@ export default class CroppImage extends Vue {
   }
 
   get showDialog() {
-    return this.value.show;
+    return (this.value as any).show;
   }
 
   set showDialog(show) {
-    const newValue = cloneDeep(this.value);
+    const newValue = cloneDeep(this.value) as any;
     newValue.show = show;
 
     this.$emit('input', newValue);

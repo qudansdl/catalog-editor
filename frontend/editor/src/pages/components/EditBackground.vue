@@ -98,7 +98,7 @@ export default class EditBackground extends Vue {
     this.showDialog = false;
   }
 
-  applyCroppedImage(cropedImage: string) {
+  applyCroppedImage(cropedImage: any) {
     this.$emit(this.eventName, cropedImage.src);
     this.cropp.show = false;
     this.showDialog = false;

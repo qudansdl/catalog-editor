@@ -17,3 +17,4 @@ declare namespace NodeJS {
 declare module '@packy-tang/vue-tinymce';
 declare module 'vue-draggable-resizable';
 declare module 'vue-html2canvas';
+declare module 'vue-quill-editor';
