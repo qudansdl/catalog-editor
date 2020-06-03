@@ -63,7 +63,7 @@
         class="printing-body absolute-center"
         ref="printMe"
         :style="[{'background': status.backgroundPattern ? `url(${status.backgroundPattern}) repeat` : `${status.backgroundColor || '#ffffff'} url(${status.backgroundImg}) 0 0/cover no-repeat`}]">
-
+aaaaaaaaa
           <dw
             v-for="(item) in status.items" ref="items"
             :key="item.id"
@@ -74,6 +74,7 @@
             @delete="onDelete"
             @content-active="onContentActive">
           </dw>
+        <q-resize-observer @resize="onResize"></q-resize-observer>
       </div>
 
       <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="showMenu == false">
@@ -102,7 +103,6 @@ import html2canvas from 'html2canvas';
 import VueDraggableResizable from 'vue-draggable-resizable';
 import { Debounce } from 'vue-debounce-decorator';
 
-// optionally import default styles
 import 'vue-draggable-resizable/dist/VueDraggableResizable.css';
 
 import { Item, Configuration } from '@/types/types';
@@ -147,6 +147,8 @@ export default class Index extends Vue {
 
   changeIndex = 0;
 
+  contentSize = {width: 0, height: 0}
+
   @State('status', { namespace: 'AppStatus' })
   public status!: Configuration;
 
@@ -157,6 +159,10 @@ export default class Index extends Vue {
   public history!: Configuration[];
 
   mounted() {
+    if(this.$route.query.catalogId)
+    {
+
+    }
     this.history.push(cloneDeep(this.status));
   }
 
@@ -326,6 +332,10 @@ export default class Index extends Vue {
     this.updateStatus(newStatus);
 
     console.log('front change', this.changeIndex, this.history.length);
+  }
+
+  onResize (size: any) {
+    this.contentSize = size
   }
 }
 

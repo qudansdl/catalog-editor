@@ -87,8 +87,7 @@ altair:
     enabled: false
     version: 2.1.7
 
-pdf2html:
-  repository: https://raw.githubusercontent.com/chehabz/email-templates/master
-  authorizationToken: ${ACCESSTOKEN}
+html2pdf:
   chromePath: ${CHROMEPATH}
-  serverHostName: ${HOSTNAME}
+  editorPath: ${EDITORPATH}
+  rootPath: ${ROOTPATH}

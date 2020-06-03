@@ -63,7 +63,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-mustache")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("io.webfolder:cdp4j:3.0.15")
-	implementation("com.mashape.unirest:unirest-java:1.4.9")
 	implementation("org.antlr:ST4:4.3")
 	implementation("org.flywaydb:flyway-core")
 

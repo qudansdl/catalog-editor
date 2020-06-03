@@ -10,7 +10,7 @@ import java.nio.file.Paths
 
 object DirectoryHelper {
     private val _logger = LoggerFactory.getLogger(DirectoryHelper::class.java)
-    val rootDirectory: String = ""
+    var rootDirectory: String = ""
 
     fun joinFromRoot(path: String): String {
         val out = "$rootDirectory/$path"
@@ -25,6 +25,15 @@ object DirectoryHelper {
             dir.mkdirs()
         }
         return true
+    }
+
+    @Throws(IOException::class)
+    fun createFromString(path: String, input: String?): String {
+        val fileWriter = FileWriter(path)
+        fileWriter.write(input)
+        fileWriter.flush()
+        fileWriter.close()
+        return path
     }
 
     @Throws(IOException::class)
