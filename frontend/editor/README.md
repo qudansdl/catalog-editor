@@ -1,47 +1,31 @@
-# Quasar Framework starter with TypeScript
+# Catalog Editor
 
-A Quasar Framework using TypeScript.
+Quasar/Typescript/Graphql
 
-## Install the dependencies
+## Editor 프로젝트 폴더에서 아래 명령어를 실행해서 dependencies 설치
 ```bash
 yarn
 ```
 
-### Start the app in development mode (hot-code reloading, error reporting, etc.)
+### 개발 모드 실행 (hot-code reloading, error reporting, etc.)
 ```bash
 quasar dev
 ```
 
-### Lint the files
+### Lint 코드 검사 실행
 ```bash
 yarn run lint
 ```
 
-### Build the app for production
+### 앱 빌
 ```bash
 quasar build
 ```
 
-### Customize the configuration
+### 설정 참고 자료
 See [Support TypeScript](https://quasar.dev/quasar-cli/cli-documentation/supporting-ts)
 See [Configure VS Code](https://quasar.dev/start/vs-code-configuration)
 See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
-
-### Used generation params:
-? Project name (internal usage for dev) quasar-ts-starter
-? Project product name (must start with letter if building mobile apps) Quasar App
-? Project description A Quasar Framework app
-? Author Egyel
-? Pick your favorite CSS preprocessor: (can be changed later) Stylus
-? Pick a Quasar components & directives import strategy: (can be changed later) Auto import
-? Check the features needed for your project: ESLint, Vuex, Axios, Vue-i18n, IE11 support
-? Pick an ESLint preset: Airbnb
-? Cordova/Capacitor id (disregard if not building mobile apps) org.cordova.quasar.app
-? Should we run `npm install` for you after the project has been created? (recommended) yarn
-
-
-## App internationalization (i18n)
-**Note:** The used tools below are required/prefer to use json files.
 
 ### [vue-i18n-extact](https://pixari.github.io/vue-i18n-extract/how-to-use.html#getting-started)
 This library analyses your Vue.js source code looking for any vue-i18n key usage, in order to:
@@ -51,10 +35,6 @@ This library analyses your Vue.js source code looking for any vue-i18n key usage
 ### [eslint-plugin-vue-i18n](https://eslint-plugin-vue-i18n.intlify.dev/started.html)
 eslint-plugin-vue-i18n is ESLint plugin of Vue I18n. It easily integrates some localization features to your Vue.js Application. (`yarn lint`)
 **Note:** The "'vue-i18n/no-raw-text': 'off'," line in .eslintrc.js should be removed in your repo!
-
-
-## TODO
-- preventing ESLint and formatting errors from being committed: [lint-staged](https://github.com/okonet/lint-staged) + [husky](https://github.com/typicode/husky)
 
 
 ## Misc
