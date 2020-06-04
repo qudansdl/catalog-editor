@@ -38,9 +38,9 @@ quasar build 혹은 yarn run build
 ```
 
 ### 설정 참고 자료
-See [Support TypeScript](https://quasar.dev/quasar-cli/cli-documentation/supporting-ts)
-See [Configure VS Code](https://quasar.dev/start/vs-code-configuration)
-See [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
+ * [Support TypeScript](https://quasar.dev/quasar-cli/cli-documentation/supporting-ts)
+ * [Configure VS Code](https://quasar.dev/start/vs-code-configuration)
+ * [Configuring quasar.conf.js](https://quasar.dev/quasar-cli/quasar-conf-js).
 
 ### [vue-i18n-extact](https://pixari.github.io/vue-i18n-extract/how-to-use.html#getting-started)
 This library analyses your Vue.js source code looking for any vue-i18n key usage, in order to:
