@@ -48,8 +48,6 @@
     }
   })
   export default class SelectImage extends Vue {
-    private selectedCategories: ICategoryData[] = []
-
     private categories: ICategoryData[] = []
 
     private patterns: IPatternData[] = []
@@ -79,6 +77,11 @@
     tag = ''
     tags : any[] = []
     autocompleteItems: any[] = []
+
+    mounted()
+    {
+      this.getList();
+    }
 
     onSelectImage(img: IPatternData) {
       this.selected = img;

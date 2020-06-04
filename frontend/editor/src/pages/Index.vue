@@ -6,7 +6,8 @@
       bordered
       content-class="bg-grey-1"
       side="right"
-      class="right-menu"
+      class="no-print"
+      :width="80"
     >
       <q-layout view="lhr lpr lfr">
 
@@ -76,7 +77,7 @@
         <q-resize-observer @resize="onResize"></q-resize-observer>
       </div>
 
-      <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="showMenu == false">
+      <q-page-sticky position="bottom-right" :offset="[18, 18]" v-if="showMenu == false" class="no-print">
         <q-btn fab icon="menu" color="accent" @click="showMenu = true"/>
       </q-page-sticky>
     </q-page-container>
@@ -351,9 +352,6 @@ export default class Index extends Vue {
     border: 8px solid #ccc;
     overflow: hidden;
   }
-  .right-menu {
-    width: calc(100% - 80px);
-  }
   button {
     background: none;
     border: none;
@@ -371,5 +369,13 @@ export default class Index extends Vue {
   }
   .vue-select-image__item {
     margin-left: 0px !important;
+  }
+
+  @media print
+  {
+    .no-print, .no-print *
+    {
+      display: none !important;
+    }
   }
 </style>

@@ -78,6 +78,10 @@ export default class SelectImage extends Vue {
   tags : any[] = []
   autocompleteItems: any[] = []
 
+  mounted()
+  {
+    this.getList();
+  }
 
   onSelectImage(img: IBackgroundData) {
     this.selected = img;

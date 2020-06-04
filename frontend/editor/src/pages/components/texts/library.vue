@@ -72,6 +72,12 @@ export default class SelectText extends Vue {
   tags : any[] = []
   autocompleteItems: any[] = []
 
+  mounted()
+  {
+    this.getList();
+  }
+
+
   textSelected (text: ITextData) {
     this.$emit('textSelected', text.content);
   }
