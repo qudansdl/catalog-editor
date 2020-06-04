@@ -1,11 +1,22 @@
-# Catalog Editor
-사용 기술
-* Vuejs : https://kr.vuejs.org/v2/guide/index.html
-* Quasar : https://quasar.dev/start/pick-quasar-flavour
-* Typescript : https://www.typescriptlang.org/docs/home.html
-* Graphql : 서버 (https://www.graphql-java.com/), javascript (https://www.apollographql.com/docs/)
+# Catalog Editor 사용 기술
+    * Vue : https://kr.vuejs.org/v2/guide/index.html
+    * Quasar : https://quasar.dev/start/pick-quasar-flavour
+    * Typescript : https://www.typescriptlang.org/docs/home.html
+    * Graphql : https://www.apollographql.com/docs/
 
+# API 목록
+    > 목록 API는 페이징 가능해야함
+    > 카테고리외에 나머지 목록은 카테고리를 파라미터로 받아서 해당 카테고리 내에서 검색해야함
+    > 파라미터 : name(이름, like 검색)/page(현재페이지)/legth(페이지 길이)/카테고리(배열)
+ * 카테고리 목록
+ * 이미지 목록
+ * 템플릿 목록
+ * 백엔드 이미지 목록
+ * 백엔드 패턴 이미지 목록
+ * 문구 목록
+ * 카탈로그 목록/저장
 
+# 에디터 실행/빌드
 ## Editor 프로젝트 폴더에서 아래 명령어를 실행해서 dependencies 설치
 ```bash
 yarn
@@ -13,7 +24,7 @@ yarn
 
 ### 개발 모드 실행 (hot-code reloading, error reporting, etc.)
 ```bash
-quasar dev
+quasar dev 혹은 yarn run dev
 ```
 
 ### Lint 코드 검사 실행
@@ -21,9 +32,9 @@ quasar dev
 yarn run lint
 ```
 
-### 앱 빌
+### 에디터 빌드
 ```bash
-quasar build
+quasar build 혹은 yarn run build
 ```
 
 ### 설정 참고 자료
