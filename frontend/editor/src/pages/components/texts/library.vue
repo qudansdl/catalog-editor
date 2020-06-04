@@ -1,7 +1,6 @@
 <template>
-  <div class="q-pa-md">
     <q-card>
-      <div class="row q-col-gutter-xs">
+      <div class="row q-col-gutter-xs fixed">
         <div class="col">
           <q-card-section>
             <vue-tags-input
@@ -14,7 +13,7 @@
           </q-card-section>
         </div>
       </div>
-      <div class="row q-col-gutter-xs">
+      <div class="row q-col-gutter-xs" style="padding-top: 35px">
         <div class="col">
           <q-card-section>
             <q-list bordered separator>
@@ -26,7 +25,6 @@
         </div>
       </div>
     </q-card>
-  </div>
 </template>
 
 <script lang="ts">

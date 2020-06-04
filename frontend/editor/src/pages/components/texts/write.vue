@@ -18,11 +18,12 @@
 
 <script>
 
-import { Component, Vue } from 'vue-property-decorator';
+  import { Component, Prop, Vue } from 'vue-property-decorator';
+  import { cloneDeep } from 'lodash';
 
 @Component
 export default class WriteText extends Vue {
-  content = '';
+  @Prop({ required: true }) content;
 
   onEditorChange(quill) {
     console.log('editor change!', quill, quill.html, quill.text)
@@ -30,3 +31,9 @@ export default class WriteText extends Vue {
   }
 };
 </script>
+
+<style>
+  .ql-editor {
+    min-height:125px;
+  }
+</style>

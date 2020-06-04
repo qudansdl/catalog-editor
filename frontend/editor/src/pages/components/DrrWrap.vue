@@ -233,8 +233,8 @@ export default class Drr extends Vue {
   img{
     padding: 2px;
     z-index: 10000;
-    width: 250px;
-    height: 200px;
+    width: 150px;
+    height: 100px;
   }
 
   .hori{

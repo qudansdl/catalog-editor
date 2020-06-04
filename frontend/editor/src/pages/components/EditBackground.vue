@@ -6,50 +6,53 @@
     transition-show="slide-up"
     transition-hide="slide-down"
   >
-  <q-card>
-    <q-tabs
-      v-model="tab"
-      dense
-      class="text-grey"
-      active-color="primary"
-      indicator-color="primary"
-      align="justify"
-      narrow-indicator
-    >
-      <q-tab
-        v-for="item of components"
-        :key="item.name"
-        v-model="tab"
-        :name="item.name"
-        :label="item.label"/>
-    </q-tabs>
 
-    <q-separator />
+    <q-layout view="Lhh lpR fff" container>
+      <q-header>
+        <q-tabs
+          v-model="tab"
+          dense
+          align="justify"
+          narrow-indicator
+        >
+          <q-tab
+            v-for="item of components"
+            :key="item.name"
+            v-model="tab"
+            :name="item.name"
+            :label="item.label"/>
+        </q-tabs>
+      </q-header>
 
-    <q-tab-panels v-model="tab" animated>
-      <q-tab-panel
-        v-for="tab in components"
-        :key="tab.name"
-        :name="tab.name"
-        class="not-padding"
-      >
-        <component
-          :is="tab.name"
-          :key="tab.name"
-          @imageSelected="imageSelected"
-          @colorSelected="colorSelected"
-          @patternSelected="patternSelected"
-        ></component>
-      </q-tab-panel>
-    </q-tab-panels>
+      <q-footer>
+        <q-toolbar inset>
+          <q-btn color="primary" label="적용" @click="apply"/>
+          <q-btn color="secondary" label="잘라내기" @click="showCropp" v-if="tab == 'library' || tab == 'upload'"/>
+          <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
+        </q-toolbar>
+      </q-footer>
 
-    <q-card-actions align="right">
-      <q-space />
-      <q-btn color="primary" label="적용" @click="apply"/>
-      <q-btn color="secondary" label="잘라내기" @click="showCropp" v-if="tab == 'library' || tab == 'upload'"/>
-      <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
-    </q-card-actions>
-  </q-card>
+      <q-page-container>
+        <q-page padding>
+          <q-tab-panels v-model="tab" animated>
+            <q-tab-panel
+              v-for="tab in components"
+              :key="tab.name"
+              :name="tab.name"
+              class="not-padding"
+            >
+              <component
+                :is="tab.name"
+                :key="tab.name"
+                @imageSelected="imageSelected"
+                @colorSelected="colorSelected"
+                @patternSelected="patternSelected"
+              ></component>
+            </q-tab-panel>
+          </q-tab-panels>
+        </q-page>
+      </q-page-container>
+    </q-layout>
     <cropp-image v-model="cropp" v-on:apply="applyCroppedImage"></cropp-image>
   </q-dialog>
 </template>
