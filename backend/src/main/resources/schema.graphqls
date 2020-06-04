@@ -32,39 +32,11 @@ type Category implements Entity {
 type Catalog  implements Entity {
   id: UUID
   name: String
-  description: String
+  content: String
   categories: [Category]
-  blocks: [CatalogBlock]
   created: DateTime
   updated: DateTime
 }
-
-type CatalogBlock  implements Entity  {
-  id: UUID
-  x: Int
-  y: Int
-  w: Int
-  h: Int
-  type: String
-  content: String
-  created: DateTime
-  updated: DateTime
-}
-
-
-
-input CatalogBlockInput {
-  id: UUID
-  x: Int
-  y: Int
-  w: Int
-  h: Int
-  type: String
-  content: String
-}
-
-
-
 
 
 
@@ -72,35 +44,10 @@ input CatalogBlockInput {
 type Template  implements Entity {
   id: UUID
   name: String
-  description: String
+  content: String
   categories: [Category]
-  blocks: [TemplateBlock]
   created: DateTime
   updated: DateTime
-}
-
-type TemplateBlock  implements Entity  {
-  id: UUID
-  x: Int
-  y: Int
-  w: Int
-  h: Int
-  type: String
-  content: String
-  created: DateTime
-  updated: DateTime
-}
-
-
-
-input TemplateBlockInput {
-  id: UUID
-  x: Int
-  y: Int
-  w: Int
-  h: Int
-  type: String
-  content: String
 }
 
 
@@ -284,29 +231,25 @@ type Mutation {
   deleteCategory(categoryId: UUID!): Boolean
 
   createCatalog(name: String
-    description: String
+    content: String
     categories: [CategoryInput]
-    blocks: [CatalogBlockInput]
   ): Catalog
   updateCatalog(catalogId: UUID!,
     name: String
-    description: String
+    content: String
     categories: [CategoryInput]
-    blocks: [CatalogBlockInput]
   ): Catalog
   deleteCatalog(catalogId: UUID!): Boolean
 
 
   createTemplate(name: String
-    description: String
+    content: String
     categories: [CategoryInput]
-    blocks: [TemplateBlockInput]
   ): Template
   updateTemplate(templateId: UUID!,
     name: String
-    description: String
+    content: String
     categories: [CategoryInput]
-    blocks: [TemplateBlockInput]
   ): Template
   deleteTemplate(templateId: UUID!): Boolean
 

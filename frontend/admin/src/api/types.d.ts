@@ -1,7 +1,7 @@
 export interface ITemplateData {
   id: string | null
   name: string
-  description: string | null
+  content: string | null
 }
 
 

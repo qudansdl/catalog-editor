@@ -15,7 +15,7 @@ import javax.persistence.*
 class Template(
         id: UUID? = null,
         val name: String? = null,
-        val description: String? = null,
+        val content: String? = null,
 
         // Relation many to many
         @ManyToMany(fetch = FetchType.EAGER)
@@ -24,9 +24,5 @@ class Template(
                 inverseJoinColumns = [JoinColumn(name = "category_id", nullable = false, updatable = false)]
         )
         @Fetch(FetchMode.SELECT)
-        var categories: MutableSet<Category> = mutableSetOf(),
-
-        @OneToMany(mappedBy = "template", fetch = FetchType.EAGER)
-        @Fetch(FetchMode.SELECT)
-        var blocks: MutableSet<TemplateBlock> = mutableSetOf()
+        var categories: MutableSet<Category> = mutableSetOf()
 ) : AbstractEntity(id)

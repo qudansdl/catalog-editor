@@ -36,7 +36,7 @@ class PdfController(
         try {
             //val catalog = _catalogService.getCatalogById(catalogId).get()
 
-            val catalog = Catalog(name="aaaa", description = "bbbbb")
+            val catalog = Catalog(name="aaaa", content = "bbbbb")
             val guid = UUID.randomUUID().toString()
             val templatesDirectory = "html-templates"
             val documentsDirectory = "webapp/documents"

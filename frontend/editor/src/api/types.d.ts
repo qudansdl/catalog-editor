@@ -1,4 +1,16 @@
 /* eslint-disable */
+export interface ITemplateData {
+  id: string | null
+  name: string
+  content: string | null
+}
+
+export interface ICatalogData {
+  id: string | null
+  name: string
+  content: string | null
+}
+
 export interface ITextData {
   id: string | null
   name: string

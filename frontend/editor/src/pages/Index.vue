@@ -38,25 +38,23 @@
             </q-item>
             <q-separator dark inset  color="orange" />
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" icon="save_alt" />
+              <q-btn flat color="primary" icon="save_alt"  @click="saveCatalog()"/>
             </q-item>
             <q-separator dark inset  color="orange" />
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" icon="file_copy" />
+              <q-btn flat color="primary" icon="file_copy"  @click="template.show = true"/>
             </q-item>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
               <q-btn
                 flat
                 color="primary"
                 icon="menu"
-                @click="showMenu  = !showMenu"
+                @click="showMenu = !showMenu"
               />
             </q-item>
           </q-list>
         </q-footer>
-
       </q-layout>
-
     </q-drawer>
 
     <q-page-container>
@@ -90,6 +88,7 @@
       @applyBackgroundColor="applyBackgroundColor"
       @applyBackgroundPattern="applyBackgroundPattern"
     ></edit-background>
+    <edit-template v-model="template" v-on:apply="setTemplate"></edit-template>
   </q-layout>
 </template>
 
@@ -111,18 +110,26 @@ import { Mutation, State } from 'vuex-class';
 import EditBackground from 'pages/components/EditBackground.vue';
 import EditText from './components/EditText.vue';
 import EditImage from './components/EditImage.vue';
+import EditTemplate from './components/EditTemplate.vue';
 import dw from './components/DrrWrap.vue';
+import ApiCatalog from '@/api/catalogs';
+import { ITemplateData } from '@/api/types';
 
 @Component({
   components: {
     EditBackground,
     EditText,
     EditImage,
+    EditTemplate,
     VueDraggableResizable,
     dw,
   },
 })
 export default class Index extends Vue {
+  template = {
+    show: false
+  };
+
   text = {
     show: false,
     item: {
@@ -198,7 +205,10 @@ export default class Index extends Vue {
       },
     };
   }
-
+  setTemplate(template: ITemplateData) {
+    this.updateStatus(JSON.parse(template.content!))
+    this.addHistory();
+  }
   setText(newItem: Item) {
     if (newItem.id) {
       const idx = this.status.items.findIndex((i) => i.id === newItem.id);
@@ -296,6 +306,10 @@ export default class Index extends Vue {
   onContentActive(item: Item) {
     this.text.item = item;
     this.text.show = true;
+  }
+
+  saveCatalog() {
+    ApiCatalog.createCatalog("zzz", JSON.stringify(this.status), [])
   }
 
   deleteSelected() {

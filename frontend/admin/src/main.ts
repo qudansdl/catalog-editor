@@ -5,6 +5,7 @@ import ElementUI from 'element-ui'
 import SvgIcon from 'vue-svgicon'
 import VueQuillEditor from 'vue-quill-editor'
 
+
 import '@/styles/element-variables.scss'
 import '@/styles/index.scss'
 

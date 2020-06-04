@@ -26,9 +26,8 @@ class TemplateService(private val templateRepository: TemplateRepository) {
       val updatedTemplate = Template(
               currentTemplate.id,
               newTemplate.name,
-              newTemplate.description,
-              newTemplate.categories,
-              newTemplate.blocks)
+              newTemplate.content,
+              newTemplate.categories)
 
           templateRepository.save(updatedTemplate)
     }

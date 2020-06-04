@@ -1,9 +1,10 @@
+/* eslint-disable */
 import gql from 'graphql-tag'
 import Mustache from 'mustache'
 
 export const CREATE_TEMPLATE = gql`
-    mutation CreateTemplate($name: String, $content: String!, $categories: [CategoryInput], $blocks: [TemplateBlockInput]){
-        createTemplate(name: $name, content: $content, categories: $categories, blocks: $blocks) {
+    mutation CreateTemplate($name: String, $content: String!, $categories: [CategoryInput]){
+        createTemplate(name: $name, content: $content, categories: $categories) {
             id,
             name,
             content
@@ -12,8 +13,8 @@ export const CREATE_TEMPLATE = gql`
 `
 
 export const UPDATE_TEMPLATE = gql`
-  mutation updateTemplate($templateId: UUID!, $name: String, $content: String!, $categories: [CategoryInput],  $blocks: [TemplateBlockInput]){
-    updateTemplate(templateId: $templateId, name: $name, content: $content, categories: $categories, blocks: $blocks) {
+  mutation updateTemplate($templateId: UUID!, $name: String, $content: String!, $categories: [CategoryInput]){
+    updateTemplate(templateId: $templateId, name: $name, content: $content, categories: $categories) {
       id
       name
       content

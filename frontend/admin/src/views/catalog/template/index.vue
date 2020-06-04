@@ -89,14 +89,6 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('template.description')"
-        min-width="150px"
-      >
-        <template slot-scope="{row}">
-          <span>{{ row.description }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
         :label="$t('template.actions')"
         align="center"
         width="230"
@@ -161,16 +153,6 @@
             ref="formCategory"
             :props="categoryProps"
             clearable
-          />
-        </el-form-item>
-
-        <el-form-item
-          :label="$t('template.description')"
-          prop="description"
-        >
-          <quill-editor
-            :content="tempTemplateData.description"
-            @change="onEditorChange($event)"
           />
         </el-form-item>
       </el-form>
@@ -359,11 +341,6 @@ export default class extends Vue {
     })
   }
 
-  onEditorChange(quill: any) {
-    console.log('editor change!', quill, quill.html, quill.text)
-    this.tempTemplateData.description = quill.html
-  }
-
   private createData() {
     (this.$refs.dataForm as Form).validate(async(valid) => {
       if (valid) {
@@ -371,7 +348,7 @@ export default class extends Vue {
         const selectedCategories = selectedNodes.map((n: any) => n.data)
         const { data } = await ApiTemplate.createTemplate(
           this.tempTemplateData.name,
-          this.tempTemplateData.description!,
+          this.tempTemplateData.content!,
           selectedCategories
         )
         this.dialogFormVisible = false
@@ -405,7 +382,7 @@ export default class extends Vue {
         const { data } = await ApiTemplate.updateTemplate(
           tempData.id!,
           tempData.name,
-          tempData.description!,
+          tempData.content!,
           selectedCategories
         )
         this.dialogFormVisible = false

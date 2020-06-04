@@ -1,6 +1,5 @@
 package com.basicit.graphql.resolver
 
-import com.basicit.model.TemplateBlock
 import com.basicit.model.Template
 import com.basicit.model.Category
 import com.basicit.service.TemplateService
@@ -11,32 +10,28 @@ import java.util.*
 @Component
 class TemplateMutationResolver (private val templateService: TemplateService) : GraphQLMutationResolver {
   fun createTemplate(name: String? = null,
-                    description: String? = null,
-                    categories: MutableSet<Category> = mutableSetOf(),
-                    blocks: MutableSet<TemplateBlock> = mutableSetOf()
+                    content: String? = null,
+                    categories: MutableSet<Category> = mutableSetOf()
   ): Template =
     templateService.addTemplate(
       Template(
               name = name,
-              description = description,
-              categories = categories,
-              blocks = blocks
+              content = content,
+              categories = categories
       )
     )
 
   fun updateTemplate(templateId: UUID,
                     name: String? = null,
-                    description: String? = null,
-                    categories: MutableSet<Category> = mutableSetOf(),
-                    blocks: MutableSet<TemplateBlock> = mutableSetOf()): Template =
+                    content: String? = null,
+                    categories: MutableSet<Category> = mutableSetOf()): Template =
     templateService.putTemplate(
       templateId,
       Template(
           id = templateId,
           name = name,
-          description = description,
-          categories = categories,
-          blocks = blocks
+          content = content,
+          categories = categories
       )
     ).orElse(null)
 

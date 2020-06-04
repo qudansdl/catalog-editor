@@ -26,9 +26,8 @@ class CatalogService(private val catalogRepository: CatalogRepository) {
       val updatedCatalog = Catalog(
               currentCatalog.id,
               newCatalog.name,
-              newCatalog.description,
-              newCatalog.categories,
-              newCatalog.blocks)
+              newCatalog.content,
+              newCatalog.categories)
 
           catalogRepository.save(updatedCatalog)
     }
