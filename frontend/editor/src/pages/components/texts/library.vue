@@ -1,8 +1,7 @@
 <template>
-    <q-card>
+  <div class="q-pa-md">
       <div class="row q-col-gutter-xs fixed">
         <div class="col">
-          <q-card-section>
             <vue-tags-input
               v-model="tag"
               :tags="tags"
@@ -10,21 +9,18 @@
               :add-only-from-autocomplete="true"
               @tags-changed="update"
             />
-          </q-card-section>
         </div>
       </div>
       <div class="row q-col-gutter-xs" style="padding-top: 35px">
         <div class="col">
-          <q-card-section>
             <q-list bordered separator>
               <q-item clickable v-ripple v-for="text in texts" :key="text.id" @click="textSelected(text)">
                 <q-item-section>{{text.content}}</q-item-section>
               </q-item>
             </q-list>
-          </q-card-section>
         </div>
       </div>
-    </q-card>
+  </div>
 </template>
 
 <script lang="ts">

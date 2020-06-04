@@ -1,8 +1,7 @@
 <template>
-    <q-card>
+  <div class="q-pa-md">
       <div class="row q-col-gutter-xs fixed">
         <div class="col">
-          <q-card-section>
             <vue-tags-input
               v-model="tag"
               :tags="tags"
@@ -10,26 +9,22 @@
               :add-only-from-autocomplete="true"
               @tags-changed="update"
             />
-          </q-card-section>
         </div>
       </div>
       <div class="row q-col-gutter-xs"  style="padding-top: 35px">
         <div class="col">
-          <q-card-section>
             <vue-select-image
               :dataImages="images"
               :w="'150px'"
               :h="'100px'"
               @onselectimage="onSelectImage"/>
-          </q-card-section>
         </div>
       </div>
-    </q-card>
+    </div>
 </template>
 
-
 <script lang="ts">
-  import { Component, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue, Watch } from 'vue-property-decorator';
 import {ICategoryData, IImageData, ITextData} from '@/api/types'
 import ApiCategory from '@/api/categories';
 import VueSelectImage from "@/components/VueSelectImage/VueSelectImage.vue";

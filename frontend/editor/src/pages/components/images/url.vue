@@ -1,28 +1,20 @@
 <template>
   <div class="q-pa-md">
-    <q-card>
       <div class="row q-col-gutter-xs">
         <div class="col">
-          <q-card-section>
             <q-input v-model="url" filled type="url" label="이미지 URL"/>
-          </q-card-section>
         </div>
         <div class="col-auto">
-          <q-card-section>
             <q-btn @click="addImage()">이미지 추가</q-btn>
-          </q-card-section>
         </div>
       </div>
       <div class="row q-col-gutter-xs">
-        <q-card-section>
           <vue-select-image
             :dataImages="images"
             :w="'250px'"
             :h="'200px'"
             @onselectimage="onSelectImage"/>
-        </q-card-section>
       </div>
-    </q-card>
   </div>
 </template>
 

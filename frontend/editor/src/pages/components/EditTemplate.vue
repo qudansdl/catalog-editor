@@ -7,19 +7,10 @@
     transition-hide="slide-down"
   >
     <q-layout view="Lhh lpR fff" container>
-      <q-footer>
-        <q-toolbar inset>
-          <q-btn color="primary" label="적용" @click="apply" :disable="template == null"/>
-          <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
-        </q-toolbar>
-      </q-footer>
-
       <q-page-container>
         <q-page padding>
-          <q-card>
             <div class="row q-col-gutter-xs fixed">
               <div class="col">
-                <q-card-section>
                   <vue-tags-input
                     v-model="tag"
                     :tags="tags"
@@ -27,22 +18,24 @@
                     :add-only-from-autocomplete="true"
                     @tags-changed="update"
                   />
-                </q-card-section>
               </div>
             </div>
             <div class="row q-col-gutter-xs" style="padding-top: 35px">
               <div class="col">
-                <q-card-section>
                   <q-list bordered separator>
                     <q-item clickable v-ripple v-for="template in templates" :key="template.id" @click="templateSelected(template)">
                       <q-item-section>{{template.name}}</q-item-section>
                     </q-item>
                   </q-list>
-                </q-card-section>
               </div>
             </div>
-          </q-card>
         </q-page>
+        <q-footer>
+          <q-toolbar inset>
+            <q-btn color="primary" label="적용" @click="apply" :disable="template == null"/>
+            <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
+          </q-toolbar>
+        </q-footer>
       </q-page-container>
     </q-layout>
   </q-dialog>

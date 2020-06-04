@@ -1,18 +1,14 @@
 <template>
   <div class="q-pa-md">
-    <q-card>
       <div class="row q-col-gutter-xs">
         <div class="col">
-          <q-card-section>
             <quill-editor
               :content="content"
               @change="onEditorChange($event)"
             />
-          </q-card-section>
         </div>
 
       </div>
-    </q-card>
   </div>
 </template>
 

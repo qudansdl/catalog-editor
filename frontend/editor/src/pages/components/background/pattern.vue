@@ -1,9 +1,7 @@
 <template>
   <div class="q-pa-md">
-    <q-card>
       <div class="row q-col-gutter-xs">
         <div class="col">
-          <q-card-section>
             <vue-tags-input
               v-model="tag"
               :tags="tags"
@@ -11,21 +9,17 @@
               :add-only-from-autocomplete="true"
               @tags-changed="update"
             />
-          </q-card-section>
         </div>
       </div>
       <div class="row q-col-gutter-xs">
         <div class="col">
-          <q-card-section>
             <vue-select-image
               :dataImages="patterns"
               :w="'250px'"
               :h="'200px'"
               @onselectimage="onSelectImage"/>
-          </q-card-section>
         </div>
       </div>
-    </q-card>
   </div>
 
 </template>

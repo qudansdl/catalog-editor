@@ -1,32 +1,24 @@
 <template>
   <div class="q-pa-md">
-    <q-card>
       <div class="row q-col-gutter-xs">
         <div class="col">
-          <q-card-section>
             <q-file
               v-model="file"
               label="파일 선택"
               filled
             />
-          </q-card-section>
         </div>
         <div class="col-auto">
-          <q-card-section>
             <q-btn @click="uploadFile()">업로드</q-btn>
-          </q-card-section>
         </div>
       </div>
       <div class="row q-col-gutter-xs">
-        <q-card-section>
           <vue-select-image
             :dataImages="images"
             :w="'250px'"
             :h="'200px'"
             @onselectimage="onSelectImage"/>
-        </q-card-section>
       </div>
-    </q-card>
   </div>
 </template>
 
