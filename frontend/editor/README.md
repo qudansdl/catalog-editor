@@ -1,6 +1,10 @@
 # Catalog Editor
+사용 기술
+* Vuejs : https://kr.vuejs.org/v2/guide/index.html
+* Quasar : https://quasar.dev/start/pick-quasar-flavour
+* Typescript : https://www.typescriptlang.org/docs/home.html
+* Graphql : 서버 (https://www.graphql-java.com/), javascript (https://www.apollographql.com/docs/)
 
-Quasar/Typescript/Graphql
 
 ## Editor 프로젝트 폴더에서 아래 명령어를 실행해서 dependencies 설치
 ```bash
