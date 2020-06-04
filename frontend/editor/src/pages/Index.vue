@@ -63,7 +63,6 @@
         class="printing-body absolute-center"
         ref="printMe"
         :style="[{'background': status.backgroundPattern ? `url(${status.backgroundPattern}) repeat` : `${status.backgroundColor || '#ffffff'} url(${status.backgroundImg}) 0 0/cover no-repeat`}]">
-aaaaaaaaa
           <dw
             v-for="(item) in status.items" ref="items"
             :key="item.id"

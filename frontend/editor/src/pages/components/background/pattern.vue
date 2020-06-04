@@ -4,33 +4,13 @@
       <div class="row q-col-gutter-xs">
         <div class="col">
           <q-card-section>
-            <multiselect
-              v-model="selectedCategories"
-              id="ajax"
-              label="name"
-              track-by="id"
-              placeholder="Type to search"
-              open-direction="bottom"
-              :options="categories"
-              :multiple="true"
-              :searchable="true"
-              :loading="isLoading"
-              :internal-search="false"
-              :clear-on-select="false"
-              :close-on-select="false"
-              :options-limit="300"
-              :limit="10"
-              :limit-text="limitText"
-              :max-height="600"
-              :show-no-results="false"
-              :hide-selected="true"
-              @select="getList"
-              @search-change="getCategories">
-              <template slot="tag" slot-scope="{ option, remove }"><span class="custom__tag"><span>{{ option.name }}</span><span class="custom__remove" @click="remove(option)">❌</span></span></template>
-              <template slot="clear" slot-scope="props">
-                <div class="multiselect__clear" v-if="selectedCategories.length" @mousedown.prevent.stop="clearAll(props.search)"></div>
-              </template><span slot="noResult">Oops! No elements found. Consider changing the search query.</span>
-            </multiselect>
+            <vue-tags-input
+              v-model="tag"
+              :tags="tags"
+              :autocomplete-items="autocompleteItems"
+              :add-only-from-autocomplete="true"
+              @tags-changed="update"
+            />
           </q-card-section>
         </div>
       </div>
@@ -52,16 +32,19 @@
 
 
 <script lang="ts">
-  import { Component, Vue } from 'vue-property-decorator';
+  import { Component, Vue, Watch } from 'vue-property-decorator';
   import { IPatternData, ICategoryData } from '@/api/types'
   import ApiCategory from '@/api/categories';
   import VueSelectImage from "@/components/VueSelectImage/VueSelectImage.vue";
   import imageToDataUri from "@/utils/image-to-data-uri";
   import ApiPattern from "@/api/patterns";
+  import VueTagsInput from '@johmun/vue-tags-input';
+  import { Debounce } from 'vue-debounce-decorator';
 
   @Component({
     components: {
-      VueSelectImage
+      VueSelectImage,
+      VueTagsInput
     }
   })
   export default class SelectImage extends Vue {
@@ -93,9 +76,9 @@
       columns: []
     }
 
-    limitText (count: number) {
-      return ` ${count} 선택됨`
-    }
+    tag = ''
+    tags : any[] = []
+    autocompleteItems: any[] = []
 
     onSelectImage(img: IPatternData) {
       this.selected = img;
@@ -104,10 +87,29 @@
       });
     }
 
+    update(newTags: any[]) {
+      this.autocompleteItems = [];
+      this.tags = newTags;
+      this.getList()
+    }
+
+    @Watch('tag')
+    initItems() {
+      if (this.tag.length < 2) return;
+
+      this.loadItems(this.tag)
+    }
+
+    @Debounce(600)
+    loadItems(tag: string) {
+      this.getCategories(tag)
+    }
+
+    @Debounce(600)
     private async getList() {
       this.isLoading = true
       const query = JSON.parse(JSON.stringify(this.listQuery))
-      if (this.categories.length > 0) {
+      if (this.tags.length > 0) {
         query.columns.push({
           name: 'categories',
           operation: '',
@@ -115,7 +117,7 @@
           columns: [{
             name: 'id',
             operation: 'in',
-            value: this.categories.map(c => c.id).join(',')
+            value: this.tags.map(c => c.id).join(',')
           }]
         })
       }
@@ -135,11 +137,12 @@
       })
       const { data } = await ApiCategory.getCategories(query)
       this.categories = data.categories.data
+      this.autocompleteItems = this.categories.map(
+        function(c, index, array){
+          return { text: c.name, id: c.id }
+        }
+      )
       this.isLoading = false
-    }
-
-    clearAll () {
-      this.selectedCategories = []
     }
   };
 </script>
