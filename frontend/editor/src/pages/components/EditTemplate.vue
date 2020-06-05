@@ -6,6 +6,8 @@
     transition-show="slide-up"
     transition-hide="slide-down"
   >
+    <q-card>
+      <q-card-section style="height: 100%">
     <q-layout view="Lhh lpR fff" container>
       <q-page-container>
         <q-page padding>
@@ -38,6 +40,8 @@
         </q-footer>
       </q-page-container>
     </q-layout>
+      </q-card-section>
+    </q-card>
   </q-dialog>
 </template>
 <script lang="ts">

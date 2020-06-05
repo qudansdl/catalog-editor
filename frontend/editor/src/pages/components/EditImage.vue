@@ -6,6 +6,8 @@
     transition-show="slide-up"
     transition-hide="slide-down"
   >
+    <q-card>
+      <q-card-section style="height: 100%">
     <q-layout view="Lhh lpR fff" container>
       <q-header>
         <q-tabs
@@ -50,6 +52,8 @@
         </q-page>
       </q-page-container>
     </q-layout>
+      </q-card-section>
+    </q-card>
     <cropp-image v-model="cropp" v-on:apply="applyCroppedImage"></cropp-image>
   </q-dialog>
 </template>
