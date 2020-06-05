@@ -9,7 +9,8 @@
   "private": true,
   "scripts": {
     "dev": "quasar dev",
-    "build": "quasar build",
+    "build:prod": "quasar build",
+    "build:stage": "quasar build --mode staging",
     "lint": "tsc --noEmit && eslint --ext .ts,.js,.vue --ignore-path .gitignore src",
     "lint:fix": "eslint --ext .ts,.js,.vue --ignore-path .gitignore src --fix",
     "test": "echo \"No test specified\" && exit 0",

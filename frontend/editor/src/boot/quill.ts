@@ -32,8 +32,6 @@ Vue.use(VueQuillEditor, {
         handleEnter: {
           key: 13,
           handler: function() {
-            console.log("enter")
-            console.log("enter")
             // Do nothing
           }
         }
