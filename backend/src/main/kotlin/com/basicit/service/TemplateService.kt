@@ -23,13 +23,12 @@ class TemplateService(private val templateRepository: TemplateRepository) {
           newTemplate: Template
   ): Optional<Template> =
       templateRepository.findById(templateId).map { currentTemplate ->
-      val updatedTemplate = Template(
-              currentTemplate.id,
-              newTemplate.name,
-              newTemplate.content,
-              newTemplate.categories)
+          currentTemplate.id
+          currentTemplate.name = newTemplate.name
+          currentTemplate.content = newTemplate.content
+          currentTemplate.categories = newTemplate.categories
 
-          templateRepository.save(updatedTemplate)
+          templateRepository.save(currentTemplate)
     }
 
   fun deleteTemplate(templateId: UUID): Boolean =

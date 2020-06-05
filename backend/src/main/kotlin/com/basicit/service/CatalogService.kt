@@ -23,13 +23,12 @@ class CatalogService(private val catalogRepository: CatalogRepository) {
           newCatalog: Catalog
   ): Optional<Catalog> =
       catalogRepository.findById(catalogId).map { currentCatalog ->
-      val updatedCatalog = Catalog(
-              currentCatalog.id,
-              newCatalog.name,
-              newCatalog.content,
-              newCatalog.categories)
+          currentCatalog.id
+          currentCatalog.name = newCatalog.name
+          currentCatalog.content = newCatalog.content
+          currentCatalog.categories = newCatalog.categories
 
-          catalogRepository.save(updatedCatalog)
+          catalogRepository.save(currentCatalog)
     }
 
   fun deleteCatalog(catalogId: UUID): Boolean =

@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-input
         v-model="listQuery.columns[0].value"
-        :placeholder="$t('image.name')"
+        :placeholder="$t('catalog.name')"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -33,7 +33,7 @@
         icon="el-icon-search"
         @click="handleFilter"
       >
-        {{ $t('image.search') }}
+        {{ $t('catalog.search') }}
       </el-button>
       <el-button
         class="filter-item"
@@ -42,7 +42,7 @@
         icon="el-icon-edit"
         @click="handleCreate"
       >
-        {{ $t('image.add') }}
+        {{ $t('catalog.add') }}
       </el-button>
     </div>
 
@@ -57,7 +57,7 @@
       @sort-change="sortChange"
     >
       <el-table-column
-        :label="$t('image.id')"
+        :label="$t('catalog.id')"
         prop="id"
         sortable="custom"
         align="center"
@@ -69,7 +69,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('image.date')"
+        :label="$t('catalog.date')"
         width="180px"
         align="center"
       >
@@ -78,7 +78,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('image.name')"
+        :label="$t('catalog.name')"
         min-width="150px"
       >
         <template slot-scope="{row}">
@@ -89,19 +89,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('image.preview')"
-        min-width="150px"
-      >
-        <template slot-scope="{row}">
-          <el-image
-            style="width: 100px; height: 100px"
-            :src="row.content"
-            :fit="'fill'"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column
-        :label="$t('image.actions')"
+        :label="$t('catalog.actions')"
         align="center"
         width="230"
         class-name="fixed-width"
@@ -112,7 +100,7 @@
             size="mini"
             @click="handleUpdate(row)"
           >
-            {{ $t('image.edit') }}
+            {{ $t('catalog.edit') }}
           </el-button>
           <el-button
             v-if="row.status!=='deleted'"
@@ -120,7 +108,7 @@
             type="danger"
             @click="handleDelete(row, $index)"
           >
-            {{ $t('image.delete') }}
+            {{ $t('catalog.delete') }}
           </el-button>
         </template>
       </el-table-column>
@@ -129,33 +117,26 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :pageSizes="[5]"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.length"
       @pagination="getList"
     />
 
     <el-dialog
-      :title="textMap[dialogStatus]"
+      width="75%"
+      :title="catalogMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
     >
       <el-form
         ref="dataForm"
         :rules="rules"
-        :model="tempImageData"
+        :model="tempCatalogData"
         label-position="left"
         label-width="100px"
-        style="width: 400px; margin-left:50px;"
+        style="width: 90%; margin-left:10px;"
       >
         <el-form-item
-          :label="$t('image.name')"
-          prop="name"
-        >
-          <el-input v-model="tempImageData.name" />
-        </el-form-item>
-
-        <el-form-item
-          :label="$t('image.category')"
+          :label="$t('catalog.category')"
           prop="categories"
         >
           <el-cascader
@@ -164,55 +145,36 @@
             clearable
           />
         </el-form-item>
-
         <el-form-item
-          :label="$t('image.file')"
-          prop="file"
+          :label="$t('catalog.name')"
+          prop="name"
         >
-          <el-button
-            type="primary"
-            @click="showUpload = true"
-          >
-            {{ $t('image.file') }}
-          </el-button>
+          <el-input v-model="tempCatalogData.name" />
         </el-form-item>
         <el-form-item
-          v-if="tempImageData.content"
-          :label="$t('image.preview')"
-          prop="preview"
+          :label="$t('catalog.content')"
+          prop="content"
         >
-          <el-image
-            style="width: 100px; height: 100px"
-            :src="tempImageData.content"
-            :fit="'fill'"
-          />
+          <el-input
+            type="textarea"
+            :rows="10"
+            placeholder="Please input"
+            v-model="tempCatalogData.content">
+          </el-input>
         </el-form-item>
       </el-form>
-      <image-crop-upload
-        v-model="showUpload"
-        :url="''"
-        :width="width"
-        :height="height"
-        :lang-type="'ko'"
-        :with-credentials="true"
-        img-format="png"
-        @src-file-set="srcFileSet"
-        @crop-success="cropSuccess"
-        @crop-upload-success="cropUploadSuccess"
-        @crop-upload-fail="cropUploadFail"
-      />
       <div
         slot="footer"
         class="dialog-footer"
       >
         <el-button @click="dialogFormVisible = false">
-          {{ $t('image.cancel') }}
+          {{ $t('catalog.cancel') }}
         </el-button>
         <el-button
           type="primary"
           @click="dialogStatus==='create'?createData():updateData()"
         >
-          {{ $t('image.confirm') }}
+          {{ $t('catalog.confirm') }}
         </el-button>
       </div>
     </el-dialog>
@@ -220,30 +182,21 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
+import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Form, MessageBox } from 'element-ui'
 import { cloneDeep } from 'lodash'
-import ApiImage, { defaultImageData } from '@/api/images'
-import Category from '@/components/Category/index.vue'
-import { ICategoryData, IImageData } from '@/api/types'
+import ApiCatalog, { defaultCatalogData } from '@/api/catalogs'
+import { ICategoryData, ICatalogData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
-import ImageCropUpload from '@/components/vue-image-crop-upload/upload-2.vue'
 import ApiCategory from '@/api/categories'
 
 @Component({
-  name: 'ImageTable',
+  name: 'CatalogTable',
   components: {
-    Pagination,
-    ImageCropUpload,
-    Category
+    Pagination
   }
 })
 export default class extends Vue {
-  @Prop({ default: 100 }) private width!: number
-  @Prop({ default: 100 }) private height!: number
-
-  private showUpload = false
-
   private categories: ICategoryData[] = []
 
   private categoryQuery = {
@@ -268,14 +221,14 @@ export default class extends Vue {
   }
 
   private tableKey = 0
-  private list: IImageData[] = []
+  private list: ICatalogData[] = []
   private total = 0
   private listLoading = true
 
-  private listQuery: any = {
+  private listQuery = {
     page: 1,
-    start: 0,
-    length: 5,
+    start: 1,
+    length: 20,
     order: [{
       column: 'created',
       dir: 'desc'
@@ -295,7 +248,7 @@ export default class extends Vue {
 
   private dialogFormVisible = false
   private dialogStatus = ''
-  private textMap = {
+  private catalogMap = {
     update: '수정',
     create: '생성'
   }
@@ -304,7 +257,7 @@ export default class extends Vue {
     name: [{ required: true, message: 'name is required', trigger: 'change' }]
   }
 
-  private tempImageData = defaultImageData
+  private tempCatalogData = defaultCatalogData
 
   created() {
     this.getList()
@@ -349,14 +302,11 @@ export default class extends Vue {
       })
     }
 
-    const { data } = await ApiImage.getImages(query)
+    const { data } = await ApiCatalog.getCatalogs(query)
 
-    this.list = data.images.data
-    this.total = data.images.recordsFiltered
-    // Just to simulate the time of the request
-    setTimeout(() => {
-      this.listLoading = false
-    }, 0.5 * 1000)
+    this.list = data.catalogs.data
+    this.total = data.catalogs.recordsFiltered
+    this.listLoading = false
   }
 
   private handleFilter() {
@@ -385,12 +335,12 @@ export default class extends Vue {
     return sort === 'asc' ? 'ascending' : 'descending'
   }
 
-  private resetTempImageData() {
-    this.tempImageData = cloneDeep(defaultImageData)
+  private resetTempCatalogData() {
+    this.tempCatalogData = cloneDeep(defaultCatalogData)
   }
 
   private handleCreate() {
-    this.resetTempImageData()
+    this.resetTempCatalogData()
     this.dialogStatus = 'create'
     this.dialogFormVisible = true
     this.$nextTick(() => {
@@ -403,10 +353,9 @@ export default class extends Vue {
       if (valid) {
         const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
         const selectedCategories = selectedNodes.map((n: any) => n.data)
-
-        const { data } = await ApiImage.createImage(
-          this.tempImageData.name,
-          this.tempImageData.content!,
+        const { data } = await ApiCatalog.createCatalog(
+          this.tempCatalogData.name,
+          this.tempCatalogData.content!,
           selectedCategories
         )
         this.dialogFormVisible = false
@@ -422,7 +371,7 @@ export default class extends Vue {
   }
 
   private handleUpdate(row: any) {
-    this.tempImageData = Object.assign({}, row)
+    this.tempCatalogData = Object.assign({}, row)
     this.dialogStatus = 'update'
     this.dialogFormVisible = true
     this.$nextTick(() => {
@@ -436,8 +385,8 @@ export default class extends Vue {
         const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
         const selectedCategories = selectedNodes.map((n: any) => n.data)
 
-        const tempData = Object.assign({}, this.tempImageData)
-        const { data } = await ApiImage.updateImage(
+        const tempData = Object.assign({}, this.tempCatalogData)
+        const { data } = await ApiCatalog.updateCatalog(
           tempData.id!,
           tempData.name,
           tempData.content!,
@@ -465,7 +414,7 @@ export default class extends Vue {
         type: 'warning'
       }
     ).then(async() => {
-      const { data } = await ApiImage.deleteImage(row.id)
+      const { data } = await ApiCatalog.deleteCatalog(row.id)
       this.$notify({
         title: '성공',
         message: '삭제 했습니다',
@@ -474,23 +423,6 @@ export default class extends Vue {
       })
       await this.getList()
     })
-  }
-
-  private srcFileSet(fileName: string, fileType: string, fileSize: number) {
-    this.$emit('src-file-set', fileName, fileType, fileSize)
-  }
-
-  private cropSuccess(imgDataUrl: string, field: string) {
-    this.tempImageData.content = imgDataUrl
-    this.$emit('crop-success', imgDataUrl, field)
-  }
-
-  private cropUploadSuccess(jsonData: any, field: string) {
-    this.$emit('crop-upload-success', jsonData, field)
-  }
-
-  private cropUploadFail(status: boolean, field: string) {
-    this.$emit('crop-upload-fail', status, field)
   }
 }
 </script>

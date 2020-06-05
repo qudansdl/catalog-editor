@@ -12,7 +12,6 @@
           class="info-roles"
         >{{ item }}</span>
       </pan-thumb>
-      <github-corner style="position: absolute; top: 0px; border: 0; right: 0;" />
       <div class="info-container">
         <span class="display_name">{{ name }}</span>
         <span style="font-size:20px;padding-top:20px;display:inline-block;">Editor's Dashboard</span>
@@ -31,13 +30,11 @@
 import { Component, Vue } from 'vue-property-decorator'
 import { UserModule } from '@/store/modules/user'
 import PanThumb from '@/components/PanThumb/index.vue'
-import GithubCorner from '@/components/GithubCorner/index.vue'
 
 @Component({
   name: 'DashboardEditor',
   components: {
-    PanThumb,
-    GithubCorner
+    PanThumb
   }
 })
 export default class extends Vue {

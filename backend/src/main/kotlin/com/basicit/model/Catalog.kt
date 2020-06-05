@@ -14,8 +14,8 @@ import javax.persistence.*
 @Table(name = "catalog")
 class Catalog(
         id: UUID? = null,
-        val name: String? = null,
-        val content: String? = null,
+        var name: String? = null,
+        var content: String? = null,
 
         // Relation many to many
         @ManyToMany(fetch = FetchType.EAGER)

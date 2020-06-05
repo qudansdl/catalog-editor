@@ -46,6 +46,12 @@ const catalogRoutes: RouteConfig = {
       component: () => import(/* webpackChunkName: "catalog" */ '@/views/catalog/template/index.vue'),
       name: 'Template',
       meta: { title: 'template' }
+    },
+    {
+      path: 'ctalog',
+      component: () => import(/* webpackChunkName: "catalog" */ '@/views/catalog/catalog/index.vue'),
+      name: 'Catalog',
+      meta: { title: 'catalog' }
     }
   ]
 }

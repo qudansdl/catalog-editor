@@ -146,10 +146,6 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-input
-          v-model="tempBackgroundData.parent"
-          type="hidden"
-        />
         <el-form-item
           :label="$t('background.name')"
           prop="name"

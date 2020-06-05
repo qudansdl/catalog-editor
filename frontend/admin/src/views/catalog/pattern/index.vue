@@ -145,7 +145,6 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-input type="hidden" v-model="tempPatternData.parent" />
         <el-form-item
           :label="$t('pattern.name')"
           prop="name"

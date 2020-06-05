@@ -135,10 +135,16 @@
         label-width="100px"
         style="width: 90%; margin-left:10px;"
       >
-        <el-input
-          v-model="tempTemplateData.parent"
-          type="hidden"
-        />
+        <el-form-item
+          :label="$t('template.category')"
+          prop="categories"
+        >
+          <el-cascader
+            ref="formCategory"
+            :props="categoryProps"
+            clearable
+          />
+        </el-form-item>
         <el-form-item
           :label="$t('template.name')"
           prop="name"
@@ -151,20 +157,10 @@
         >
           <el-input
             type="textarea"
-            :rows="2"
+            :rows="10"
             placeholder="Please input"
             v-model="tempTemplateData.content">
           </el-input>
-        </el-form-item>
-        <el-form-item
-          :label="$t('template.category')"
-          prop="categories"
-        >
-          <el-cascader
-            ref="formCategory"
-            :props="categoryProps"
-            clearable
-          />
         </el-form-item>
       </el-form>
       <div

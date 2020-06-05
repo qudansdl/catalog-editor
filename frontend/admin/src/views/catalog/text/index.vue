@@ -143,10 +143,6 @@
         label-width="100px"
         style="width: 90%; margin-left:10px;"
       >
-        <el-input
-          v-model="tempTextData.parent"
-          type="hidden"
-        />
         <el-form-item
           :label="$t('text.name')"
           prop="name"
@@ -199,14 +195,12 @@ import { cloneDeep } from 'lodash'
 import ApiText, { defaultTextData } from '@/api/texts'
 import { ICategoryData, ITextData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
-import Tinymce from '@/components/Tinymce/index.vue'
 import ApiCategory from '@/api/categories'
 
 @Component({
   name: 'TextTable',
   components: {
-    Pagination,
-    Tinymce
+    Pagination
   }
 })
 export default class extends Vue {
