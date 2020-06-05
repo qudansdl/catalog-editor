@@ -25,6 +25,19 @@ Vue.use(VueQuillEditor, {
       [{ 'align': [] }],
 
       ['clean']                                         // remove formatting button
-    ]
+    ],
+    keyboard: {
+      bindings: {
+        tab: false,
+        handleEnter: {
+          key: 13,
+          handler: function() {
+            console.log("enter")
+            console.log("enter")
+            // Do nothing
+          }
+        }
+      }
+    }
   }
 })
