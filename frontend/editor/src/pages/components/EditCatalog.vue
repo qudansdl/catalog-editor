@@ -29,11 +29,11 @@
                     <q-item
                       clickable
                       v-ripple
-                      v-for="template in templates"
-                      :key="template.id"
-                      @click="templateSelected(template)"
-                      :class="selected && selected.id == template.id ? 'selected-item' : ''">
-                      <q-item-section>{{template.name}}</q-item-section>
+                      v-for="catalog in catalogs"
+                      :key="catalog.id"
+                      @click="catalogSelected(catalog)"
+                      :class="selected && selected.id == catalog.id ? 'selected-item' : ''">
+                      <q-item-section>{{catalog.name}}</q-item-section>
                     </q-item>
                   </q-list>
                 </q-infinite-scroll>
@@ -55,9 +55,9 @@
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { cloneDeep } from 'lodash';
-import { ICategoryData, ITemplateData, ITextData } from '@/api/types';
+import { ICategoryData, ICatalogData, ITextData } from '@/api/types';
 import { Debounce } from 'vue-debounce-decorator';
-import ApiTemplate from '@/api/templates';
+import ApiCatalog from '@/api/catalogs';
 import ApiCategory from '@/api/categories';
 import VueTagsInput from '@johmun/vue-tags-input';
 
@@ -66,15 +66,15 @@ import VueTagsInput from '@johmun/vue-tags-input';
     VueTagsInput
   }
 })
-export default class EditTemplate extends Vue {
+export default class EditCatalog extends Vue {
   @Prop({ required: true }) private value!: any;
 
   private maximizedToggle = true;
 
   categories: ICategoryData[] = []
 
-  private selected: ITemplateData | null = null
-  private templates: ITemplateData[] = []
+  private selected: ICatalogData | null = null
+  private catalogs: ICatalogData[] = []
 
   isLoading = false
   private categoryQuery = {
@@ -129,14 +129,14 @@ export default class EditTemplate extends Vue {
     this.$emit('input', newValue);
   }
 
-  templateSelected (template: ITemplateData) {
-    this.selected = template
+  catalogSelected (catalog: ICatalogData) {
+    this.selected = catalog
   }
 
   update(newTags: any[]) {
     this.autocompleteItems = [];
     this.tags = newTags;
-    this.templates = [];
+    this.catalogs = [];
     (this.$refs.loadArea as any).reset()
   }
 
@@ -173,10 +173,10 @@ export default class EditTemplate extends Vue {
         }]
       })
     }
-    const { data } = await ApiTemplate.getTemplates(query)
-    this.templates = this.templates.concat(data.templates.data)
+    const { data } = await ApiCatalog.getCatalogs(query)
+    this.catalogs = this.catalogs.concat(data.catalogs.data)
     this.isLoading = false
-    return data.templates.recordsFiltered < this.listQuery.start + this.listQuery.length
+    return data.catalogs.recordsFiltered < this.listQuery.start + this.listQuery.length
   }
 
   async getCategories (search: string) {

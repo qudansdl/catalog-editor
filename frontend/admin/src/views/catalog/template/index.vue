@@ -146,6 +146,17 @@
           <el-input v-model="tempTemplateData.name" />
         </el-form-item>
         <el-form-item
+          :label="$t('template.content')"
+          prop="content"
+        >
+          <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="Please input"
+            v-model="tempTemplateData.content">
+          </el-input>
+        </el-form-item>
+        <el-form-item
           :label="$t('template.category')"
           prop="categories"
         >

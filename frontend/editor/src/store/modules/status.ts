@@ -60,6 +60,11 @@ class AppStatus extends VuexModule implements AppStatusI {
   }
 
   @Mutation
+  private SET_HISTORY(history: Configuration[]) {
+    this.history = history;
+  }
+
+  @Mutation
   private TOGGLE_SIDEBAR(withoutAnimation: boolean) {
     this.sidebar.opened = !this.sidebar.opened;
     this.sidebar.withoutAnimation = withoutAnimation;

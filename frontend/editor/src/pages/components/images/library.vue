@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md">
+  <div class="q-pa-md" style="height: 100%;">
       <div class="row q-col-gutter-xs fixed">
         <div class="col">
             <vue-tags-input
@@ -11,13 +11,21 @@
             />
         </div>
       </div>
-      <div class="row q-col-gutter-xs"  style="padding-top: 35px">
+      <div class="row q-col-gutter-xs"  style="padding-top: 35px; height: 100%;">
         <div class="col">
+          <q-infinite-scroll @load="onLoad" :offset="150" style="height: 100%;" ref="loadArea">
             <vue-select-image
               :dataImages="images"
               :w="'150px'"
               :h="'100px'"
               @onselectimage="onSelectImage"/>
+            <template v-slot:loading>
+              <div class="row justify-center q-my-md">
+                <q-spinner-dots color="primary" size="40px" />
+              </div>
+            </template>
+          </q-infinite-scroll>
+
         </div>
       </div>
     </div>
@@ -57,8 +65,8 @@ export default class SelectImage extends Vue {
   }
 
   private listQuery = {
-    start: 0,
-    length: 0,
+    start: 1,
+    length: 10,
     order: [{
       column: 'created',
       dir: 'desc'
@@ -70,11 +78,6 @@ export default class SelectImage extends Vue {
   tags : any[] = []
   autocompleteItems: any[] = []
 
-  mounted()
-  {
-    this.getList();
-  }
-
   onSelectImage(img: IImageData) {
     this.selected = img;
     imageToDataUri(img.content!, (err: any, uri: any) => {
@@ -85,7 +88,8 @@ export default class SelectImage extends Vue {
   update(newTags: any[]) {
     this.autocompleteItems = [];
     this.tags = newTags;
-    this.getList()
+    this.images = [];
+    (this.$refs.loadArea as any).reset()
   }
 
   @Watch('tag')
@@ -100,7 +104,12 @@ export default class SelectImage extends Vue {
     this.getCategories(tag)
   }
 
-  @Debounce(600)
+  private async onLoad(index: number, done: any) {
+    console.log(`index ${index}`)
+    this.listQuery.start = (index -1) * this.listQuery.length
+    done(await this.getList())
+  }
+
   private async getList() {
     this.isLoading = true
     const query = JSON.parse(JSON.stringify(this.listQuery))
@@ -117,8 +126,9 @@ export default class SelectImage extends Vue {
       })
     }
     const { data } = await ApiImage.getImages(query)
-    this.images = data.images.data
+    this.images = this.images.concat(data.images.data)
     this.isLoading = false
+    return data.images.recordsFiltered < this.listQuery.start + this.listQuery.length
   }
 
 

@@ -27,7 +27,7 @@
 
       <q-footer>
         <q-toolbar inset>
-          <q-btn color="primary" label="적용" @click="apply"/>
+          <q-btn color="primary" label="적용" @click="apply" :disable="content == null"/>
           <q-btn color="secondary" label="잘라내기" @click="showCropp"/>
           <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
         </q-toolbar>
@@ -35,7 +35,7 @@
 
       <q-page-container>
         <q-page padding>
-          <q-tab-panels v-model="tab" animated>
+          <q-tab-panels v-model="tab" animated style="height: 100%;">
             <q-tab-panel
               v-for="tab in components"
               :key="tab.name"

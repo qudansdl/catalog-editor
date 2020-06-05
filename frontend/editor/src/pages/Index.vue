@@ -42,6 +42,9 @@
             </q-item>
             <q-separator dark inset  color="orange" />
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+              <q-btn flat color="primary" icon="folder_open"  @click="catalog.show = true"/>
+            </q-item>
+            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
               <q-btn flat color="primary" icon="file_copy"  @click="template.show = true"/>
             </q-item>
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
@@ -89,6 +92,7 @@
       @applyBackgroundPattern="applyBackgroundPattern"
     ></edit-background>
     <edit-template v-model="template" v-on:apply="setTemplate"></edit-template>
+    <edit-catalog v-model="catalog" v-on:apply="setCatalog"></edit-catalog>
   </q-layout>
 </template>
 
@@ -111,9 +115,10 @@ import EditBackground from 'pages/components/EditBackground.vue';
 import EditText from './components/EditText.vue';
 import EditImage from './components/EditImage.vue';
 import EditTemplate from './components/EditTemplate.vue';
+import EditCatalog from './components/EditCatalog.vue';
 import dw from './components/DrrWrap.vue';
 import ApiCatalog from '@/api/catalogs';
-import { ITemplateData } from '@/api/types';
+import { ITemplateData, ICatalogData } from '@/api/types';
 
 @Component({
   components: {
@@ -121,6 +126,7 @@ import { ITemplateData } from '@/api/types';
     EditText,
     EditImage,
     EditTemplate,
+    EditCatalog,
     VueDraggableResizable,
     dw,
   },
@@ -129,6 +135,12 @@ export default class Index extends Vue {
   template = {
     show: false
   };
+
+  catalog = {
+    show: false
+  };
+
+  catalogEntity: ICatalogData | null = null
 
   text = {
     show: false,
@@ -164,6 +176,9 @@ export default class Index extends Vue {
 
   @State('history', { namespace: 'AppStatus' })
   public history!: Configuration[];
+
+  @Mutation('SET_HISTORY', { namespace: 'AppStatus' })
+  public updateHistiory!: any;
 
   mounted() {
     if(this.$route.query.catalogId)
@@ -208,6 +223,13 @@ export default class Index extends Vue {
   setTemplate(template: ITemplateData) {
     this.updateStatus(JSON.parse(template.content!))
     this.addHistory();
+  }
+  setCatalog(catalog: ICatalogData) {
+    this.updateStatus(JSON.parse(catalog.content!))
+    this.catalogEntity = catalog
+
+    this.updateHistiory([])
+    this.changeIndex = 0;
   }
   setText(newItem: Item) {
     if (newItem.id) {
@@ -309,7 +331,28 @@ export default class Index extends Vue {
   }
 
   saveCatalog() {
-    ApiCatalog.createCatalog("zzz", JSON.stringify(this.status), [])
+    this.$q.dialog({
+      title: '확인',
+      message: '카탈로그 이름을 입력하세요',
+      prompt: {
+        model: this.catalogEntity ? this.catalogEntity.name : (this as any).$moment().format('YYYY년 MM월 DD'),
+        type: 'text' // optional
+      },
+      cancel: true,
+      persistent: true
+    }).onOk(async (name: any) => {
+      if(this.catalogEntity)
+      {
+        const { data } = await ApiCatalog.updateCatalog(this.catalogEntity.id!, name, JSON.stringify(this.status), [])
+      }else {
+        const { data } = await ApiCatalog.createCatalog(name, JSON.stringify(this.status), [])
+        this.catalogEntity = data.createCatalog
+      }
+    }).onCancel(() => {
+    }).onDismiss(() => {
+    })
+
+
   }
 
   deleteSelected() {
@@ -354,7 +397,10 @@ export default class Index extends Vue {
 }
 
 </script>
-
+<style lang="sass">
+  .selected-item
+    background-color: $teal-1
+</style>
 <style>
   *{
     user-select: none;

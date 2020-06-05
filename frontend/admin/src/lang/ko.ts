@@ -171,6 +171,7 @@ export default {
     id: 'ID',
     date: '날짜',
     name: '이름',
+    content: '내용',
     category: '카테고리',
     description: '설명',
     actions: '작업',

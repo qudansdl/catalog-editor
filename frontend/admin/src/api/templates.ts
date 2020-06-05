@@ -23,8 +23,7 @@ export default class ApiTemplate {
       variables: {
         name,
         content,
-        categories,
-        blocks: []
+        categories
       }
     })
   };
@@ -37,8 +36,7 @@ export default class ApiTemplate {
         templateId,
         name,
         content,
-        categories,
-        blocks: []
+        categories
       }
     })
   };

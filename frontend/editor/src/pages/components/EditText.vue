@@ -27,14 +27,14 @@
 
       <q-footer>
         <q-toolbar inset>
-          <q-btn color="primary" label="적용" @click="apply"/>
+          <q-btn color="primary" label="적용" @click="apply" :disable="content == null"/>
           <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
         </q-toolbar>
       </q-footer>
 
       <q-page-container>
         <q-page padding>
-          <q-tab-panels v-model="tab" animated>
+          <q-tab-panels v-model="tab" animated style="height: 100%">
             <q-tab-panel
               v-for="tab in components"
               :key="tab.name"
@@ -73,7 +73,6 @@ export default class EditText extends Vue {
 
   private maximizedToggle = true;
 
-
   private tab = 'library';
 
   components = [
@@ -83,6 +82,7 @@ export default class EditText extends Vue {
 
   apply() {
     this.$emit('apply', this.value.item);
+    this.content = null
     this.showDialog = false;
   }
 
