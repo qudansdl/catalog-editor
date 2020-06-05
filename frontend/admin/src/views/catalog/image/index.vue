@@ -129,6 +129,7 @@
     <pagination
       v-show="total>0"
       :total="total"
+      :pageSizes="[5]"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.length"
       @pagination="getList"
@@ -277,8 +278,8 @@ export default class extends Vue {
 
   private listQuery: any = {
     page: 1,
-    start: 1,
-    length: 20,
+    start: 0,
+    length: 5,
     order: [{
       column: 'created',
       dir: 'desc'
