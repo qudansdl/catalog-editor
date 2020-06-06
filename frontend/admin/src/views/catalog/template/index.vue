@@ -103,6 +103,13 @@
             {{ $t('template.edit') }}
           </el-button>
           <el-button
+            type="secondary"
+            size="mini"
+            @click="handleDownload(row)"
+          >
+            {{ $t('template.download') }}
+          </el-button>
+          <el-button
             v-if="row.status!=='deleted'"
             size="mini"
             type="danger"
@@ -377,6 +384,10 @@ export default class extends Vue {
     this.$nextTick(() => {
       (this.$refs.dataForm as Form).clearValidate()
     })
+  }
+
+  private handleDownload(row: any) {
+    document.location.href = process.env.VUE_APP_BASE_API + 'v1/api/templates/' + row.id + '/download'
   }
 
   private updateData() {

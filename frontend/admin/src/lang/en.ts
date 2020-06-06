@@ -176,6 +176,7 @@ export default {
     description: '설명',
     actions: '작업',
     edit: '수정',
+    download: '다운로드',
     delete: '삭제',
     cancel: '취소',
     confirm: '확인'
@@ -191,6 +192,7 @@ export default {
     description: '설명',
     actions: '작업',
     edit: '수정',
+    download: '다운로드',
     delete: '삭제',
     cancel: '취소',
     confirm: '확인'

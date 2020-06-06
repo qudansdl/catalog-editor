@@ -93,6 +93,8 @@
     ></edit-background>
     <edit-template v-model="template" v-on:apply="setTemplate"></edit-template>
     <edit-catalog v-model="catalog" v-on:apply="setCatalog"></edit-catalog>
+
+    <span v-if="catalogLoaded" id="catalogLoaded"></span>
   </q-layout>
 </template>
 
@@ -119,6 +121,7 @@ import EditCatalog from './components/EditCatalog.vue';
 import dw from './components/DrrWrap.vue';
 import ApiCatalog from '@/api/catalogs';
 import { ITemplateData, ICatalogData } from '@/api/types';
+import ApiTemplate from '@/api/templates';
 
 @Component({
   components: {
@@ -132,6 +135,8 @@ import { ITemplateData, ICatalogData } from '@/api/types';
   },
 })
 export default class Index extends Vue {
+  catalogLoaded = false
+
   template = {
     show: false
   };
@@ -180,12 +185,28 @@ export default class Index extends Vue {
   @Mutation('SET_HISTORY', { namespace: 'AppStatus' })
   public updateHistiory!: any;
 
-  mounted() {
-    if(this.$route.query.catalogId)
+  async mounted() {
+    if(this.$route.query.id && this.$route.query.type)
     {
-
+      let id = this.$route.query.id! as string
+      let type = this.$route.query.type!
+      let content = ''
+      if(type === 'CATALOG')
+      {
+        const catalog = await ApiCatalog.getCatalog(id)
+        content = catalog.data.catalog.content
+      }else if(type === 'TEMPLATE'){
+        const template = await ApiTemplate.getTemplate(id)
+        content = template.data.template.content
+      }
+      this.updateStatus(JSON.parse(content))
     }
     this.history.push(cloneDeep(this.status));
+  }
+
+  updated() {
+    console.log("updated called")
+    this.catalogLoaded = true
   }
 
   private setShowDelete() {

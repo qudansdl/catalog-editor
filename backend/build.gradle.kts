@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 val isWindows = org.gradle.internal.os.OperatingSystem.current().name.startsWith("Windows")
 val yarnCmd = if (isWindows) "yarn.cmd" else "yarn"
@@ -111,7 +112,7 @@ tasks {
 	}
 
 
-	withType<KotlinCompile> {
+	withType<BootJar> {
 		dependsOn("copyStaticAdmin", "copyStaticEditor")
 	}
 }

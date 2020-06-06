@@ -20,7 +20,7 @@ const defaultOptions: DefaultOptions = {
 }
 
 const link = createUploadLink({
-  uri: process.env.VUE_APP_BASE_API,
+  uri: process.env.VUE_APP_BASE_API + 'graphql',
   credentials: 'same-origin'
 })
 

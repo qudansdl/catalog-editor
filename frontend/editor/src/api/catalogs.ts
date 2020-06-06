@@ -51,8 +51,8 @@ export default class ApiCatalog {
     })
   };
 
-  static getCatalog = (catalogId: string | null) => {
-    console.log('get Catalog')
+  static getCatalog = (catalogId: string) => {
+    console.log('get Catalog : ' + catalogId)
     return Vue.prototype.$apollo.query({
       query: GET_CATALOG_BY_ID,
       variables: {

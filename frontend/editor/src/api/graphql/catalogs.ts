@@ -45,7 +45,7 @@ export const GET_CATALOGS = gql`query($input: DataTablesInput) {
     }
 }`
 
-export const GET_CATALOG_BY_ID = gql`query($catalogId: UUID) {
+export const GET_CATALOG_BY_ID = gql`query($catalogId: UUID!) {
   catalog(catalogId: $catalogId) {
     id
     name
