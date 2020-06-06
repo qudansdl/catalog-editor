@@ -12,7 +12,9 @@ import {ICategoryData, ICatalogData } from '@/api/types'
 export const defaultCatalogData: ICatalogData = {
   id: null,
   name: '',
-  content: null
+  content: null,
+  image: null,
+  thumbnail: null
 }
 
 export default class ApiCatalog {

@@ -12,7 +12,9 @@ import {ICategoryData, ITemplateData } from '@/api/types'
 export const defaultTemplateData: ITemplateData = {
   id: null,
   name: '',
-  content: null
+  content: null,
+  image: null,
+  thumbnail: null
 }
 
 export default class ApiTemplate {
