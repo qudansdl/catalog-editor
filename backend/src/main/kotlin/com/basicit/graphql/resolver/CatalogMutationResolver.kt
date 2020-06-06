@@ -11,12 +11,16 @@ import java.util.*
 class CatalogMutationResolver (private val catalogService: CatalogService) : GraphQLMutationResolver {
   fun createCatalog(name: String? = null,
                     content: String? = null,
+                    image: String? = null,
+                    thumbnail: String? = null,
                     categories: MutableSet<Category> = mutableSetOf()
   ): Catalog =
     catalogService.addCatalog(
       Catalog(
               name = name,
               content = content,
+              image = image,
+              thumbnail = thumbnail,
               categories = categories
       )
     )
@@ -24,6 +28,8 @@ class CatalogMutationResolver (private val catalogService: CatalogService) : Gra
   fun updateCatalog(catalogId: UUID,
                     name: String? = null,
                     content: String? = null,
+                    image: String? = null,
+                    thumbnail: String? = null,
                     categories: MutableSet<Category> = mutableSetOf()): Catalog =
     catalogService.putCatalog(
       catalogId,
@@ -31,6 +37,8 @@ class CatalogMutationResolver (private val catalogService: CatalogService) : Gra
           id = catalogId,
           name = name,
           content = content,
+          image = image,
+          thumbnail = thumbnail,
           categories = categories
       )
     ).orElse(null)

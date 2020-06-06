@@ -33,6 +33,8 @@ type Catalog  implements Entity {
   id: UUID
   name: String
   content: String
+  image: String
+  thumbnail: String
   categories: [Category]
   created: DateTime
   updated: DateTime
@@ -45,6 +47,8 @@ type Template  implements Entity {
   id: UUID
   name: String
   content: String
+  image: String
+  thumbnail: String
   categories: [Category]
   created: DateTime
   updated: DateTime
@@ -232,11 +236,15 @@ type Mutation {
 
   createCatalog(name: String
     content: String
+    image: String
+    thumbnail: String
     categories: [CategoryInput]
   ): Catalog
   updateCatalog(catalogId: UUID!,
     name: String
     content: String
+    image: String
+    thumbnail: String
     categories: [CategoryInput]
   ): Catalog
   deleteCatalog(catalogId: UUID!): Boolean
@@ -244,11 +252,15 @@ type Mutation {
 
   createTemplate(name: String
     content: String
+    image: String
+    thumbnail: String
     categories: [CategoryInput]
   ): Template
   updateTemplate(templateId: UUID!,
     name: String
     content: String
+    image: String
+    thumbnail: String
     categories: [CategoryInput]
   ): Template
   deleteTemplate(templateId: UUID!): Boolean

@@ -16,19 +16,34 @@ export const defaultCatalogData: ICatalogData = {
 }
 
 export default class ApiCatalog {
-  static createCatalog = (name: string, content: string, categories: ICategoryData[]) => {
+  static createCatalog = (
+    name: string,
+    content: string,
+    image: string,
+    thumbnail: string,
+    categories: ICategoryData[]
+  ) => {
     console.log('Create Catalog')
     return apolloClient.mutate({
       mutation: CREATE_CATALOG,
       variables: {
         name,
         content,
+        image,
+        thumbnail,
         categories
       }
     })
   };
 
-  static updateCatalog = (catalogId: string, name: string, content: string, categories: ICategoryData[]) => {
+  static updateCatalog = (
+    catalogId: string,
+    name: string,
+    content: string,
+    image: string,
+    thumbnail: string,
+    categories: ICategoryData[]
+  ) => {
     console.log('Update Catalog')
     return apolloClient.mutate({
       mutation: UPDATE_CATALOG,
@@ -36,6 +51,8 @@ export default class ApiCatalog {
         catalogId,
         name,
         content,
+        image,
+        thumbnail,
         categories
       }
     })

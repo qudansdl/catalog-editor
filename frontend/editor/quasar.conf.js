@@ -20,7 +20,8 @@ module.exports = configure(function (ctx) {
       'axios',
       'apollo',
       'touch',
-      'moment'
+      'moment',
+      'html2canvas'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css

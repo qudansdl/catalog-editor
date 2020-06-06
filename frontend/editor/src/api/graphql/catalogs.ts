@@ -3,18 +3,43 @@ import gql from 'graphql-tag'
 import Mustache from 'mustache'
 
 export const CREATE_CATALOG = gql`
-    mutation CreateCatalog($name: String, $content: String!, $categories: [CategoryInput]){
-        createCatalog(name: $name, content: $content, categories: $categories) {
+    mutation CreateCatalog(
+      $name: String,
+      $content: String!,
+      $image: String!,
+      $thumbnail: String!,
+      $categories: [CategoryInput]
+    ){
+        createCatalog(
+          name: $name,
+          content: $content,
+          image: $image,
+          thumbnail: $thumbnail,
+          categories: $categories
+        ) {
             id,
-            name,
-            content
+            name
         }
     }
 `
 
 export const UPDATE_CATALOG = gql`
-  mutation updateCatalog($catalogId: UUID!, $name: String, $content: String!, $categories: [CategoryInput]){
-    updateCatalog(catalogId: $catalogId, name: $name, content: $content, categories: $categories) {
+  mutation updateCatalog(
+    $catalogId: UUID!,
+    $name: String,
+    $content: String!,
+    $image: String!,
+    $thumbnail: String!,
+    $categories: [CategoryInput]
+  ){
+    updateCatalog(
+      catalogId: $catalogId,
+      name: $name,
+      content: $content,
+      image: $image,
+      thumbnail: $thumbnail,
+      categories: $categories
+    ) {
       id
       name
       content
@@ -38,7 +63,7 @@ export const GET_CATALOGS = gql`query($input: DataTablesInput) {
         data {
             id
             name
-            content
+            thumnbail
             created
             updated
         }
@@ -50,6 +75,8 @@ export const GET_CATALOG_BY_ID = gql`query($catalogId: UUID!) {
     id
     name
     content
+    image
+    thumbnail
     created
     updated
   }

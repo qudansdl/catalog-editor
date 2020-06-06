@@ -16,6 +16,8 @@ class Catalog(
         id: UUID? = null,
         var name: String? = null,
         var content: String? = null,
+        var image: String? = null,
+        var thumbnail: String? = null,
 
         // Relation many to many
         @ManyToMany(fetch = FetchType.EAGER)

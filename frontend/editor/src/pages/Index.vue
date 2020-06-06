@@ -216,22 +216,6 @@ export default class Index extends Vue {
     });
   }
 
-  async print() {
-    const el = this.$refs.printMe;
-    await html2canvas(el as HTMLElement).then(
-      (canvas) => {
-        console.log('canvas', canvas);
-        console.log('dataUrl', canvas.toDataURL());
-
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL();
-        link.download = 'image.jpg';
-        document.body.appendChild(link);
-        link.click();
-      },
-    );
-  }
-
   showEditText() {
     this.text = {
       show: true,
@@ -351,6 +335,44 @@ export default class Index extends Vue {
     this.text.show = true;
   }
 
+
+  thumbnailify(base64Image: string, targetWidth: number, targetHeight: number): Promise<string> {
+    return new Promise(function(resolve, reject) {
+      const img = new Image();
+      img.onload = function() {
+        const width = img.width,
+          height = img.height,
+          canvas = document.createElement('canvas'),
+          ctx = canvas.getContext("2d")!;
+
+        canvas.width = targetWidth
+        canvas.height = targetHeight;
+
+        ctx.drawImage(
+          img,
+          width > height ? (width - height) / 2 : 0,
+          height > width ? (height - width) / 2 : 0,
+          width > height ? height : width,
+          width > height ? height : width,
+          0, 0,
+          targetWidth, targetHeight
+        );
+
+        resolve(canvas.toDataURL());
+      };
+
+      img.src = base64Image;
+    })
+  }
+
+  async print() {
+    const el = this.$refs.printMe;
+    const options = {
+      type: 'dataURL'
+    }
+    return await (this as any).$html2canvas(el, options)
+  }
+
   saveCatalog() {
     this.$q.dialog({
       title: '확인',
@@ -362,11 +384,25 @@ export default class Index extends Vue {
       cancel: true,
       persistent: true
     }).onOk(async (name: any) => {
+      const image = await this.print()
+      const thumbnail = await this.thumbnailify(image, 150, 100)
+
       if(this.catalogEntity)
       {
-        const { data } = await ApiCatalog.updateCatalog(this.catalogEntity.id!, name, JSON.stringify(this.status), [])
+        const { data } = await ApiCatalog.updateCatalog(
+          this.catalogEntity.id!,
+          name,
+          JSON.stringify(this.status),
+          image,
+          thumbnail,
+          [])
       }else {
-        const { data } = await ApiCatalog.createCatalog(name, JSON.stringify(this.status), [])
+        const { data } = await ApiCatalog.createCatalog(
+          name,
+          JSON.stringify(this.status),
+          image,
+          thumbnail,
+          [])
         this.catalogEntity = data.createCatalog
       }
     }).onCancel(() => {

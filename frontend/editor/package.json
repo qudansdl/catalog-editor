@@ -36,7 +36,6 @@
     "graphql": "^14.5.8",
     "graphql-subscriptions": "^1.1.0",
     "graphql-tag": "^2.10.3",
-    "html2canvas": "^1.0.0-rc.5",
     "is-data-uri": "^0.1.0",
     "lodash": "^4.17.15",
     "mustache": "^4.0.1",
@@ -67,7 +66,10 @@
     "vue-quill-editor": "^3.0.6",
     "vue-base64-file-upload": "^1.0.4",
     "@johmun/vue-tags-input": "^2.1.0",
-    "vue-moment": "^4.1.0"
+    "vue-moment": "^4.1.0",
+    "file-saver": "^2.0.2",
+    "html2canvas": "^1.0.0-rc.5",
+    "vue-html2canvas": "^0.0.4"
   },
   "devDependencies": {
     "@quasar/app": "^1.9.3",

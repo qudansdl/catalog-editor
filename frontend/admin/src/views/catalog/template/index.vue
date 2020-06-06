@@ -89,6 +89,16 @@
         </template>
       </el-table-column>
       <el-table-column
+        :label="$t('template.thumbnail')"
+        min-width="150px"
+      >
+        <template slot-scope="{row}">
+          <el-image
+            :src="row.thumbnail"
+            :fit="'fill'"></el-image>
+        </template>
+      </el-table-column>
+      <el-table-column
         :label="$t('template.actions')"
         align="center"
         width="230"

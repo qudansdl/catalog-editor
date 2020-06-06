@@ -18,7 +18,6 @@ class TemplateService(
 
   fun addTemplate(template: Template): Template {
       val template = templateRepository.save(template)
-      pdfService.generate(template.id, "TEMPLATE")
 
       return template
   }
@@ -34,11 +33,11 @@ class TemplateService(
           currentTemplate.id
           currentTemplate.name = newTemplate.name
           currentTemplate.content = newTemplate.content
+          currentTemplate.image = newTemplate.image
+          currentTemplate.thumbnail = newTemplate.thumbnail
           currentTemplate.categories = newTemplate.categories
 
           val template = templateRepository.save(currentTemplate)
-
-          pdfService.generate(templateId, "TEMPLATE")
 
           template
     }

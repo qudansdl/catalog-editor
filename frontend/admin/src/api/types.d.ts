@@ -2,12 +2,16 @@ export interface ITemplateData {
   id: string | null
   name: string
   content: string | null
+  image: string | null
+  thumbnail: string | null
 }
 
 export interface ICatalogData {
   id: string | null
   name: string
   content: string | null
+  image: string | null
+  thumbnail: string | null
 }
 
 
