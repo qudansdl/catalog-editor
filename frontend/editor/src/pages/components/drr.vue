@@ -152,6 +152,7 @@
         return {
           active: this.active,
           inactive: !this.active,
+          capture: this.capture,
           dragging: this.bodyDrag,
           'content-active': this.contentActive
         }
@@ -193,6 +194,9 @@
           h: this.height,
           angle: this.rotation
         }
+      },
+      capture () {
+          return this.$store.state.AppStatus.capture
       }
     },
 
@@ -706,6 +710,10 @@
     display: none;
   }
 
+  .capture > .drr-stick {
+    display: none;
+  }
+
   .drr-stick-tl, .drr-stick-br {
     cursor: nwse-resize;
   }
@@ -744,6 +752,10 @@
   }
 
   .inactive > .ro-stick-handle {
+    display: none;
+  }
+
+  .capture > .ro-stick-handle {
     display: none;
   }
 
