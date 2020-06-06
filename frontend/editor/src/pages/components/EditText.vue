@@ -73,7 +73,7 @@ export default class EditText extends Vue {
 
   private maximizedToggle = true;
 
-  private tab = 'library';
+  private tab = 'write';
 
   components = [
     { name: 'library', label: '선택' },

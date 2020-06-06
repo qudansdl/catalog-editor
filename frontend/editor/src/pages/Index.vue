@@ -27,6 +27,12 @@
 
         <q-footer elevated class="bg-white text-primary">
           <q-list>
+
+            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+              <q-btn flat :disable="!showDelete" color="primary" icon="flip_to_front" @click="flipToFront"/>
+            </q-item>
+
+
             <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
               <q-btn flat color="primary" icon="undo" @click="undo" :disable="changeIndex == 0"/>
             </q-item>
@@ -184,6 +190,12 @@ export default class Index extends Vue {
 
   @Mutation('SET_HISTORY', { namespace: 'AppStatus' })
   public updateHistiory!: any;
+
+  @State('capture', { namespace: 'AppStatus' })
+  public capture!: boolean;
+
+  @Mutation('SET_CAPTURE', { namespace: 'AppStatus' })
+  public updateCapture!: any;
 
   async mounted() {
     if(this.$route.query.id && this.$route.query.type)
@@ -350,12 +362,10 @@ export default class Index extends Vue {
 
         ctx.drawImage(
           img,
-          width > height ? (width - height) / 2 : 0,
-          height > width ? (height - width) / 2 : 0,
-          width > height ? height : width,
-          width > height ? height : width,
-          0, 0,
-          targetWidth, targetHeight
+          0,
+          0,
+          targetWidth,
+          targetHeight
         );
 
         resolve(canvas.toDataURL());
@@ -366,24 +376,26 @@ export default class Index extends Vue {
   }
 
   async print() {
-    const el = this.$refs.printMe;
-    const options = {
-      type: 'dataURL'
-    }
-    return await (this as any).$html2canvas(el, options)
+    const el = this.$refs.printMe as any;
+    const rect = el.getBoundingClientRect()
+
+    const left = (rect.left as number) + 4
+    const top = (rect.top as number) + 4
+    const bottom = rect.bottom - 8
+    const right = rect.right - 8
+
+    return await (this as any).$html2canvas(el, {
+      type: 'dataURL',
+      removeContainer: true,
+      width: right - left,
+      height: bottom - top,
+      x: left,
+      y: top
+    })
   }
 
-  saveCatalog() {
-    this.$q.dialog({
-      title: '확인',
-      message: '카탈로그 이름을 입력하세요',
-      prompt: {
-        model: this.catalogEntity ? this.catalogEntity.name : (this as any).$moment().format('YYYY년 MM월 DD'),
-        type: 'text' // optional
-      },
-      cancel: true,
-      persistent: true
-    }).onOk(async (name: any) => {
+
+  async captureAndSave() {
       const image = await this.print()
       const thumbnail = await this.thumbnailify(image, 150, 100)
 
@@ -405,11 +417,41 @@ export default class Index extends Vue {
           [])
         this.catalogEntity = data.createCatalog
       }
+
+    this.updateCapture(false)
+
+  }
+
+  saveCatalog() {
+    this.$q.dialog({
+      title: '확인',
+      message: '카탈로그 이름을 입력하세요',
+      prompt: {
+        model: this.catalogEntity ? this.catalogEntity.name : (this as any).$moment().format('YYYY년 MM월 DD'),
+        type: 'text' // optional
+      },
+      cancel: true,
+      persistent: true
+    }).onOk( (name: any) => {
+      this.updateCapture(true)
+      this.$nextTick(() => {
+        this.captureAndSave();
+      });
     }).onCancel(() => {
     }).onDismiss(() => {
     })
+  }
+  flipToFront(){
+    const activeList = document.querySelectorAll('.drr.active');
 
+    activeList.forEach((elem, index) => {
+      const id = elem.getAttribute('id');
+      console.log(`id = ${id}`);
 
+      const items = this.status.items;
+      const idx = items.findIndex(i => i.id == id);
+      items.push(items.splice(idx, 1)[0]);
+    });
   }
 
   deleteSelected() {
@@ -464,9 +506,9 @@ export default class Index extends Vue {
   }
   .printing-body {
     position: absolute;
-    height:100%;
-    width:100%;
-    border: 8px solid #ccc;
+    border: 4px solid #ccc;
+    height: 360px;
+    width: 640px;
     overflow: hidden;
   }
   button {
@@ -486,6 +528,10 @@ export default class Index extends Vue {
   }
   .vue-select-image__item {
     margin-left: 0px !important;
+  }
+
+  .no-capture {
+    display: none !important;
   }
 
   @media print

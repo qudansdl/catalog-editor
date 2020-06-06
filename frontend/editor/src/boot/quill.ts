@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueQuillEditor from 'vue-quill-editor'
+import Quill from 'quill'
 
 import 'quill/dist/quill.core.css' // import styles
 import 'quill/dist/quill.snow.css' // for snow theme
@@ -15,14 +16,9 @@ Vue.use(VueQuillEditor, {
       [{ 'list': 'ordered'}, { 'list': 'bullet' }],
       [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
       [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
-      [{ 'direction': 'rtl' }],                         // text direction
-
-      [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
-      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
 
       [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
       [{ 'font': [] }],
-      [{ 'align': [] }],
 
       ['clean']                                         // remove formatting button
     ],
@@ -39,3 +35,19 @@ Vue.use(VueQuillEditor, {
     }
   }
 })
+
+const Clipboard = Quill.import('modules/clipboard');
+const Delta = Quill.import('delta');
+
+class PlainClipboard extends Clipboard {
+  convert(html = null) {
+    if (typeof html === 'string') {
+      this.container.innerHTML = html;
+    }
+    const text = '';
+    this.container.innerHTML = '';
+    return new Delta().insert(text);
+  }
+}
+
+Quill.register('modules/clipboard', PlainClipboard, true);

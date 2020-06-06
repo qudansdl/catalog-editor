@@ -61,6 +61,7 @@ export const GET_CATALOGS = gql`query($input: DataTablesInput) {
         data {
             id
             name
+            image
             thumbnail
             created
             updated

@@ -94,7 +94,7 @@
       >
         <template slot-scope="{row}">
           <el-image
-            :src="row.thumbnail"
+            :src="row.image"
             :fit="'fill'"></el-image>
         </template>
       </el-table-column>
@@ -111,13 +111,6 @@
             @click="handleUpdate(row)"
           >
             {{ $t('catalog.edit') }}
-          </el-button>
-          <el-button
-            type="secondary"
-            size="mini"
-            @click="handleDownload(row)"
-          >
-            {{ $t('template.download') }}
           </el-button>
           <el-button
             v-if="row.status!=='deleted'"
@@ -139,62 +132,6 @@
       @pagination="getList"
     />
 
-    <el-dialog
-      width="75%"
-      :title="catalogMap[dialogStatus]"
-      :visible.sync="dialogFormVisible"
-    >
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="tempCatalogData"
-        label-position="left"
-        label-width="100px"
-        style="width: 90%; margin-left:10px;"
-      >
-        <el-form-item
-          :label="$t('catalog.category')"
-          prop="categories"
-        >
-          <el-cascader
-            ref="formCategory"
-            :props="categoryProps"
-            clearable
-          />
-        </el-form-item>
-        <el-form-item
-          :label="$t('catalog.name')"
-          prop="name"
-        >
-          <el-input v-model="tempCatalogData.name" />
-        </el-form-item>
-        <el-form-item
-          :label="$t('catalog.content')"
-          prop="content"
-        >
-          <el-input
-            type="textarea"
-            :rows="10"
-            placeholder="Please input"
-            v-model="tempCatalogData.content">
-          </el-input>
-        </el-form-item>
-      </el-form>
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dialogFormVisible = false">
-          {{ $t('catalog.cancel') }}
-        </el-button>
-        <el-button
-          type="primary"
-          @click="dialogStatus==='create'?createData():updateData()"
-        >
-          {{ $t('catalog.confirm') }}
-        </el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -262,19 +199,6 @@ export default class extends Vue {
     { label: 'Date Ascending', key: '+date', value: 'desc' },
     { label: 'Date Descending', key: '-date', value: 'asc' }
   ]
-
-  private dialogFormVisible = false
-  private dialogStatus = ''
-  private catalogMap = {
-    update: '수정',
-    create: '생성'
-  }
-
-  private rules = {
-    name: [{ required: true, message: 'name is required', trigger: 'change' }]
-  }
-
-  private tempCatalogData = defaultCatalogData
 
   created() {
     this.getList()
@@ -352,78 +276,10 @@ export default class extends Vue {
     return sort === 'asc' ? 'ascending' : 'descending'
   }
 
-  private resetTempCatalogData() {
-    this.tempCatalogData = cloneDeep(defaultCatalogData)
-  }
-
-  private handleCreate() {
-    this.resetTempCatalogData()
-    this.dialogStatus = 'create'
-    this.dialogFormVisible = true
-    this.$nextTick(() => {
-      (this.$refs.dataForm as Form).clearValidate()
-    })
-  }
-
-  private createData() {
-    (this.$refs.dataForm as Form).validate(async(valid) => {
-      if (valid) {
-        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
-        const selectedCategories = selectedNodes.map((n: any) => n.data)
-        const { data } = await ApiCatalog.createCatalog(
-          this.tempCatalogData.name,
-          this.tempCatalogData.content!,
-          selectedCategories
-        )
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '성공',
-          message: '추가 했습니다',
-          type: 'success',
-          duration: 2000
-        })
-        await this.getList()
-      }
-    })
-  }
-
   private handleUpdate(row: any) {
-    this.tempCatalogData = Object.assign({}, row)
-    this.dialogStatus = 'update'
-    this.dialogFormVisible = true
-    this.$nextTick(() => {
-      (this.$refs.dataForm as Form).clearValidate()
-    })
+
   }
 
-  private handleDownload(row: any) {
-    document.location.href = process.env.VUE_APP_BASE_API + 'v1/api/catalogs/' + row.id + '/download'
-  }
-
-  private updateData() {
-    (this.$refs.dataForm as Form).validate(async(valid) => {
-      if (valid) {
-        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
-        const selectedCategories = selectedNodes.map((n: any) => n.data)
-
-        const tempData = Object.assign({}, this.tempCatalogData)
-        const { data } = await ApiCatalog.updateCatalog(
-          tempData.id!,
-          tempData.name,
-          tempData.content!,
-          selectedCategories
-        )
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '성공',
-          message: '저장했습니다',
-          type: 'success',
-          duration: 2000
-        })
-        await this.getList()
-      }
-    })
-  }
 
   private async handleDelete(row: any, index: number) {
     MessageBox.confirm(

@@ -51,6 +51,7 @@
     "vue-debounce-decorator": "^1.0.1",
     "vue-draggable-resizable": "^2.2.0",
     "vue-fitty": "^0.1.8",
+    "html2canvas": "^1.0.0-rc.5",
     "vue-html2canvas": "^0.0.4",
     "vue-i18n": "^8.18.1",
     "vue-property-decorator": "^8.4.2",
@@ -67,9 +68,7 @@
     "vue-base64-file-upload": "^1.0.4",
     "@johmun/vue-tags-input": "^2.1.0",
     "vue-moment": "^4.1.0",
-    "file-saver": "^2.0.2",
-    "html2canvas": "^1.0.0-rc.5",
-    "vue-html2canvas": "^0.0.4"
+    "file-saver": "^2.0.2"
   },
   "devDependencies": {
     "@quasar/app": "^1.9.3",
