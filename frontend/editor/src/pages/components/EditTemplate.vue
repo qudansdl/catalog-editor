@@ -7,23 +7,20 @@
     transition-hide="slide-down"
   >
     <q-card>
-      <q-card-section style="height: 100%">
-    <q-layout view="Lhh lpR fff" container>
-      <q-page-container>
-        <q-page padding>
-            <div class="row q-col-gutter-xs fixed">
-              <div class="col">
+      <q-card-section class="row justify-center q-my-md">
                   <vue-tags-input
+                    placeholder="카테고리 입력"
                     v-model="tag"
                     :tags="tags"
                     :autocomplete-items="autocompleteItems"
                     :add-only-from-autocomplete="true"
                     @tags-changed="update"
                   />
-              </div>
-            </div>
-            <div class="row q-col-gutter-xs" style="padding-top: 35px">
-              <div class="col">
+      </q-card-section>
+
+      <q-separator />
+
+      <q-card-section class="q-pt-none scroll"  style="max-height: 50vh;min-height: 250px;">
                 <q-infinite-scroll @load="onLoad" :offset="150" style="height: 100%;" ref="loadArea">
                   <q-list bordered separator>
                     <q-item
@@ -37,18 +34,14 @@
                     </q-item>
                   </q-list>
                 </q-infinite-scroll>
-              </div>
-            </div>
-        </q-page>
-        <q-footer>
-          <q-toolbar inset>
-            <q-btn color="primary" label="적용" @click="apply" :disable="selected == null"/>
-            <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
-          </q-toolbar>
-        </q-footer>
-      </q-page-container>
-    </q-layout>
       </q-card-section>
+
+      <q-separator />
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="적용" @click="apply" :disable="selected == null"/>
+        <q-btn flat label="닫기" @click="showDialog = false" />
+      </q-card-actions>
     </q-card>
   </q-dialog>
 </template>

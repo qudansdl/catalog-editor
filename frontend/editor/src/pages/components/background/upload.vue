@@ -1,25 +1,33 @@
 <template>
-  <div class="q-pa-md">
-      <div class="row q-col-gutter-xs">
-        <div class="col">
-            <q-file
-              v-model="file"
-              label="파일 선택"
-              filled
-            />
-        </div>
-        <div class="col-auto">
-            <q-btn @click="uploadFile()">업로드</q-btn>
-        </div>
-      </div>
-      <div class="row q-col-gutter-xs">
-          <vue-select-image
-            :dataImages="images"
-            :w="'250px'"
-            :h="'200px'"
-            @onselectimage="onSelectImage"/>
-      </div>
-  </div>
+  <q-card>
+    <q-card-section class="row justify-center q-my-md">
+      <q-file
+        v-model="file"
+        label="파일 선택"
+        filled
+        style="max-width: 300px"
+      >
+        <template v-slot:after v-if="canUpload">
+          <q-btn
+            color="primary"
+            dense
+            icon="cloud_upload"
+            round
+            @click="uploadFile"
+            :disable="!canUpload"
+          />
+        </template>
+      </q-file>
+    </q-card-section>
+    <q-card-section>
+
+      <vue-select-image
+        :dataImages="images"
+        :w="'250px'"
+        :h="'200px'"
+        @onselectimage="onSelectImage"/>
+    </q-card-section>
+  </q-card>
 </template>
 
 
@@ -41,6 +49,9 @@ export default class UploadImage extends Vue {
   private file: any = null
   private selected: IBackgroundData | null = null
 
+  get canUpload() {
+    return this.file !== null
+  }
 
   uploadFile() {
     const reader = new FileReader();

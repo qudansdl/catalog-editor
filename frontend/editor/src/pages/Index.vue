@@ -13,13 +13,13 @@
 
         <q-header elevated height-hint="98" class="bg-white text-primary">
           <q-list>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+            <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="text_fields" @click="showEditText"/>
             </q-item>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+            <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="image_search" @click="image.show = true"/>
             </q-item>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+            <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="grid_on" @click="background.show = true"/>
             </q-item>
           </q-list>
@@ -28,32 +28,32 @@
         <q-footer elevated class="bg-white text-primary">
           <q-list>
 
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+            <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat :disable="!showDelete" color="primary" icon="flip_to_front" @click="flipToFront"/>
             </q-item>
 
 
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+            <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="undo" @click="undo" :disable="changeIndex == 0"/>
             </q-item>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+            <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="redo" @click="redo" :disable="changeIndex + 1 >= history.length"/>
             </q-item>
-            <q-item v-ripple style="padding: 0px;min-height: 20px;">
+            <q-item v-ripple class="editor-q-item">
               <q-btn flat :disable="!showDelete"  color="primary" icon="delete" @click="deleteSelected()"/>
             </q-item>
             <q-separator dark inset  color="orange" />
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+            <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="save_alt"  @click="saveCatalog()"/>
             </q-item>
             <q-separator dark inset  color="orange" />
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+            <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="folder_open"  @click="catalog.show = true"/>
             </q-item>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+            <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="file_copy"  @click="template.show = true"/>
             </q-item>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+            <q-item clickable v-ripple class="editor-q-item">
               <q-btn
                 flat
                 color="primary"
@@ -569,6 +569,11 @@ export default class Index extends Vue {
     display: none !important;
   }
 
+  .editor-q-item {
+    padding: 0px;
+    min-height: 20px;
+    max-height: 33px;
+  }
   @media print
   {
     .no-print, .no-print *

@@ -1,18 +1,15 @@
 <template>
-  <div class="q-pa-md">
-      <div class="row q-col-gutter-xs">
-        <div class="col">
-            <quill-editor
-              ref="quillEditor"
-              :content="content"
-              @onQuillBack='onQuillBack'
-              @onEditorReady='onEditorReady'
-              @change="onEditorChange($event)"
-            />
-        </div>
-
-      </div>
-  </div>
+  <q-card>
+    <q-card-section class="row justify-center q-my-md">
+      <quill-editor
+        ref="quillEditor"
+        :content="content"
+        @onQuillBack='onQuillBack'
+        @onEditorReady='onEditorReady'
+        @change="onEditorChange($event)"
+      />
+    </q-card-section>
+  </q-card>
 </template>
 
 <script>
@@ -22,18 +19,6 @@ import { cloneDeep } from 'lodash';
 @Component
 export default class WriteText extends Vue {
   @Prop({ required: true }) content;
-
-  mounted(){
-    const editor = this.$refs.quillEditor
-    /*
-    const delta = {
-      ops: [
-        { insert:  this.content }
-      ]
-    }
-   //editor.quill.setContents(delta)
-     */
-  }
 
   onEditorReady(quill) {
   }

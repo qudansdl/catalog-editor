@@ -1,18 +1,17 @@
 <template>
-  <div class="q-pa-md" style="height: 100%;">
-      <div class="row q-col-gutter-xs fixed">
-        <div class="col">
+  <q-card>
+    <q-card-section class="row justify-center q-my-md">
             <vue-tags-input
+              placeholder="카테고리 입력"
               v-model="tag"
               :tags="tags"
               :autocomplete-items="autocompleteItems"
               :add-only-from-autocomplete="true"
               @tags-changed="update"
             />
-        </div>
-      </div>
-      <div class="row q-col-gutter-xs" style="padding-top: 35px; height: 100%;">
-        <div class="col">
+    </q-card-section>
+    <q-separator />
+    <q-card-section>
           <q-infinite-scroll @load="onLoad" :offset="90" style="height: 100%;" ref="loadArea">
             <vue-select-image
               :dataImages="patterns"
@@ -20,10 +19,8 @@
               :h="'200px'"
               @onselectimage="onSelectImage"/>
           </q-infinite-scroll>
-        </div>
-      </div>
-  </div>
-
+    </q-card-section>
+  </q-card>
 </template>
 
 

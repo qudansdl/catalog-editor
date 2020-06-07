@@ -1,9 +1,11 @@
 <template>
-    <div class="row p-4">
+  <q-card>
+    <q-card-section class="row justify-center q-my-md">
       <q-color
         v-model="color"
         @change="setSelected"/>
-    </div>
+    </q-card-section>
+  </q-card>
 </template>
 
 <script>

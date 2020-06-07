@@ -7,9 +7,7 @@
     transition-hide="slide-down"
   >
     <q-card>
-      <q-card-section style="height: 100%">
-    <q-layout view="Lhh lpR fff" container>
-      <q-header>
+      <q-card-section>
         <q-tabs
           v-model="tab"
           dense
@@ -23,36 +21,37 @@
             :name="item.name"
             :label="item.label"/>
         </q-tabs>
-      </q-header>
-
-      <q-footer>
-        <q-toolbar inset>
-          <q-btn color="primary" label="적용" @click="apply" :disable="content == null"/>
-          <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
-        </q-toolbar>
-      </q-footer>
-
-      <q-page-container>
-        <q-page padding>
-          <q-tab-panels v-model="tab" animated style="height: 100%">
-            <q-tab-panel
-              v-for="tab in components"
-              :key="tab.name"
-              :name="tab.name"
-              class="not-padding"
-            >
-              <component
-                :is="tab.name"
-                :key="tab.name"
-                :content="content"
-                @textSelected="textSelected"
-              ></component>
-            </q-tab-panel>
-          </q-tab-panels>
-        </q-page>
-      </q-page-container>
-    </q-layout>
       </q-card-section>
+
+      <q-separator />
+
+      <q-card-section class="q-pt-none scroll"  style="max-height: 50vh;min-height: 250px;">
+        <q-page padding>
+        <q-tab-panels v-model="tab" animated style="height: 100%">
+          <q-tab-panel
+            v-for="tab in components"
+            :key="tab.name"
+            :name="tab.name"
+            class="not-padding"
+          >
+            <component
+              :is="tab.name"
+              :key="tab.name"
+              :content="content"
+              @textSelected="textSelected"
+            ></component>
+          </q-tab-panel>
+        </q-tab-panels>
+        </q-page>
+      </q-card-section>
+
+      <q-separator />
+
+      <q-card-actions align="right" class="text-primary">
+        <q-btn flat label="적용" @click="apply" :disable="content == null"/>
+        <q-btn flat label="닫기" @click="showDialog = false" />
+      </q-card-actions>
+
     </q-card>
   </q-dialog>
 </template>
@@ -79,7 +78,6 @@ export default class EditText extends Vue {
     { name: 'write', label: '작성' },
     { name: 'library', label: '선택' },
   ];
-
 
   mounted(){
    this.tab = 'write'

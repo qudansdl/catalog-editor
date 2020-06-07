@@ -1,39 +1,37 @@
 <template>
-  <div class="q-pa-md" style="height: 100%;">
-      <div class="row q-col-gutter-xs fixed">
-        <div class="col">
-            <vue-tags-input
-              v-model="tag"
-              :tags="tags"
-              :autocomplete-items="autocompleteItems"
-              :add-only-from-autocomplete="true"
-              @tags-changed="update"
-            />
-        </div>
-      </div>
-      <div class="row q-col-gutter-xs" style="padding-top: 35px;  height: 100%;">
-        <div class="col">
-          <q-infinite-scroll @load="onLoad" :offset="150" style="height: 100%;" ref="loadArea">
-            <q-list bordered separator>
-              <q-item
-                clickable
-                v-ripple
-                v-for="text in texts"
-                :key="text.id"
-                @click="textSelected(text)"
-                :class="selected && selected.id == text.id ? 'selected-item' : ''">
-                <q-item-section>{{text.name}}</q-item-section>
-              </q-item>
-            </q-list>
-            <template v-slot:loading>
-              <div class="row justify-center q-my-md">
-                <q-spinner-dots color="primary" size="40px" />
-              </div>
-            </template>
-          </q-infinite-scroll>
-        </div>
-      </div>
-  </div>
+  <q-card>
+    <q-card-section class="row justify-center q-my-md">
+      <vue-tags-input
+        placeholder="카테고리 입력"
+        v-model="tag"
+        :tags="tags"
+        :autocomplete-items="autocompleteItems"
+        :add-only-from-autocomplete="true"
+        @tags-changed="update"
+      />
+    </q-card-section>
+    <q-separator />
+    <q-card-section>
+      <q-infinite-scroll @load="onLoad" :offset="150" style="height: 100%;" ref="loadArea">
+        <q-list bordered separator>
+          <q-item
+            clickable
+            v-ripple
+            v-for="text in texts"
+            :key="text.id"
+            @click="textSelected(text)"
+            :class="selected && selected.id == text.id ? 'selected-item' : ''">
+            <q-item-section>{{text.name}}</q-item-section>
+          </q-item>
+        </q-list>
+        <template v-slot:loading>
+          <div class="row justify-center q-my-md">
+            <q-spinner-dots color="primary" size="40px" />
+          </div>
+        </template>
+      </q-infinite-scroll>
+    </q-card-section>
+  </q-card>
 </template>
 
 <script lang="ts">
