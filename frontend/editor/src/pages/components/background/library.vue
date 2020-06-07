@@ -1,6 +1,6 @@
 <template>
   <q-card>
-    <q-card-section class="row justify-center q-my-md">
+    <q-card-section class="row justify-center">
             <vue-tags-input
               placeholder="카테고리 입력"
               v-model="tag"
@@ -21,7 +21,7 @@
           :h="'200px'"
           @onselectimage="onSelectImage"/>
         <template v-slot:loading>
-          <div class="row justify-center q-my-md">
+          <div class="row justify-center">
             <q-spinner-dots color="primary" size="40px" />
           </div>
         </template>
@@ -94,7 +94,7 @@ export default class SelectImage extends Vue {
 
   @Watch('tag')
   initItems() {
-    if (this.tag.length < 2) return;
+    if (this.tag.length < 1) return;
 
     this.loadItems(this.tag)
   }
@@ -105,6 +105,10 @@ export default class SelectImage extends Vue {
   }
 
   private async onLoad(index: number, done: any) {
+    if(index == 1)
+    {
+      this.backgrounds = []
+    }
     console.log(`index ${index}`)
     this.listQuery.start = (index-1)*this.listQuery.length
     done(await this.getList())

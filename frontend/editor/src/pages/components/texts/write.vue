@@ -1,6 +1,6 @@
 <template>
   <q-card>
-    <q-card-section class="row justify-center q-my-md">
+    <q-card-section class="row justify-center">
       <quill-editor
         ref="quillEditor"
         :content="content"

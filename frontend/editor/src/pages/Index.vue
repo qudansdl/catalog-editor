@@ -202,12 +202,11 @@ export default class Index extends Vue {
   public updateCapture!: any;
 
   async mounted() {
-    if(this.$route.query.type)
+    const type = this.$route.query.type as string
+    const id = this.$route.query.id as string
+    if(type)
     {
-      this.type = this.$route.query.type as string
-
-      if(this.$route.query.id) {
-        let id = this.$route.query.id as string
+      if(id) {
         let content = ''
         if (this.type === 'CATALOG') {
           const catalog = await ApiCatalog.getCatalog(id)

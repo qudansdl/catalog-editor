@@ -94,7 +94,7 @@
       >
         <template slot-scope="{row}">
           <el-image
-            :src="row.image"
+            :src="row.thumbnail"
             :fit="'fill'"></el-image>
         </template>
       </el-table-column>
@@ -106,11 +106,11 @@
       >
         <template slot-scope="{row, $index}">
           <el-button
-            type="primary"
+            type="secondary"
             size="mini"
-            @click="handleUpdate(row)"
+            @click="handleDownload(row)"
           >
-            {{ $t('catalog.edit') }}
+            {{ $t('catalog.download') }}
           </el-button>
           <el-button
             v-if="row.status!=='deleted'"
@@ -276,10 +276,14 @@ export default class extends Vue {
     return sort === 'asc' ? 'ascending' : 'descending'
   }
 
-  private handleUpdate(row: any) {
-
+  private handleDownload(row: any) {
+    const link = document.createElement('a')
+    link.download = name
+    link.href = row.image
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
-
 
   private async handleDelete(row: any, index: number) {
     MessageBox.confirm(

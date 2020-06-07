@@ -1,6 +1,6 @@
 <template>
   <q-card>
-    <q-card-section class="row justify-center q-my-md">
+    <q-card-section class="row justify-center">
             <vue-tags-input
               placeholder="카테고리 입력"
               v-model="tag"
@@ -87,7 +87,7 @@
 
     @Watch('tag')
     initItems() {
-      if (this.tag.length < 2) return;
+      if (this.tag.length < 1) return;
 
       this.loadItems(this.tag)
     }
@@ -98,6 +98,10 @@
     }
 
     private async onLoad(index: number, done: any) {
+      if(index == 1)
+      {
+        this.patterns = []
+      }
       console.log(`index ${index}`)
       this.listQuery.start = (index -1) * this.listQuery.length
       done(await this.getList())

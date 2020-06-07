@@ -1,6 +1,6 @@
 <template>
   <q-card>
-    <q-card-section class="row justify-center q-my-md">
+    <q-card-section class="row justify-center">
       <q-file
         v-model="file"
         label="파일 선택"
@@ -19,7 +19,7 @@
         </template>
       </q-file>
     </q-card-section>
-      <q-card-section>
+      <q-card-section class="row justify-center">
 
           <vue-select-image
             :dataImages="images"

@@ -114,6 +114,13 @@
             {{ $t('template.edit') }}
           </el-button>
           <el-button
+            type="secondary"
+            size="mini"
+            @click="handleDownload(row)"
+          >
+            {{ $t('template.download') }}
+          </el-button>
+          <el-button
             v-if="row.status!=='deleted'"
             size="mini"
             type="danger"
@@ -270,7 +277,12 @@ export default class extends Vue {
   }
 
   private handleDownload(row: any) {
-    document.location.href = process.env.VUE_APP_BASE_API + 'v1/api/templates/' + row.id + '/download'
+    const link = document.createElement('a')
+    link.download = name
+    link.href = row.image
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   private async loadNode(node: any, resolve: any) {

@@ -60,6 +60,7 @@ export const GET_TEMPLATES = gql`query($input: DataTablesInput) {
             id
             name
             thumbnail
+            image
             created
             updated
         }

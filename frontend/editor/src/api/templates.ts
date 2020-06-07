@@ -68,7 +68,7 @@ export default class ApiTemplate {
     })
   };
 
-  static getTemplate = (templateId: string | null) => {
+  static getTemplate = (templateId: string) => {
     console.log('get Template')
     return Vue.prototype.$apollo.query({
       query: GET_TEMPLATE_BY_ID,
