@@ -112,6 +112,9 @@ module.exports = configure(function (ctx) {
             formatter: require('eslint').CLIEngine.getFormatter('stylish'),
           },
         });
+
+        cfg.output.chunkFilename = 'js/editor-[name]-[hash].js'
+        cfg.output.filename = 'js/editor-[name]-[hash].js'
       },
     },
 
