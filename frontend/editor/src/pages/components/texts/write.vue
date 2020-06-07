@@ -1,12 +1,13 @@
 <template>
   <q-card>
-    <q-card-section class="row justify-center">
+    <q-card-section class="justify-center">
       <quill-editor
         ref="quillEditor"
         :content="content"
         @onQuillBack='onQuillBack'
         @onEditorReady='onEditorReady'
         @change="onEditorChange($event)"
+        style="height: 100%"
       />
     </q-card-section>
   </q-card>
@@ -33,8 +34,3 @@ export default class WriteText extends Vue {
 };
 </script>
 
-<style>
-  .ql-editor {
-    min-height:125px;
-  }
-</style>

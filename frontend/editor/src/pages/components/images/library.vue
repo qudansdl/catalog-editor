@@ -8,6 +8,7 @@
               :autocomplete-items="autocompleteItems"
               :add-only-from-autocomplete="true"
               @tags-changed="update"
+              style="width: 100%"
             />
     </q-card-section>
     <q-separator />
@@ -32,9 +33,9 @@
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import {ICategoryData, IImageData, ITextData} from '@/api/types'
 import ApiCategory from '@/api/categories';
-import VueSelectImage from "@/components/VueSelectImage/VueSelectImage.vue";
-import imageToDataUri from "@/utils/image-to-data-uri";
-import ApiImage from "@/api/images";
+import VueSelectImage from '@/components/VueSelectImage/VueSelectImage.vue';
+import imageToDataUri from '@/utils/image-to-data-uri';
+import ApiImage from '@/api/images';
 import VueTagsInput from '@johmun/vue-tags-input';
 import { Debounce } from 'vue-debounce-decorator';
 

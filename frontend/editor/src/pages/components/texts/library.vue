@@ -8,6 +8,7 @@
         :autocomplete-items="autocompleteItems"
         :add-only-from-autocomplete="true"
         @tags-changed="update"
+        style="width: 100%"
       />
     </q-card-section>
     <q-separator />

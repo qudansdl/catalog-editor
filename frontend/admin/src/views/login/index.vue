@@ -69,7 +69,6 @@
       >
         {{ $t('login.logIn') }}
       </el-button>
-
     </el-form>
 
     <el-dialog

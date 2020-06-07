@@ -144,7 +144,10 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-input type="hidden" v-model="tempCategoryData.parent" />
+        <el-input
+          v-model="tempCategoryData.parent"
+          type="hidden"
+        />
         <el-form-item
           :label="$t('category.name')"
           prop="name"

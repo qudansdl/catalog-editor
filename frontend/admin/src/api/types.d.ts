@@ -14,7 +14,6 @@ export interface ICatalogData {
   thumbnail: string | null
 }
 
-
 export interface ITextData {
   id: string | null
   name: string
@@ -26,7 +25,6 @@ export interface IPatternData {
   name: string
   content: string | null
 }
-
 
 export interface IBackgroundData {
   id: string | null
@@ -41,14 +39,12 @@ export interface IImageData {
   categories: ICategoryData[] | null | undefined
 }
 
-
 export interface ICategoryData {
   id: string | null
   name: string
-  children: ICategoryData[] | null,
+  children: ICategoryData[] | null
   parent: string | null
 }
-
 
 export interface IArticleData {
   id: number

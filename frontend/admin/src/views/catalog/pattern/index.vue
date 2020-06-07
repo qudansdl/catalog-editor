@@ -96,7 +96,8 @@
           <el-image
             style="width: 100px; height: 100px"
             :src="row.content"
-            :fit="'fill'"></el-image>
+            :fit="'fill'"
+          />
         </template>
       </el-table-column>
       <el-table-column
@@ -175,14 +176,15 @@
           </el-button>
         </el-form-item>
         <el-form-item
+          v-if="tempPatternData.content"
           :label="$t('pattern.preview')"
           prop="preview"
-          v-if="tempPatternData.content"
         >
           <el-image
             style="width: 100px; height: 100px"
             :src="tempPatternData.content"
-            :fit="'fill'"></el-image>
+            :fit="'fill'"
+          />
         </el-form-item>
       </el-form>
       <image-crop-upload

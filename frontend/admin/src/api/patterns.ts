@@ -7,7 +7,7 @@ import {
   getPatternVariable
 } from '@/api/graphql/pattern'
 import apolloClient from '@/utils/vue-apollo'
-import {ICategoryData, IPatternData} from '@/api/types'
+import { ICategoryData, IPatternData } from '@/api/types'
 
 export const defaultPatternData: IPatternData = {
   id: null,

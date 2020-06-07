@@ -21,7 +21,8 @@ Vue.use(VueQuillEditor, {
       [{ 'font': [] }],
 
       ['clean']                                         // remove formatting button
-    ],
+    ]
+    /*,
     keyboard: {
       bindings: {
         tab: false,
@@ -33,6 +34,7 @@ Vue.use(VueQuillEditor, {
         }
       }
     }
+     */
   }
 })
 

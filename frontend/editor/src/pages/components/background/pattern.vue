@@ -8,10 +8,11 @@
               :autocomplete-items="autocompleteItems"
               :add-only-from-autocomplete="true"
               @tags-changed="update"
+              style="width: 100%"
             />
     </q-card-section>
     <q-separator />
-    <q-card-section>
+    <q-card-section class="row justify-center">
           <q-infinite-scroll @load="onLoad" :offset="90" style="height: 100%;" ref="loadArea">
             <vue-select-image
               :dataImages="patterns"
@@ -28,9 +29,9 @@
   import { Component, Vue, Watch } from 'vue-property-decorator';
   import { IPatternData, ICategoryData } from '@/api/types'
   import ApiCategory from '@/api/categories';
-  import VueSelectImage from "@/components/VueSelectImage/VueSelectImage.vue";
-  import imageToDataUri from "@/utils/image-to-data-uri";
-  import ApiPattern from "@/api/patterns";
+  import VueSelectImage from '@/components/VueSelectImage/VueSelectImage.vue';
+  import imageToDataUri from '@/utils/image-to-data-uri';
+  import ApiPattern from '@/api/patterns';
   import VueTagsInput from '@johmun/vue-tags-input';
   import { Debounce } from 'vue-debounce-decorator';
 

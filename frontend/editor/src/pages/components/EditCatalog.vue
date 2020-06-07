@@ -7,8 +7,8 @@
     transition-hide="slide-down"
   >
     <q-card>
-      <q-card-section class="row justify-center q-pt-none scroll" style="max-height: 50vh;min-height: 250px;">
-                <q-infinite-scroll @load="onLoad" :offset="150" style="height: 100%;" ref="loadArea">
+      <q-card-section class="row justify-center scroll" style="min-height: 250px;width: 100%">
+                <q-infinite-scroll @load="onLoad" :offset="150" ref="loadArea">
                   <q-list bordered separator>
                     <q-item
                       clickable
@@ -25,7 +25,7 @@
 
       <q-separator />
 
-      <q-card-actions align="right" class="text-primary">
+      <q-card-actions class="fixed-bottom bg-grey-3">
         <q-btn flat label="적용" @click="apply" :disable="selected == null"/>
         <q-btn flat label="닫기" @click="showDialog = false" />
       </q-card-actions>

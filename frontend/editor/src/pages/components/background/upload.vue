@@ -34,9 +34,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import VueSelectImage from "@/components/VueSelectImage/VueSelectImage.vue";
-import imageToDataUri from "@/utils/image-to-data-uri";
-import { v4 as uuidv4 } from "uuid";
+import VueSelectImage from '@/components/VueSelectImage/VueSelectImage.vue';
+import imageToDataUri from '@/utils/image-to-data-uri';
+import { v4 as uuidv4 } from 'uuid';
 import { IBackgroundData } from '@/api/types';
 
 @Component({

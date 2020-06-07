@@ -10,7 +10,6 @@
       :width="80"
     >
       <q-layout view="lhr lpr lfr">
-
         <q-header elevated height-hint="98" class="bg-white text-primary">
           <q-list>
             <q-item clickable v-ripple class="editor-q-item">
@@ -22,15 +21,20 @@
             <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="grid_on" @click="background.show = true"/>
             </q-item>
-          </q-list>
-        </q-header>
 
-        <q-footer elevated class="bg-white text-primary">
-          <q-list>
+
+            <q-separator dark inset  color="orange" />
+
 
             <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat :disable="!showDelete" color="primary" icon="flip_to_front" @click="flipToFront"/>
             </q-item>
+            <q-item v-ripple class="editor-q-item">
+              <q-btn flat :disable="!showDelete"  color="primary" icon="delete" @click="deleteSelected()"/>
+            </q-item>
+
+
+            <q-separator dark inset  color="orange" />
 
 
             <q-item clickable v-ripple class="editor-q-item">
@@ -39,20 +43,26 @@
             <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="redo" @click="redo" :disable="changeIndex + 1 >= history.length"/>
             </q-item>
-            <q-item v-ripple class="editor-q-item">
-              <q-btn flat :disable="!showDelete"  color="primary" icon="delete" @click="deleteSelected()"/>
-            </q-item>
+
+
             <q-separator dark inset  color="orange" />
-            <q-item clickable v-ripple class="editor-q-item">
-              <q-btn flat color="primary" icon="save_alt"  @click="saveCatalog()"/>
-            </q-item>
-            <q-separator dark inset  color="orange" />
+
             <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="folder_open"  @click="catalog.show = true"/>
             </q-item>
             <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="file_copy"  @click="template.show = true"/>
             </q-item>
+
+
+            <q-separator dark inset  color="orange" />
+
+            <q-item clickable v-ripple class="editor-q-item">
+              <q-btn flat color="primary" icon="save_alt"  @click="saveCatalog()"/>
+            </q-item>
+
+            <q-separator dark inset  color="orange" />
+
             <q-item clickable v-ripple class="editor-q-item">
               <q-btn
                 flat
@@ -62,7 +72,7 @@
               />
             </q-item>
           </q-list>
-        </q-footer>
+        </q-header>
       </q-layout>
     </q-drawer>
 
@@ -236,7 +246,7 @@ export default class Index extends Vue {
   }
 
   updated() {
-    console.log("updated called")
+    console.log('updated called')
     this.catalogLoaded = true
   }
 
@@ -374,7 +384,7 @@ export default class Index extends Vue {
         const width = img.width,
           height = img.height,
           canvas = document.createElement('canvas'),
-          ctx = canvas.getContext("2d")!;
+          ctx = canvas.getContext('2d')!;
 
         canvas.width = targetWidth
         canvas.height = targetHeight;
@@ -465,7 +475,7 @@ export default class Index extends Vue {
       title: '저장',
       message: '저장했습니다'
     }).onOk(() => {
-      window.parent.postMessage("contentsaved", '*');
+      window.parent.postMessage('contentsaved', '*');
     })
     this.updateCapture(false)
     this.isLoading = false
@@ -584,7 +594,7 @@ export default class Index extends Vue {
   .editor-q-item {
     padding: 0px;
     min-height: 20px;
-    max-height: 33px;
+    max-height: 31px;
   }
   @media print
   {

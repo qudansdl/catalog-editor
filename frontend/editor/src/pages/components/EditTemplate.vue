@@ -8,37 +8,38 @@
   >
     <q-card>
       <q-card-section class="row justify-center">
-                  <vue-tags-input
-                    placeholder="카테고리 입력"
-                    v-model="tag"
-                    :tags="tags"
-                    :autocomplete-items="autocompleteItems"
-                    :add-only-from-autocomplete="true"
-                    @tags-changed="update"
-                  />
+            <vue-tags-input
+              placeholder="카테고리 입력"
+              v-model="tag"
+              :tags="tags"
+              :autocomplete-items="autocompleteItems"
+              :add-only-from-autocomplete="true"
+              @tags-changed="update"
+              style="width: 100%"
+            />
       </q-card-section>
 
       <q-separator />
 
-      <q-card-section class="q-pt-none scroll"  style="max-height: 50vh;min-height: 250px;">
-                <q-infinite-scroll @load="onLoad" :offset="150" style="height: 100%;padding-top: 5px;" ref="loadArea">
-                  <q-list bordered separator>
-                    <q-item
-                      clickable
-                      v-ripple
-                      v-for="template in templates"
-                      :key="template.id"
-                      @click="templateSelected(template)"
-                      :class="selected && selected.id == template.id ? 'selected-item' : ''">
-                      <q-item-section>{{template.name}}</q-item-section>
-                    </q-item>
-                  </q-list>
-                </q-infinite-scroll>
+      <q-card-section class="scroll"  style="min-height: 250px;">
+          <q-infinite-scroll @load="onLoad" :offset="150" style="height: 100%;padding-top: 5px;" ref="loadArea">
+            <q-list bordered separator>
+              <q-item
+                clickable
+                v-ripple
+                v-for="template in templates"
+                :key="template.id"
+                @click="templateSelected(template)"
+                :class="selected && selected.id == template.id ? 'selected-item' : ''">
+                <q-item-section>{{template.name}}</q-item-section>
+              </q-item>
+            </q-list>
+          </q-infinite-scroll>
       </q-card-section>
 
       <q-separator />
 
-      <q-card-actions align="right" class="text-primary">
+      <q-card-actions class="fixed-bottom bg-grey-3">
         <q-btn flat label="적용" @click="apply" :disable="selected == null"/>
         <q-btn flat label="닫기" @click="showDialog = false" />
       </q-card-actions>

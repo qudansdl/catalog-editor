@@ -7,7 +7,7 @@ import {
   getCatalogVariable
 } from '@/api/graphql/catalog'
 import apolloClient from '@/utils/vue-apollo'
-import {ICategoryData, ICatalogData } from '@/api/types'
+import { ICategoryData, ICatalogData } from '@/api/types'
 
 export const defaultCatalogData: ICatalogData = {
   id: null,

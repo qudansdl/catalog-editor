@@ -95,7 +95,8 @@
         <template slot-scope="{row}">
           <el-image
             :src="row.thumbnail"
-            :fit="'fill'"></el-image>
+            :fit="'fill'"
+          />
         </template>
       </el-table-column>
       <el-table-column
@@ -131,7 +132,6 @@
       :limit.sync="listQuery.length"
       @pagination="getList"
     />
-
   </div>
 </template>
 

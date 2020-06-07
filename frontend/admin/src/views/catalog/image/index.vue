@@ -129,7 +129,7 @@
     <pagination
       v-show="total>0"
       :total="total"
-      :pageSizes="[5]"
+      :page-sizes="[5]"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.length"
       @pagination="getList"

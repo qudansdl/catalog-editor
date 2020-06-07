@@ -25,7 +25,7 @@
 
       <q-separator />
 
-      <q-card-section class="q-pt-none scroll"  style="max-height: 50vh;min-height: 250px;">
+      <q-card-section class="scroll" style="min-height: 250px;">
           <q-tab-panels v-model="tab" animated>
             <q-tab-panel
               v-for="tab in components"
@@ -44,7 +44,7 @@
 
       <q-separator />
 
-      <q-card-actions align="right" class="text-primary">
+      <q-card-actions class="fixed-bottom bg-grey-3">
         <q-btn flat label="적용" @click="apply" :disable="content == null"/>
         <q-btn flat label="잘라내기" @click="showCropp"/>
         <q-btn flat label="닫기" @click="showDialog = false"/>
@@ -58,7 +58,6 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { cloneDeep } from 'lodash';
 import upload from './images/upload.vue';
 import library from './images/library.vue';
-import url from './images/url.vue';
 
 import CroppImage from './Cropp.vue';
 
@@ -66,7 +65,6 @@ import CroppImage from './Cropp.vue';
   components: {
     upload,
     library,
-    url,
     CroppImage,
   },
 })

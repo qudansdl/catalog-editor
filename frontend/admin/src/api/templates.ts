@@ -7,7 +7,7 @@ import {
   getTemplateVariable
 } from '@/api/graphql/template'
 import apolloClient from '@/utils/vue-apollo'
-import {ICategoryData, ITemplateData } from '@/api/types'
+import { ICategoryData, ITemplateData } from '@/api/types'
 
 export const defaultTemplateData: ITemplateData = {
   id: null,

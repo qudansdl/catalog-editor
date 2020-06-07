@@ -7,7 +7,7 @@ import {
   getTextVariable
 } from '@/api/graphql/text'
 import apolloClient from '@/utils/vue-apollo'
-import {ICategoryData, ITextData} from '@/api/types'
+import { ICategoryData, ITextData } from '@/api/types'
 
 export const defaultTextData: ITextData = {
   id: null,

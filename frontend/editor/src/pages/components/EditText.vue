@@ -7,7 +7,7 @@
     transition-hide="slide-down"
   >
     <q-card>
-      <q-card-section>
+      <q-card-section >
         <q-tabs
           v-model="tab"
           dense
@@ -25,8 +25,7 @@
 
       <q-separator />
 
-      <q-card-section class="q-pt-none scroll"  style="max-height: 50vh;min-height: 250px;">
-        <q-page padding>
+      <q-card-section class="scroll"  style="min-height: 250px;">
         <q-tab-panels v-model="tab" animated style="height: 100%">
           <q-tab-panel
             v-for="tab in components"
@@ -42,14 +41,13 @@
             ></component>
           </q-tab-panel>
         </q-tab-panels>
-        </q-page>
       </q-card-section>
 
       <q-separator />
 
-      <q-card-actions align="right" class="text-primary">
+      <q-card-actions class="fixed-bottom bg-grey-3">
         <q-btn flat label="적용" @click="apply" :disable="content == null"/>
-        <q-btn flat label="닫기" @click="showDialog = false" />
+        <q-btn flat label="닫기" @click="showDialog = false"/>
       </q-card-actions>
 
     </q-card>

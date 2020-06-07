@@ -20,7 +20,6 @@
       </q-file>
     </q-card-section>
       <q-card-section class="row justify-center">
-
           <vue-select-image
             :dataImages="images"
             :w="'250px'"
@@ -34,9 +33,9 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 
-import VueSelectImage from "@/components/VueSelectImage/VueSelectImage.vue";
-import imageToDataUri from "@/utils/image-to-data-uri";
-import {v4 as uuidv4} from "uuid";
+import VueSelectImage from '@/components/VueSelectImage/VueSelectImage.vue';
+import imageToDataUri from '@/utils/image-to-data-uri';
+import {v4 as uuidv4} from 'uuid';
 import { IImageData } from '@/api/types';
 
 @Component({

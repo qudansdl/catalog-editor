@@ -417,7 +417,7 @@ export default class extends Vue {
     })
   }
 
-  private async handleDelete(row: any, index: number) {
+  private async handleDelete(row: any) {
     MessageBox.confirm(
       '삭제하시겠습니까?',
       '삭제확인',
@@ -427,7 +427,7 @@ export default class extends Vue {
         type: 'warning'
       }
     ).then(async() => {
-      const { data } = await ApiText.deleteText(row.id)
+      await ApiText.deleteText(row.id)
       this.$notify({
         title: '성공',
         message: '삭제 했습니다',
