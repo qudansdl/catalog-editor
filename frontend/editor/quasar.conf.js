@@ -113,8 +113,8 @@ module.exports = configure(function (ctx) {
           },
         });
 
-        cfg.output.chunkFilename = 'js/editor-[name]-[hash].js'
-        cfg.output.filename = 'js/editor-[name]-[hash].js'
+        //cfg.output.chunkFilename = 'js/editor-[name]-[hash].js'
+        //cfg.output.filename = 'js/editor-[name]-[hash].js'
       },
     },
 

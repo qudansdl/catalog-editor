@@ -143,15 +143,19 @@ import ApiTemplate from '@/api/templates';
 export default class Index extends Vue {
   catalogLoaded = false
 
+  type = 'CATALOG'
+
   template = {
+    id: null as string|null,
     show: false
   };
 
   catalog = {
+    id: null as string|null,
     show: false
   };
 
-  catalogEntity: ICatalogData | null = null
+  entity: ICatalogData | ITemplateData | null = null
 
   text = {
     show: false,
@@ -198,20 +202,25 @@ export default class Index extends Vue {
   public updateCapture!: any;
 
   async mounted() {
-    if(this.$route.query.id && this.$route.query.type)
+    if(this.$route.query.type)
     {
-      let id = this.$route.query.id! as string
-      let type = this.$route.query.type!
-      let content = ''
-      if(type === 'CATALOG')
-      {
-        const catalog = await ApiCatalog.getCatalog(id)
-        content = catalog.data.catalog.content
-      }else if(type === 'TEMPLATE'){
-        const template = await ApiTemplate.getTemplate(id)
-        content = template.data.template.content
+      this.type = this.$route.query.type as string
+
+      if(this.$route.query.id) {
+        let id = this.$route.query.id as string
+        let content = ''
+        if (this.type === 'CATALOG') {
+          const catalog = await ApiCatalog.getCatalog(id)
+          content = catalog.data.catalog.content
+          this.entity = catalog.data.catalog
+        } else if (this.type === 'TEMPLATE') {
+          this.template.id = id
+          const template = await ApiTemplate.getTemplate(id)
+          content = template.data.template.content
+          this.entity = template.data.template
+        }
+        this.updateStatus(JSON.parse(content))
       }
-      this.updateStatus(JSON.parse(content))
     }
     this.history.push(cloneDeep(this.status));
   }
@@ -243,7 +252,7 @@ export default class Index extends Vue {
   }
   setCatalog(catalog: ICatalogData) {
     this.updateStatus(JSON.parse(catalog.content!))
-    this.catalogEntity = catalog
+    this.entity = catalog
 
     this.updateHistiory([])
     this.changeIndex = 0;
@@ -399,27 +408,55 @@ export default class Index extends Vue {
       const image = await this.print()
       const thumbnail = await this.thumbnailify(image, 150, 100)
 
-      if(this.catalogEntity)
+      if(this.type === 'TEMPLATE')
       {
-        const { data } = await ApiCatalog.updateCatalog(
-          this.catalogEntity.id!,
-          name,
-          JSON.stringify(this.status),
-          image,
-          thumbnail,
-          [])
-      }else {
-        const { data } = await ApiCatalog.createCatalog(
-          name,
-          JSON.stringify(this.status),
-          image,
-          thumbnail,
-          [])
-        this.catalogEntity = data.createCatalog
+        if(this.entity)
+        {
+          const { data } = await ApiTemplate.updateTemplate(
+            this.entity.id!,
+            name,
+            JSON.stringify(this.status),
+            image,
+            thumbnail,
+            [])
+        }else {
+          const { data } = await ApiTemplate.createTemplate(
+            name,
+            JSON.stringify(this.status),
+            image,
+            thumbnail,
+            [])
+          this.entity = data.createCatalog
+        }
+      }else
+      {
+        if(this.entity)
+        {
+          const { data } = await ApiCatalog.updateCatalog(
+            this.entity.id!,
+            name,
+            JSON.stringify(this.status),
+            image,
+            thumbnail,
+            [])
+        }else {
+          const { data } = await ApiCatalog.createCatalog(
+            name,
+            JSON.stringify(this.status),
+            image,
+            thumbnail,
+            [])
+          this.entity = data.createCatalog
+        }
       }
 
+    this.$q.dialog({
+      title: '저장',
+      message: '저장했습니다'
+    }).onOk(() => {
+      window.parent.postMessage("contentsaved", '*');
+    })
     this.updateCapture(false)
-
   }
 
   saveCatalog() {
@@ -427,7 +464,7 @@ export default class Index extends Vue {
       title: '확인',
       message: '카탈로그 이름을 입력하세요',
       prompt: {
-        model: this.catalogEntity ? this.catalogEntity.name : (this as any).$moment().format('YYYY년 MM월 DD'),
+        model: this.entity ? this.entity.name : (this as any).$moment().format('YYYY년 MM월 DD'),
         type: 'text' // optional
       },
       cancel: true,

@@ -95,7 +95,8 @@
         <template slot-scope="{row}">
           <el-image
             :src="row.thumbnail"
-            :fit="'fill'"></el-image>
+            :fit="'fill'"
+          />
         </template>
       </el-table-column>
       <el-table-column
@@ -131,6 +132,27 @@
       :limit.sync="listQuery.length"
       @pagination="getList"
     />
+
+    <el-dialog
+      width="75%"
+      :title="templateMap[dialogStatus]"
+      :visible.sync="dialogFormVisible"
+    >
+      <iframe
+        :src="ediutorUrl"
+        width="640"
+        height="360"
+        frameBorder="0"
+      > iframe을 지원하지 않는 브라우저입니다. </iframe>
+      <div
+        slot="footer"
+        class="dialog-footer"
+      >
+        <el-button @click="dialogFormVisible = false">
+          {{ $t('template.cancel') }}
+        </el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -140,7 +162,8 @@ import ApiTemplate, { defaultTemplateData } from '@/api/templates'
 import { ICategoryData, ITemplateData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
 import ApiCategory from '@/api/categories'
-import {MessageBox} from "element-ui";
+import { MessageBox, Form } from 'element-ui'
+import { cloneDeep } from 'lodash'
 
 @Component({
   name: 'TemplateTable',
@@ -198,10 +221,55 @@ export default class extends Vue {
     { label: 'Date Descending', key: '-date', value: 'asc' }
   ]
 
-  private tempTemplateData = defaultTemplateData
+  private dialogFormVisible = false
+  private dialogStatus = ''
+  private templateMap = {
+    update: '수정',
+    create: '생성'
+  }
+
+  private selectedTemplate: ITemplateData | null = null
+
+  private rules = {
+    name: [{ required: true, message: 'name is required', trigger: 'change' }]
+  }
 
   created() {
+    window.addEventListener('message', this.handleUpdated)
     this.getList()
+  }
+
+  destroyed() {
+    window.removeEventListener('message', this.handleUpdated)
+  }
+
+  get ediutorUrl() {
+    const editorUrl = process.env.VUE_APP_EDITOR_URL + '#/?type=TEMPLATE'
+    if (this.selectedTemplate) {
+      return editorUrl + '&id=' + this.selectedTemplate.id
+    } else {
+      return editorUrl
+    }
+  }
+
+  private handleCreate() {
+    this.selectedTemplate = null
+    this.dialogStatus = 'create'
+    this.dialogFormVisible = true
+  }
+
+  private handleUpdated() {
+    this.dialogFormVisible = false
+  }
+
+  private handleUpdate(row: any) {
+    this.selectedTemplate = row
+    this.dialogStatus = 'update'
+    this.dialogFormVisible = true
+  }
+
+  private handleDownload(row: any) {
+    document.location.href = process.env.VUE_APP_BASE_API + 'v1/api/templates/' + row.id + '/download'
   }
 
   private async loadNode(node: any, resolve: any) {
@@ -274,10 +342,6 @@ export default class extends Vue {
   private getSortClass(key: string) {
     const sort = this.listQuery.order[0].dir
     return sort === 'asc' ? 'ascending' : 'descending'
-  }
-
-  private async handleUpdate(row: any, index: number) {
-
   }
 
   private async handleDelete(row: any, index: number) {
