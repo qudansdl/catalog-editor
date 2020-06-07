@@ -101,6 +101,16 @@
     <edit-catalog v-model="catalog" v-on:apply="setCatalog"></edit-catalog>
 
     <span v-if="catalogLoaded" id="catalogLoaded"></span>
+    <q-circular-progress
+      v-if="isLoading"
+      indeterminate
+      size="150px"
+      :thickness="0.2"
+      color="lime"
+      center-color="grey-8"
+      track-color="transparent"
+      class="q-ma-md absolute-center"
+    />
   </q-layout>
 </template>
 
@@ -141,6 +151,7 @@ import ApiTemplate from '@/api/templates';
   },
 })
 export default class Index extends Vue {
+  isLoading = false
   catalogLoaded = false
 
   type = 'CATALOG'
@@ -404,6 +415,7 @@ export default class Index extends Vue {
 
 
   async captureAndSave(name:string) {
+    this.isLoading = true
       const image = await this.print()
       const thumbnail = await this.thumbnailify(image, 150, 100)
 
@@ -456,6 +468,7 @@ export default class Index extends Vue {
       window.parent.postMessage("contentsaved", '*');
     })
     this.updateCapture(false)
+    this.isLoading = false
   }
 
   saveCatalog() {
@@ -470,8 +483,8 @@ export default class Index extends Vue {
       persistent: true
     }).onOk( (name: any) => {
       this.updateCapture(true)
-      this.$nextTick(() => {
-        this.captureAndSave(name);
+      this.$nextTick(()  => {
+         this.captureAndSave(name);
       });
     })
   }
