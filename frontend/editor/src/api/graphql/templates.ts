@@ -73,6 +73,8 @@ export const GET_TEMPLATE_BY_ID = gql`query($templateId: UUID) {
   template(templateId: $templateId) {
     id
     name
+    content
+    image
     thumbnail
     created
     updated

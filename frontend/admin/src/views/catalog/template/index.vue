@@ -259,6 +259,7 @@ export default class extends Vue {
   }
 
   private handleUpdated() {
+    this.getList()
     this.dialogFormVisible = false
   }
 

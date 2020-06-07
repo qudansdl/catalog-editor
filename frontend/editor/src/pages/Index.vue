@@ -404,7 +404,7 @@ export default class Index extends Vue {
   }
 
 
-  async captureAndSave() {
+  async captureAndSave(name:string) {
       const image = await this.print()
       const thumbnail = await this.thumbnailify(image, 150, 100)
 
@@ -472,10 +472,8 @@ export default class Index extends Vue {
     }).onOk( (name: any) => {
       this.updateCapture(true)
       this.$nextTick(() => {
-        this.captureAndSave();
+        this.captureAndSave(name);
       });
-    }).onCancel(() => {
-    }).onDismiss(() => {
     })
   }
   flipToFront(){
