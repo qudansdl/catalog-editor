@@ -76,10 +76,15 @@ export default class EditText extends Vue {
   private tab = 'write';
 
   components = [
-    { name: 'library', label: '선택' },
     { name: 'write', label: '작성' },
+    { name: 'library', label: '선택' },
   ];
 
+
+  mounted(){
+   this.tab = 'write'
+
+  }
   apply() {
     this.$emit('apply', this.value.item);
     this.content = null

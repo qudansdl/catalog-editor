@@ -40,6 +40,10 @@ const Clipboard = Quill.import('modules/clipboard');
 const Delta = Quill.import('delta');
 
 class PlainClipboard extends Clipboard {
+  onPaste(e: Event) {
+    e.preventDefault()
+  }
+  /*
   convert(html = null) {
     if (typeof html === 'string') {
       this.container.innerHTML = html;
@@ -48,6 +52,7 @@ class PlainClipboard extends Clipboard {
     this.container.innerHTML = '';
     return new Delta().insert(text);
   }
+   */
 }
 
 Quill.register('modules/clipboard', PlainClipboard, true);
