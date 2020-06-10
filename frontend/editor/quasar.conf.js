@@ -15,11 +15,13 @@ module.exports = configure(function (ctx) {
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
     boot: [
       'i18n',
-      'quill',
+      //'quill',
       'multiselect',
       'axios',
       'apollo',
       'touch',
+      'moment',
+      'html2canvas'
     ],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
@@ -110,6 +112,9 @@ module.exports = configure(function (ctx) {
             formatter: require('eslint').CLIEngine.getFormatter('stylish'),
           },
         });
+
+        //cfg.output.chunkFilename = 'js/editor-[name]-[hash].js'
+        //cfg.output.filename = 'js/editor-[name]-[hash].js'
       },
     },
 

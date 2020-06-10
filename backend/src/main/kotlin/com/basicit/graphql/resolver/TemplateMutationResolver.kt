@@ -11,12 +11,16 @@ import java.util.*
 class TemplateMutationResolver (private val templateService: TemplateService) : GraphQLMutationResolver {
   fun createTemplate(name: String? = null,
                     content: String? = null,
+                     image: String? = null,
+                     thumbnail: String? = null,
                     categories: MutableSet<Category> = mutableSetOf()
   ): Template =
     templateService.addTemplate(
       Template(
               name = name,
               content = content,
+              image = image,
+              thumbnail = thumbnail,
               categories = categories
       )
     )
@@ -24,6 +28,8 @@ class TemplateMutationResolver (private val templateService: TemplateService) : 
   fun updateTemplate(templateId: UUID,
                     name: String? = null,
                     content: String? = null,
+                     image: String? = null,
+                     thumbnail: String? = null,
                     categories: MutableSet<Category> = mutableSetOf()): Template =
     templateService.putTemplate(
       templateId,
@@ -31,6 +37,8 @@ class TemplateMutationResolver (private val templateService: TemplateService) : 
           id = templateId,
           name = name,
           content = content,
+          image = image,
+          thumbnail = thumbnail,
           categories = categories
       )
     ).orElse(null)

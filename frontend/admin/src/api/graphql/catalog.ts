@@ -1,39 +1,38 @@
-/* eslint-disable */
 import gql from 'graphql-tag'
 import Mustache from 'mustache'
 
-export const CREATE_TEMPLATE = gql`
-    mutation CreateTemplate(
+export const CREATE_CATALOG = gql`
+    mutation CreateCatalog(
       $name: String,
       $content: String!,
       $image: String!,
       $thumbnail: String!,
       $categories: [CategoryInput]
     ){
-        createTemplate(
+        createCatalog(
           name: $name,
           content: $content,
           image: $image,
           thumbnail: $thumbnail,
           categories: $categories
         ) {
-            id,
+            id
             name
         }
     }
 `
 
-export const UPDATE_TEMPLATE = gql`
-  mutation updateTemplate(
-    $templateId: UUID!,
+export const UPDATE_CATALOG = gql`
+  mutation updateCatalog(
+    $catalogId: UUID!,
     $name: String,
     $content: String!,
     $image: String!,
     $thumbnail: String!,
     $categories: [CategoryInput]
   ){
-    updateTemplate(
-      templateId: $templateId,
+    updateCatalog(
+      catalogId: $catalogId,
       name: $name,
       content: $content,
       image: $image,
@@ -48,20 +47,21 @@ export const UPDATE_TEMPLATE = gql`
   }
 `
 
-export const DELETE_TEMPLATE = gql`
-  mutation deleteTemplate($templateId: UUID!){
-    deleteTemplate(templateId: $templateId)
+export const DELETE_CATALOG = gql`
+  mutation deleteCatalog($catalogId: UUID!){
+    deleteCatalog(catalogId: $catalogId)
   }
 `
 
-export const GET_TEMPLATES = gql`query($input: DataTablesInput) {
-    templates(input: $input) {
+export const GET_CATALOGS = gql`query($input: DataTablesInput) {
+    catalogs(input: $input) {
         recordsTotal
         recordsFiltered
         error
         data {
             id
             name
+            image
             thumbnail
             created
             updated
@@ -69,8 +69,8 @@ export const GET_TEMPLATES = gql`query($input: DataTablesInput) {
     }
 }`
 
-export const GET_TEMPLATE_BY_ID = gql`query($templateId: UUID) {
-  template(templateId: $templateId) {
+export const GET_CATALOG_BY_ID = gql`query($catalogId: UUID) {
+  catalog(catalogId: $catalogId) {
     id
     name
     content
@@ -81,8 +81,8 @@ export const GET_TEMPLATE_BY_ID = gql`query($templateId: UUID) {
   }
 }`
 
-export function getTemplateVariable(category: string, pageSize: number, currentPage: number) {
-  const variableTemplate = `{
+export function getCatalogVariable(category: string, pageSize: number, currentPage: number) {
+  const variableCatalog = `{
         "input": {
             "start": {{start}},
             "length": {{pageSize}} {{#category}},
@@ -99,6 +99,6 @@ export function getTemplateVariable(category: string, pageSize: number, currentP
     }`
 
   const start = (currentPage - 1) * pageSize
-  const variables = Mustache.render(variableTemplate, { category, pageSize, start })
+  const variables = Mustache.render(variableCatalog, { category, pageSize, start })
   return JSON.parse(variables)
 }

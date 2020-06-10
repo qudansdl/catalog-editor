@@ -3,7 +3,7 @@
     <div class="filter-container">
       <el-input
         v-model="listQuery.columns[0].value"
-        :placeholder="$t('pattern.name')"
+        :placeholder="$t('catalog.name')"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -33,7 +33,7 @@
         icon="el-icon-search"
         @click="handleFilter"
       >
-        {{ $t('pattern.search') }}
+        {{ $t('catalog.search') }}
       </el-button>
       <el-button
         class="filter-item"
@@ -42,7 +42,7 @@
         icon="el-icon-edit"
         @click="handleCreate"
       >
-        {{ $t('pattern.add') }}
+        {{ $t('catalog.add') }}
       </el-button>
     </div>
 
@@ -57,7 +57,7 @@
       @sort-change="sortChange"
     >
       <el-table-column
-        :label="$t('pattern.id')"
+        :label="$t('catalog.id')"
         prop="id"
         sortable="custom"
         align="center"
@@ -69,7 +69,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('pattern.date')"
+        :label="$t('catalog.date')"
         width="180px"
         align="center"
       >
@@ -78,7 +78,7 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('pattern.name')"
+        :label="$t('catalog.name')"
         min-width="150px"
       >
         <template slot-scope="{row}">
@@ -89,30 +89,29 @@
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('pattern.preview')"
+        :label="$t('catalog.thumbnail')"
         min-width="150px"
       >
         <template slot-scope="{row}">
           <el-image
-            style="width: 100px; height: 100px"
-            :src="row.content"
+            :src="row.thumbnail"
             :fit="'fill'"
           />
         </template>
       </el-table-column>
       <el-table-column
-        :label="$t('pattern.actions')"
+        :label="$t('catalog.actions')"
         align="center"
         width="230"
         class-name="fixed-width"
       >
         <template slot-scope="{row, $index}">
           <el-button
-            type="primary"
+            type="secondary"
             size="mini"
-            @click="handleUpdate(row)"
+            @click="handleDownload(row)"
           >
-            {{ $t('pattern.edit') }}
+            {{ $t('catalog.download') }}
           </el-button>
           <el-button
             v-if="row.status!=='deleted'"
@@ -120,7 +119,7 @@
             type="danger"
             @click="handleDelete(row, $index)"
           >
-            {{ $t('pattern.delete') }}
+            {{ $t('catalog.delete') }}
           </el-button>
         </template>
       </el-table-column>
@@ -133,88 +132,6 @@
       :limit.sync="listQuery.length"
       @pagination="getList"
     />
-
-    <el-dialog
-      :title="textMap[dialogStatus]"
-      :visible.sync="dialogFormVisible"
-    >
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="tempPatternData"
-        label-position="left"
-        label-width="100px"
-        style="width: 400px; margin-left:50px;"
-      >
-        <el-form-item
-          :label="$t('pattern.name')"
-          prop="name"
-        >
-          <el-input v-model="tempPatternData.name" />
-        </el-form-item>
-
-        <el-form-item
-          :label="$t('pattern.category')"
-          prop="categories"
-        >
-          <el-cascader
-            ref="formCategory"
-            :props="categoryProps"
-            clearable
-          />
-        </el-form-item>
-
-        <el-form-item
-          :label="$t('pattern.file')"
-          prop="file"
-        >
-          <el-button
-            type="primary"
-            @click="showUpload = true"
-          >
-            {{ $t('pattern.file') }}
-          </el-button>
-        </el-form-item>
-        <el-form-item
-          v-if="tempPatternData.content"
-          :label="$t('pattern.preview')"
-          prop="preview"
-        >
-          <el-image
-            style="width: 100px; height: 100px"
-            :src="tempPatternData.content"
-            :fit="'fill'"
-          />
-        </el-form-item>
-      </el-form>
-      <image-crop-upload
-        v-model="showUpload"
-        :url="''"
-        :width="width"
-        :height="height"
-        :lang-type="'ko'"
-        :with-credentials="true"
-        img-format="png"
-        @src-file-set="srcFileSet"
-        @crop-success="cropSuccess"
-        @crop-upload-success="cropUploadSuccess"
-        @crop-upload-fail="cropUploadFail"
-      />
-      <div
-        slot="footer"
-        class="dialog-footer"
-      >
-        <el-button @click="dialogFormVisible = false">
-          {{ $t('pattern.cancel') }}
-        </el-button>
-        <el-button
-          type="primary"
-          @click="dialogStatus==='create'?createData():updateData()"
-        >
-          {{ $t('pattern.confirm') }}
-        </el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -222,25 +139,18 @@
 import { Component, Prop, Vue } from 'vue-property-decorator'
 import { Form, MessageBox } from 'element-ui'
 import { cloneDeep } from 'lodash'
-import ApiPattern, { defaultPatternData } from '@/api/patterns'
-import { IPatternData, ICategoryData } from '@/api/types'
+import ApiCatalog, { defaultCatalogData } from '@/api/catalogs'
+import { ICategoryData, ICatalogData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
-import ImageCropUpload from '@/components/vue-image-crop-upload/upload-2.vue'
 import ApiCategory from '@/api/categories'
 
 @Component({
-  name: 'PatternTable',
+  name: 'CatalogTable',
   components: {
-    Pagination,
-    ImageCropUpload
+    Pagination
   }
 })
 export default class extends Vue {
-  @Prop({ default: 100 }) private width!: number
-  @Prop({ default: 100 }) private height!: number
-
-  private showUpload = false
-
   private categories: ICategoryData[] = []
 
   private categoryQuery = {
@@ -265,7 +175,7 @@ export default class extends Vue {
   }
 
   private tableKey = 0
-  private list: IPatternData[] = []
+  private list: ICatalogData[] = []
   private total = 0
   private listLoading = true
 
@@ -289,19 +199,6 @@ export default class extends Vue {
     { label: 'Date Ascending', key: '+date', value: 'desc' },
     { label: 'Date Descending', key: '-date', value: 'asc' }
   ]
-
-  private dialogFormVisible = false
-  private dialogStatus = ''
-  private textMap = {
-    update: '수정',
-    create: '생성'
-  }
-
-  private rules = {
-    name: [{ required: true, message: 'name is required', trigger: 'change' }]
-  }
-
-  private tempPatternData = defaultPatternData
 
   created() {
     this.getList()
@@ -346,14 +243,11 @@ export default class extends Vue {
       })
     }
 
-    const { data } = await ApiPattern.getPatterns(query)
+    const { data } = await ApiCatalog.getCatalogs(query)
 
-    this.list = data.patterns.data
-    this.total = data.patterns.recordsFiltered
-    // Just to simulate the time of the request
-    setTimeout(() => {
-      this.listLoading = false
-    }, 0.5 * 1000)
+    this.list = data.catalogs.data
+    this.total = data.catalogs.recordsFiltered
+    this.listLoading = false
   }
 
   private handleFilter() {
@@ -382,74 +276,13 @@ export default class extends Vue {
     return sort === 'asc' ? 'ascending' : 'descending'
   }
 
-  private resetTempPatternData() {
-    this.tempPatternData = cloneDeep(defaultPatternData)
-  }
-
-  private handleCreate() {
-    this.resetTempPatternData()
-    this.dialogStatus = 'create'
-    this.dialogFormVisible = true
-    this.$nextTick(() => {
-      (this.$refs.dataForm as Form).clearValidate()
-    })
-  }
-
-  private createData() {
-    (this.$refs.dataForm as Form).validate(async(valid) => {
-      if (valid) {
-        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
-        const selectedCategories = selectedNodes.map((n: any) => n.data)
-
-        const { data } = await ApiPattern.createPattern(
-          this.tempPatternData.name,
-          this.tempPatternData.content!,
-          selectedCategories
-        )
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '성공',
-          message: '추가 했습니다',
-          type: 'success',
-          duration: 2000
-        })
-        await this.getList()
-      }
-    })
-  }
-
-  private handleUpdate(row: any) {
-    this.tempPatternData = Object.assign({}, row)
-    this.dialogStatus = 'update'
-    this.dialogFormVisible = true
-    this.$nextTick(() => {
-      (this.$refs.dataForm as Form).clearValidate()
-    })
-  }
-
-  private updateData() {
-    (this.$refs.dataForm as Form).validate(async(valid) => {
-      if (valid) {
-        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
-        const selectedCategories = selectedNodes.map((n: any) => n.data)
-
-        const tempData = Object.assign({}, this.tempPatternData)
-        const { data } = await ApiPattern.updatePattern(
-          tempData.id!,
-          tempData.name,
-          tempData.content!,
-          selectedCategories
-        )
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '성공',
-          message: '저장했습니다',
-          type: 'success',
-          duration: 2000
-        })
-        await this.getList()
-      }
-    })
+  private handleDownload(row: any) {
+    const link = document.createElement('a')
+    link.download = name
+    link.href = row.image
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   private async handleDelete(row: any, index: number) {
@@ -462,7 +295,7 @@ export default class extends Vue {
         type: 'warning'
       }
     ).then(async() => {
-      const { data } = await ApiPattern.deletePattern(row.id)
+      const { data } = await ApiCatalog.deleteCatalog(row.id)
       this.$notify({
         title: '성공',
         message: '삭제 했습니다',
@@ -471,23 +304,6 @@ export default class extends Vue {
       })
       await this.getList()
     })
-  }
-
-  private srcFileSet(fileName: string, fileType: string, fileSize: number) {
-    this.$emit('src-file-set', fileName, fileType, fileSize)
-  }
-
-  private cropSuccess(imgDataUrl: string, field: string) {
-    this.tempPatternData.content = imgDataUrl
-    this.$emit('crop-success', imgDataUrl, field)
-  }
-
-  private cropUploadSuccess(jsonData: any, field: string) {
-    this.$emit('crop-upload-success', jsonData, field)
-  }
-
-  private cropUploadFail(status: boolean, field: string) {
-    this.$emit('crop-upload-fail', status, field)
   }
 }
 </script>

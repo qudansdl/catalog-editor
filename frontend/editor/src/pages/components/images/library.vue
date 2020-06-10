@@ -1,35 +1,41 @@
 <template>
-  <div class="q-pa-md">
-      <div class="row q-col-gutter-xs fixed">
-        <div class="col">
+  <q-card>
+    <q-card-section class="row justify-center">
             <vue-tags-input
+              placeholder="카테고리 입력"
               v-model="tag"
               :tags="tags"
               :autocomplete-items="autocompleteItems"
               :add-only-from-autocomplete="true"
               @tags-changed="update"
+              style="width: 100%"
             />
-        </div>
-      </div>
-      <div class="row q-col-gutter-xs"  style="padding-top: 35px">
-        <div class="col">
-            <vue-select-image
-              :dataImages="images"
-              :w="'150px'"
-              :h="'100px'"
-              @onselectimage="onSelectImage"/>
-        </div>
-      </div>
-    </div>
+    </q-card-section>
+    <q-separator />
+    <q-card-section>
+      <q-infinite-scroll @load="onLoad" :offset="150" ref="loadArea">
+        <vue-select-image
+          :dataImages="images"
+          :w="'150px'"
+          :h="'100px'"
+          @onselectimage="onSelectImage"/>
+        <template v-slot:loading>
+          <div class="row justify-center">
+            <q-spinner-dots color="primary" size="40px" />
+          </div>
+        </template>
+      </q-infinite-scroll>
+    </q-card-section>
+  </q-card>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
 import {ICategoryData, IImageData, ITextData} from '@/api/types'
 import ApiCategory from '@/api/categories';
-import VueSelectImage from "@/components/VueSelectImage/VueSelectImage.vue";
-import imageToDataUri from "@/utils/image-to-data-uri";
-import ApiImage from "@/api/images";
+import VueSelectImage from '@/components/VueSelectImage/VueSelectImage.vue';
+import imageToDataUri from '@/utils/image-to-data-uri';
+import ApiImage from '@/api/images';
 import VueTagsInput from '@johmun/vue-tags-input';
 import { Debounce } from 'vue-debounce-decorator';
 
@@ -57,8 +63,8 @@ export default class SelectImage extends Vue {
   }
 
   private listQuery = {
-    start: 0,
-    length: 0,
+    start: 1,
+    length: 10,
     order: [{
       column: 'created',
       dir: 'desc'
@@ -70,11 +76,6 @@ export default class SelectImage extends Vue {
   tags : any[] = []
   autocompleteItems: any[] = []
 
-  mounted()
-  {
-    this.getList();
-  }
-
   onSelectImage(img: IImageData) {
     this.selected = img;
     imageToDataUri(img.content!, (err: any, uri: any) => {
@@ -85,12 +86,13 @@ export default class SelectImage extends Vue {
   update(newTags: any[]) {
     this.autocompleteItems = [];
     this.tags = newTags;
-    this.getList()
+    this.images = [];
+    (this.$refs.loadArea as any).reset()
   }
 
   @Watch('tag')
   initItems() {
-    if (this.tag.length < 2) return;
+    if (this.tag.length < 1) return;
 
     this.loadItems(this.tag)
   }
@@ -100,7 +102,16 @@ export default class SelectImage extends Vue {
     this.getCategories(tag)
   }
 
-  @Debounce(600)
+  private async onLoad(index: number, done: any) {
+    if(index == 1)
+    {
+      this.images = []
+    }
+    console.log(`index ${index}`)
+    this.listQuery.start = (index -1) * this.listQuery.length
+    done(await this.getList())
+  }
+
   private async getList() {
     this.isLoading = true
     const query = JSON.parse(JSON.stringify(this.listQuery))
@@ -117,8 +128,9 @@ export default class SelectImage extends Vue {
       })
     }
     const { data } = await ApiImage.getImages(query)
-    this.images = data.images.data
+    this.images = this.images.concat(data.images.data)
     this.isLoading = false
+    return data.images.recordsFiltered < this.listQuery.start + this.listQuery.length
   }
 
 

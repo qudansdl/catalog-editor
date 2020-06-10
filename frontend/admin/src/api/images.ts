@@ -7,7 +7,7 @@ import {
   getImageVariable
 } from '@/api/graphql/image'
 import apolloClient from '@/utils/vue-apollo'
-import {ICategoryData, IImageData} from '@/api/types'
+import { ICategoryData, IImageData } from '@/api/types'
 
 export const defaultImageData: IImageData = {
   id: null,

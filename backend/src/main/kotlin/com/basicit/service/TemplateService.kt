@@ -8,12 +8,19 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class TemplateService(private val templateRepository: TemplateRepository) {
+class TemplateService(
+        private val templateRepository: TemplateRepository,
+        private val pdfService: PDFService
+) {
 
   fun getTemplates(input: DataTablesInput?): DataTablesOutput<Template>  =
           templateRepository.findAll(input)
 
-  fun addTemplate(template: Template): Template = templateRepository.save(template)
+  fun addTemplate(template: Template): Template {
+      val template = templateRepository.save(template)
+
+      return template
+  }
 
   fun getTemplateById(templateId: UUID): Optional<Template> =
           templateRepository.findById(templateId)
@@ -23,13 +30,16 @@ class TemplateService(private val templateRepository: TemplateRepository) {
           newTemplate: Template
   ): Optional<Template> =
       templateRepository.findById(templateId).map { currentTemplate ->
-      val updatedTemplate = Template(
-              currentTemplate.id,
-              newTemplate.name,
-              newTemplate.content,
-              newTemplate.categories)
+          currentTemplate.id
+          currentTemplate.name = newTemplate.name
+          currentTemplate.content = newTemplate.content
+          currentTemplate.image = newTemplate.image
+          currentTemplate.thumbnail = newTemplate.thumbnail
+          currentTemplate.categories = newTemplate.categories
 
-          templateRepository.save(updatedTemplate)
+          val template = templateRepository.save(currentTemplate)
+
+          template
     }
 
   fun deleteTemplate(templateId: UUID): Boolean =

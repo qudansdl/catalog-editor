@@ -33,6 +33,8 @@ type Catalog  implements Entity {
   id: UUID
   name: String
   content: String
+  image: String
+  thumbnail: String
   categories: [Category]
   created: DateTime
   updated: DateTime
@@ -45,6 +47,8 @@ type Template  implements Entity {
   id: UUID
   name: String
   content: String
+  image: String
+  thumbnail: String
   categories: [Category]
   created: DateTime
   updated: DateTime
@@ -210,19 +214,19 @@ type Query {
   catalog(catalogId: UUID!): Catalog
 
   templates(input: DataTablesInput): TemplateOutput
-  template(templateId: UUID!): Template
+  template(templateId: UUID): Template
 
   backgrounds(input: DataTablesInput): BackgroundOutput
   background(imageId: UUID!): Background
 
   images(input: DataTablesInput): ImageOutput
-  image(imageId: UUID!): Image
+  image(imageId: UUID): Image
 
   patterns(input: DataTablesInput): PatternOutput
-  pattern(patternId: UUID!): Pattern
+  pattern(patternId: UUID): Pattern
 
   texts(input: DataTablesInput): TextOutput
-  text(textId: UUID!): Text
+  text(textId: UUID): Text
 }
 
 type Mutation {
@@ -232,11 +236,15 @@ type Mutation {
 
   createCatalog(name: String
     content: String
+    image: String
+    thumbnail: String
     categories: [CategoryInput]
   ): Catalog
   updateCatalog(catalogId: UUID!,
     name: String
     content: String
+    image: String
+    thumbnail: String
     categories: [CategoryInput]
   ): Catalog
   deleteCatalog(catalogId: UUID!): Boolean
@@ -244,11 +252,15 @@ type Mutation {
 
   createTemplate(name: String
     content: String
+    image: String
+    thumbnail: String
     categories: [CategoryInput]
   ): Template
   updateTemplate(templateId: UUID!,
     name: String
     content: String
+    image: String
+    thumbnail: String
     categories: [CategoryInput]
   ): Template
   deleteTemplate(templateId: UUID!): Boolean

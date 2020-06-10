@@ -7,40 +7,42 @@
     transition-hide="slide-down"
   >
     <q-card>
-      <q-card-section style="height: 100%">
-    <q-layout view="Lhh lpR fff" container>
-      <q-page-container>
-        <q-page padding>
-            <div class="row q-col-gutter-xs fixed">
-              <div class="col">
-                  <vue-tags-input
-                    v-model="tag"
-                    :tags="tags"
-                    :autocomplete-items="autocompleteItems"
-                    :add-only-from-autocomplete="true"
-                    @tags-changed="update"
-                  />
-              </div>
-            </div>
-            <div class="row q-col-gutter-xs" style="padding-top: 35px">
-              <div class="col">
-                  <q-list bordered separator>
-                    <q-item clickable v-ripple v-for="template in templates" :key="template.id" @click="templateSelected(template)">
-                      <q-item-section>{{template.name}}</q-item-section>
-                    </q-item>
-                  </q-list>
-              </div>
-            </div>
-        </q-page>
-        <q-footer>
-          <q-toolbar inset>
-            <q-btn color="primary" label="적용" @click="apply" :disable="template == null"/>
-            <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
-          </q-toolbar>
-        </q-footer>
-      </q-page-container>
-    </q-layout>
+      <q-card-section class="row justify-center">
+            <vue-tags-input
+              placeholder="카테고리 입력"
+              v-model="tag"
+              :tags="tags"
+              :autocomplete-items="autocompleteItems"
+              :add-only-from-autocomplete="true"
+              @tags-changed="update"
+              style="width: 100%"
+            />
       </q-card-section>
+
+      <q-separator />
+
+      <q-card-section class="scroll"  style="min-height: 250px;">
+          <q-infinite-scroll @load="onLoad" :offset="150" style="height: 100%;padding-top: 5px;" ref="loadArea">
+            <q-list bordered separator>
+              <q-item
+                clickable
+                v-ripple
+                v-for="template in templates"
+                :key="template.id"
+                @click="templateSelected(template)"
+                :class="selected && selected.id == template.id ? 'selected-item' : ''">
+                <q-item-section>{{template.name}}</q-item-section>
+              </q-item>
+            </q-list>
+          </q-infinite-scroll>
+      </q-card-section>
+
+      <q-separator />
+
+      <q-card-actions class="fixed-bottom bg-grey-3">
+        <q-btn flat label="적용" @click="apply" :disable="selected == null"/>
+        <q-btn flat label="닫기" @click="showDialog = false" />
+      </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
@@ -52,6 +54,7 @@ import { Debounce } from 'vue-debounce-decorator';
 import ApiTemplate from '@/api/templates';
 import ApiCategory from '@/api/categories';
 import VueTagsInput from '@johmun/vue-tags-input';
+import ApiCatalog from '@/api/catalogs';
 
 @Component({
   components: {
@@ -65,7 +68,7 @@ export default class EditTemplate extends Vue {
 
   categories: ICategoryData[] = []
 
-  private template: ITemplateData | null = null
+  private selected: ITemplateData | null = null
   private templates: ITemplateData[] = []
 
   isLoading = false
@@ -81,7 +84,7 @@ export default class EditTemplate extends Vue {
 
   private listQuery = {
     start: 0,
-    length: 0,
+    length: 10,
     order: [{
       column: 'created',
       dir: 'desc'
@@ -93,15 +96,11 @@ export default class EditTemplate extends Vue {
   tags : any[] = []
   autocompleteItems: any[] = []
 
-  mounted()
-  {
-    this.getList();
-  }
-
-
-  apply() {
-    this.$emit('apply', this.template);
+  async apply() {
+    const { data } = await ApiTemplate.getTemplate(this.selected!.id!)
+    this.$emit('apply', data.template);
     this.showDialog = false;
+    this.selected = null
   }
 
   get content() {
@@ -127,18 +126,19 @@ export default class EditTemplate extends Vue {
   }
 
   templateSelected (template: ITemplateData) {
-    this.template = template
+    this.selected = template
   }
 
   update(newTags: any[]) {
     this.autocompleteItems = [];
     this.tags = newTags;
-    this.getList()
+    this.templates = [];
+    (this.$refs.loadArea as any).reset()
   }
 
   @Watch('tag')
   initItems() {
-    if (this.tag.length < 2) return;
+    if (this.tag.length < 1) return;
 
     this.loadItems(this.tag)
   }
@@ -148,7 +148,16 @@ export default class EditTemplate extends Vue {
     this.getCategories(tag)
   }
 
-  @Debounce(600)
+  private async onLoad(index: number, done: any) {
+    if(index == 1)
+    {
+      this.templates = []
+    }
+    console.log(`index ${index}`)
+    this.listQuery.start = (index -1) * this.listQuery.length
+    done(await this.getList())
+  }
+
   private async getList() {
     this.isLoading = true
     const query = JSON.parse(JSON.stringify(this.listQuery))
@@ -165,10 +174,9 @@ export default class EditTemplate extends Vue {
       })
     }
     const { data } = await ApiTemplate.getTemplates(query)
-
-    this.templates = data.templates.data
-
+    this.templates = this.templates.concat(data.templates.data)
     this.isLoading = false
+    return data.templates.recordsFiltered < this.listQuery.start + this.listQuery.length
   }
 
   async getCategories (search: string) {

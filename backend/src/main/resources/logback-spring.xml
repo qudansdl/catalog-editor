@@ -5,7 +5,7 @@
 	<springProperty scope="context" name="maxFileSize"        source="logging.filesize.max"    defaultValue="100MB" />
 	<springProperty scope="context" name="maxArchiveSize"     source="logging.archivesize.max" defaultValue="10GB" />
 	<springProperty scope="context" name="maxHistory"         source="logging.history.max"     defaultValue="60" />
-	<springProperty scope="context" name="logLevel"           source="logging.loglevel"   defaultValue="INFO" />
+	<springProperty scope="context" name="logLevel"           source="logging.loglevel"        defaultValue="INFO" />
 
 	<springProfile name="local">
 		<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
@@ -14,7 +14,8 @@
 			</encoder>
 		</appender>
 		<logger name="org.hibernate.SQL" level="DEBUG" />
-		<logger name="org.hibernate.type" level="TRACE" />
+		<!-- <logger name="org.hibernate.type" level="TRACE" /> -->
+		<logger name="io.webfolder.cdp" level="TRACE" />
 		<root level="${logLevel}" additivity="false">
 			<appender-ref ref="console" />
 		</root>

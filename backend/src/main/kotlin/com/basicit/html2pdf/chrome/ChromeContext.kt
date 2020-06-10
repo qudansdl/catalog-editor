@@ -1,8 +1,10 @@
 package com.basicit.html2pdf.chrome
 
+import com.basicit.html2pdf.controllers.PdfController
 import io.webfolder.cdp.Launcher
 import io.webfolder.cdp.session.Session
 import io.webfolder.cdp.session.SessionFactory
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.net.ServerSocket
 import java.nio.file.Files
@@ -11,6 +13,8 @@ import java.util.*
 import java.util.function.Consumer
 
 class ChromeContext {
+    private val _logger = LoggerFactory.getLogger(PdfController::class.java)
+
     private val HEADLESS_CHROME_ARGUMENTS = Arrays.asList("--headless", "--no-sandbox")
     private val CHROME_STARTUP_TIMEOUT = 0
     private var globalPort = 0
@@ -21,6 +25,10 @@ class ChromeContext {
             try {
                 session.navigate(url)
                 session.waitDocumentReady()
+                _logger.info("wait until loaded")
+                session.waitUntil({ s -> s.matches("#catalogLoaded") }, 10 * 1000)
+                _logger.info("update called loaded")
+                Thread.sleep(5000)
                 val preRender = session
                         .command
                         .page

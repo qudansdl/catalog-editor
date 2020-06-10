@@ -143,10 +143,6 @@
         label-width="100px"
         style="width: 90%; margin-left:10px;"
       >
-        <el-input
-          v-model="tempTextData.parent"
-          type="hidden"
-        />
         <el-form-item
           :label="$t('text.name')"
           prop="name"
@@ -199,14 +195,12 @@ import { cloneDeep } from 'lodash'
 import ApiText, { defaultTextData } from '@/api/texts'
 import { ICategoryData, ITextData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
-import Tinymce from '@/components/Tinymce/index.vue'
 import ApiCategory from '@/api/categories'
 
 @Component({
   name: 'TextTable',
   components: {
-    Pagination,
-    Tinymce
+    Pagination
   }
 })
 export default class extends Vue {
@@ -423,7 +417,7 @@ export default class extends Vue {
     })
   }
 
-  private async handleDelete(row: any, index: number) {
+  private async handleDelete(row: any) {
     MessageBox.confirm(
       '삭제하시겠습니까?',
       '삭제확인',
@@ -433,7 +427,7 @@ export default class extends Vue {
         type: 'warning'
       }
     ).then(async() => {
-      const { data } = await ApiText.deleteText(row.id)
+      await ApiText.deleteText(row.id)
       this.$notify({
         title: '성공',
         message: '삭제 했습니다',

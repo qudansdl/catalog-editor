@@ -16,19 +16,34 @@ export const defaultTemplateData: ITemplateData = {
 }
 
 export default class ApiTemplate {
-  static createTemplate = (name: string, content: string, categories: ICategoryData[]) => {
+  static createTemplate = (
+    name: string,
+    content: string,
+    image: string,
+    thumbnail: string,
+    categories: ICategoryData[]
+  ) => {
     console.log('Create Template')
     return Vue.prototype.$apollo.mutate({
       mutation: CREATE_TEMPLATE,
       variables: {
         name,
         content,
+        image,
+        thumbnail,
         categories
       }
     })
   };
 
-  static updateTemplate = (templateId: string, name: string, content: string, categories: ICategoryData[]) => {
+  static updateTemplate = (
+    templateId: string,
+    name: string,
+    content: string,
+    image: string,
+    thumbnail: string,
+    categories: ICategoryData[]
+  ) => {
     console.log('Update Template')
     return Vue.prototype.$apollo.mutate({
       mutation: UPDATE_TEMPLATE,
@@ -36,6 +51,8 @@ export default class ApiTemplate {
         templateId,
         name,
         content,
+        image,
+        thumbnail,
         categories
       }
     })
@@ -51,7 +68,7 @@ export default class ApiTemplate {
     })
   };
 
-  static getTemplate = (templateId: string | null) => {
+  static getTemplate = (templateId: string) => {
     console.log('get Template')
     return Vue.prototype.$apollo.query({
       query: GET_TEMPLATE_BY_ID,

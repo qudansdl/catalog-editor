@@ -1,62 +1,58 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-drawer
-      v-model="showMenu"
-      show-if-above
-      bordered
-      content-class="bg-grey-1"
-      side="right"
-      class="no-print"
-      :width="80"
-    >
-      <q-layout view="lhr lpr lfr">
+        <q-footer reveal elevated class="bg-white text-primary" v-if="showMenu == true">
+          <q-toolbar>
+            <div class="row">
+              <div class="col">
+                <q-btn flat color="primary" icon="text_fields" @click="showEditText"/>
+              </div>
+              <div class="col">
 
-        <q-header elevated height-hint="98" class="bg-white text-primary">
-          <q-list>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" icon="text_fields" @click="showEditText"/>
-            </q-item>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" icon="image_search" @click="image.show = true"/>
-            </q-item>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" icon="grid_on" @click="background.show = true"/>
-            </q-item>
-          </q-list>
-        </q-header>
-
-        <q-footer elevated class="bg-white text-primary">
-          <q-list>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" icon="undo" @click="undo" :disable="changeIndex == 0"/>
-            </q-item>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" icon="redo" @click="redo" :disable="changeIndex + 1 >= history.length"/>
-            </q-item>
-            <q-item v-ripple style="padding: 0px;min-height: 20px;">
+                <q-btn flat color="primary" icon="image_search" @click="image.show = true"/>
+              </div>
+              <div class="col-auto">
+                <q-btn flat color="primary" icon="grid_on" @click="background.show = true"/>
+              </div>
+              <div class="col">
+              <q-btn flat :disable="!showDelete" color="primary" icon="flip_to_front" @click="flipToFront"/>
+              </div>
+              <div class="col">
+                <q-btn flat :disable="!showDelete" color="primary" icon="flip_to_back" @click="flipToBack"/>
+              </div>
+              <div class="col">
               <q-btn flat :disable="!showDelete"  color="primary" icon="delete" @click="deleteSelected()"/>
-            </q-item>
-            <q-separator dark inset  color="orange" />
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
-              <q-btn flat color="primary" icon="save_alt"  @click="saveCatalog()"/>
-            </q-item>
-            <q-separator dark inset  color="orange" />
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+              </div>
+
+              <div class="col">
+
+              <q-btn flat color="primary" icon="undo" @click="undo" :disable="changeIndex == 0"/>
+              </div>
+              <div class="col">
+              <q-btn flat color="primary" icon="redo" @click="redo" :disable="changeIndex + 1 >= history.length"/>
+              </div>
+
+
+              <div class="col">
+              <q-btn flat color="primary" icon="folder_open"  @click="catalog.show = true"/>
+              </div>
+              <div class="col">
               <q-btn flat color="primary" icon="file_copy"  @click="template.show = true"/>
-            </q-item>
-            <q-item clickable v-ripple style="padding: 0px;min-height: 20px;">
+              </div>
+
+            <div class="col">
+              <q-btn flat color="primary" icon="save_alt"  @click="saveCatalog()"/>
+            </div>
+              <div class="col">
               <q-btn
                 flat
                 color="primary"
                 icon="menu"
                 @click="showMenu = !showMenu"
               />
-            </q-item>
-          </q-list>
+              </div>
+            </div>
+          </q-toolbar>
         </q-footer>
-      </q-layout>
-    </q-drawer>
-
     <q-page-container>
       <div
         class="printing-body absolute-center"
@@ -89,6 +85,19 @@
       @applyBackgroundPattern="applyBackgroundPattern"
     ></edit-background>
     <edit-template v-model="template" v-on:apply="setTemplate"></edit-template>
+    <edit-catalog v-model="catalog" v-on:apply="setCatalog"></edit-catalog>
+
+    <span v-if="catalogLoaded" id="catalogLoaded"></span>
+    <q-circular-progress
+      v-if="isLoading"
+      indeterminate
+      size="150px"
+      :thickness="0.2"
+      color="lime"
+      center-color="grey-8"
+      track-color="transparent"
+      class="q-ma-md absolute-center"
+    />
   </q-layout>
 </template>
 
@@ -111,9 +120,11 @@ import EditBackground from 'pages/components/EditBackground.vue';
 import EditText from './components/EditText.vue';
 import EditImage from './components/EditImage.vue';
 import EditTemplate from './components/EditTemplate.vue';
+import EditCatalog from './components/EditCatalog.vue';
 import dw from './components/DrrWrap.vue';
 import ApiCatalog from '@/api/catalogs';
-import { ITemplateData } from '@/api/types';
+import { ITemplateData, ICatalogData } from '@/api/types';
+import ApiTemplate from '@/api/templates';
 
 @Component({
   components: {
@@ -121,14 +132,28 @@ import { ITemplateData } from '@/api/types';
     EditText,
     EditImage,
     EditTemplate,
+    EditCatalog,
     VueDraggableResizable,
     dw,
   },
 })
 export default class Index extends Vue {
+  isLoading = false
+  catalogLoaded = false
+
+  type = 'CATALOG'
+
   template = {
+    id: null as string|null,
     show: false
   };
+
+  catalog = {
+    id: null as string|null,
+    show: false
+  };
+
+  entity: ICatalogData | ITemplateData | null = null
 
   text = {
     show: false,
@@ -165,12 +190,41 @@ export default class Index extends Vue {
   @State('history', { namespace: 'AppStatus' })
   public history!: Configuration[];
 
-  mounted() {
-    if(this.$route.query.catalogId)
-    {
+  @Mutation('SET_HISTORY', { namespace: 'AppStatus' })
+  public updateHistiory!: any;
 
+  @State('capture', { namespace: 'AppStatus' })
+  public capture!: boolean;
+
+  @Mutation('SET_CAPTURE', { namespace: 'AppStatus' })
+  public updateCapture!: any;
+
+  async mounted() {
+    const type = this.$route.query.type as string
+    const id = this.$route.query.id as string
+    if(type)
+    {
+      if(id) {
+        let content = ''
+        if (this.type === 'CATALOG') {
+          const catalog = await ApiCatalog.getCatalog(id)
+          content = catalog.data.catalog.content
+          this.entity = catalog.data.catalog
+        } else if (this.type === 'TEMPLATE') {
+          this.template.id = id
+          const template = await ApiTemplate.getTemplate(id)
+          content = template.data.template.content
+          this.entity = template.data.template
+        }
+        this.updateStatus(JSON.parse(content))
+      }
     }
     this.history.push(cloneDeep(this.status));
+  }
+
+  updated() {
+    console.log('updated called')
+    this.catalogLoaded = true
   }
 
   private setShowDelete() {
@@ -178,22 +232,6 @@ export default class Index extends Vue {
       this.showDelete = document.querySelectorAll('.drr.active').length > 0;
       console.log(`showDelete :  + ${this.showDelete}`);
     });
-  }
-
-  async print() {
-    const el = this.$refs.printMe;
-    await html2canvas(el as HTMLElement).then(
-      (canvas) => {
-        console.log('canvas', canvas);
-        console.log('dataUrl', canvas.toDataURL());
-
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL();
-        link.download = 'image.jpg';
-        document.body.appendChild(link);
-        link.click();
-      },
-    );
   }
 
   showEditText() {
@@ -208,6 +246,13 @@ export default class Index extends Vue {
   setTemplate(template: ITemplateData) {
     this.updateStatus(JSON.parse(template.content!))
     this.addHistory();
+  }
+  setCatalog(catalog: ICatalogData) {
+    this.updateStatus(JSON.parse(catalog.content!))
+    this.entity = catalog
+
+    this.updateHistiory([])
+    this.changeIndex = 0;
   }
   setText(newItem: Item) {
     if (newItem.id) {
@@ -308,8 +353,153 @@ export default class Index extends Vue {
     this.text.show = true;
   }
 
+
+  thumbnailify(base64Image: string, targetWidth: number, targetHeight: number): Promise<string> {
+    return new Promise(function(resolve, reject) {
+      const img = new Image();
+      img.onload = function() {
+        const width = img.width,
+          height = img.height,
+          canvas = document.createElement('canvas'),
+          ctx = canvas.getContext('2d')!;
+
+        canvas.width = targetWidth
+        canvas.height = targetHeight;
+
+        ctx.drawImage(
+          img,
+          0,
+          0,
+          targetWidth,
+          targetHeight
+        );
+
+        resolve(canvas.toDataURL());
+      };
+
+      img.src = base64Image;
+    })
+  }
+
+  async print() {
+    const el = this.$refs.printMe as any;
+    const rect = el.getBoundingClientRect()
+
+    const left = (rect.left as number) + 4
+    const top = (rect.top as number) + 4
+    const bottom = rect.bottom - 8
+    const right = rect.right - 8
+
+    return await (this as any).$html2canvas(el, {
+      type: 'dataURL',
+      removeContainer: true,
+      width: right - left,
+      height: bottom - top,
+      x: left,
+      y: top
+    })
+  }
+
+
+  async captureAndSave(name:string) {
+    this.isLoading = true
+      const image = await this.print()
+      const thumbnail = await this.thumbnailify(image, 150, 100)
+
+      if(this.type === 'TEMPLATE')
+      {
+        if(this.entity)
+        {
+          const { data } = await ApiTemplate.updateTemplate(
+            this.entity.id!,
+            name,
+            JSON.stringify(this.status),
+            image,
+            thumbnail,
+            [])
+        }else {
+          const { data } = await ApiTemplate.createTemplate(
+            name,
+            JSON.stringify(this.status),
+            image,
+            thumbnail,
+            [])
+          this.entity = data.createCatalog
+        }
+      }else
+      {
+        if(this.entity)
+        {
+          const { data } = await ApiCatalog.updateCatalog(
+            this.entity.id!,
+            name,
+            JSON.stringify(this.status),
+            image,
+            thumbnail,
+            [])
+        }else {
+          const { data } = await ApiCatalog.createCatalog(
+            name,
+            JSON.stringify(this.status),
+            image,
+            thumbnail,
+            [])
+          this.entity = data.createCatalog
+        }
+      }
+
+    this.$q.dialog({
+      title: '저장',
+      message: '저장했습니다'
+    }).onOk(() => {
+      window.parent.postMessage('contentsaved', '*');
+    })
+    this.updateCapture(false)
+    this.isLoading = false
+  }
+
   saveCatalog() {
-    ApiCatalog.createCatalog("zzz", JSON.stringify(this.status), [])
+    this.$q.dialog({
+      title: '확인',
+      message: '카탈로그 이름을 입력하세요',
+      prompt: {
+        model: this.entity ? this.entity.name : (this as any).$moment().format('YYYY년 MM월 DD'),
+        type: 'text' // optional
+      },
+      cancel: true,
+      persistent: true
+    }).onOk( (name: any) => {
+      this.updateCapture(true)
+      this.$nextTick(()  => {
+         this.captureAndSave(name);
+      });
+    })
+  }
+
+  flipToBack(){
+    const activeList = document.querySelectorAll('.drr.active');
+
+    activeList.forEach((elem, index) => {
+      const id = elem.getAttribute('id');
+      console.log(`id = ${id}`);
+
+      const items = this.status.items;
+      const idx = items.findIndex(i => i.id == id);
+      items.unshift (items.splice(idx, 1)[0]);
+    });
+  }
+
+  flipToFront(){
+    const activeList = document.querySelectorAll('.drr.active');
+
+    activeList.forEach((elem, index) => {
+      const id = elem.getAttribute('id');
+      console.log(`id = ${id}`);
+
+      const items = this.status.items;
+      const idx = items.findIndex(i => i.id == id);
+      items.push(items.splice(idx, 1)[0]);
+    });
   }
 
   deleteSelected() {
@@ -354,42 +544,7 @@ export default class Index extends Vue {
 }
 
 </script>
-
-<style>
-  *{
-    user-select: none;
-  }
-  .printing-body {
-    position: absolute;
-    height:100%;
-    width:100%;
-    border: 8px solid #ccc;
-    overflow: hidden;
-  }
-  button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin: auto;
-    display: block;
-  }
-  .image {
-    float: left;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    border: 1px solid #ebebeb;
-    margin: 5px;
-  }
-  .vue-select-image__item {
-    margin-left: 0px !important;
-  }
-
-  @media print
-  {
-    .no-print, .no-print *
-    {
-      display: none !important;
-    }
-  }
+<style lang="sass">
+  .selected-item
+    background-color: $teal-1
 </style>

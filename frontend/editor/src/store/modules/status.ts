@@ -27,6 +27,7 @@ export interface AppStatusI {
   };
 
   language: string;
+  capture: boolean;
   size: string;
   status: Configuration;
   history: Configuration[];
@@ -44,6 +45,7 @@ class AppStatus extends VuexModule implements AppStatusI {
   public language = getLocale();
 
   public size = getSize() || 'medium';
+  public capture = false;
 
   public status: Configuration = {
     backgroundColor: '',
@@ -57,6 +59,16 @@ class AppStatus extends VuexModule implements AppStatusI {
   @Mutation
   private SET_STATUS(status: Configuration) {
     this.status = status;
+  }
+
+  @Mutation
+  private SET_CAPTURE(capture: boolean) {
+    this.capture = capture;
+  }
+
+  @Mutation
+  private SET_HISTORY(history: Configuration[]) {
+    this.history = history;
   }
 
   @Mutation

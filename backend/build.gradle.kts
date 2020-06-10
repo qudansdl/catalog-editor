@@ -1,4 +1,8 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
+val isWindows = org.gradle.internal.os.OperatingSystem.current().name.startsWith("Windows")
+val yarnCmd = if (isWindows) "yarn.cmd" else "yarn"
 
 plugins {
 	id("org.springframework.boot") version "2.2.7.RELEASE"
@@ -45,6 +49,72 @@ repositories {
 
 sourceSets {
 	kotlin.sourceSets.register("$buildDir/generated/source/kapt/main")
+}
+
+sourceSets[SourceSet.MAIN_SOURCE_SET_NAME].resources {
+	srcDirs("src/main/resources")
+
+}
+
+tasks {
+
+	create<Exec>("yarnAdminInstall"){
+		workingDir = file("../frontend/admin")
+		commandLine = listOf(yarnCmd, "install")
+	}
+	create<Exec>("yarnAdminClean") {
+		workingDir = file("../frontend/admin")
+		commandLine = listOf(yarnCmd, "clean")
+	}
+
+	create<Exec>("yarnBuildAdminProd") {
+		dependsOn("yarnAdminInstall")
+
+		workingDir = file("../frontend/admin")
+		commandLine = listOf(yarnCmd, "run", "build:prod")
+	}
+
+	create<Copy>("copyStaticAdmin") {
+		dependsOn("yarnBuildAdminProd")
+		from("../frontend/admin/dist") {
+			include("**")
+		}
+
+		into("src/main/resources/public/admin")
+	}
+
+
+
+	create<Exec>("yarnEditorInstall"){
+		workingDir = file("../frontend/editor")
+		commandLine = listOf(yarnCmd, "install")
+	}
+	create<Exec>("yarnEditorClean") {
+		workingDir = file("../frontend/editor")
+		commandLine = listOf(yarnCmd, "clean")
+	}
+
+
+	create<Exec>("yarnBuildEditorProd") {
+		dependsOn("yarnEditorInstall")
+
+		workingDir = file("../frontend/editor")
+		commandLine = listOf(yarnCmd, "run", "build:prod")
+	}
+
+	create<Copy>("copyStaticEditor") {
+		dependsOn("yarnBuildEditorProd")
+		from("../frontend/editor/dist/spa") {
+			include("**")
+		}
+
+		into("src/main/resources/public/editor")
+	}
+
+
+	withType<BootJar> {
+		dependsOn("copyStaticAdmin", "copyStaticEditor")
+	}
 }
 
 dependencies {

@@ -89,6 +89,17 @@
         </template>
       </el-table-column>
       <el-table-column
+        :label="$t('template.thumbnail')"
+        min-width="150px"
+      >
+        <template slot-scope="{row}">
+          <el-image
+            :src="row.thumbnail"
+            :fit="'fill'"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column
         :label="$t('template.actions')"
         align="center"
         width="230"
@@ -101,6 +112,13 @@
             @click="handleUpdate(row)"
           >
             {{ $t('template.edit') }}
+          </el-button>
+          <el-button
+            type="secondary"
+            size="mini"
+            @click="handleDownload(row)"
+          >
+            {{ $t('template.download') }}
           </el-button>
           <el-button
             v-if="row.status!=='deleted'"
@@ -127,47 +145,18 @@
       :title="templateMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
     >
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="tempTemplateData"
-        label-position="left"
-        label-width="100px"
-        style="width: 90%; margin-left:10px;"
-      >
-        <el-input
-          v-model="tempTemplateData.parent"
-          type="hidden"
-        />
-        <el-form-item
-          :label="$t('template.name')"
-          prop="name"
-        >
-          <el-input v-model="tempTemplateData.name" />
-        </el-form-item>
-        <el-form-item
-          :label="$t('template.category')"
-          prop="categories"
-        >
-          <el-cascader
-            ref="formCategory"
-            :props="categoryProps"
-            clearable
-          />
-        </el-form-item>
-      </el-form>
+      <iframe
+        :src="ediutorUrl"
+        width="640"
+        height="360"
+        frameBorder="0"
+      > iframe을 지원하지 않는 브라우저입니다. </iframe>
       <div
         slot="footer"
         class="dialog-footer"
       >
         <el-button @click="dialogFormVisible = false">
           {{ $t('template.cancel') }}
-        </el-button>
-        <el-button
-          type="primary"
-          @click="dialogStatus==='create'?createData():updateData()"
-        >
-          {{ $t('template.confirm') }}
         </el-button>
       </div>
     </el-dialog>
@@ -176,12 +165,12 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator'
-import { Form, MessageBox } from 'element-ui'
-import { cloneDeep } from 'lodash'
 import ApiTemplate, { defaultTemplateData } from '@/api/templates'
 import { ICategoryData, ITemplateData } from '@/api/types'
 import Pagination from '@/components/Pagination/index.vue'
 import ApiCategory from '@/api/categories'
+import { MessageBox, Form } from 'element-ui'
+import { cloneDeep } from 'lodash'
 
 @Component({
   name: 'TemplateTable',
@@ -246,14 +235,54 @@ export default class extends Vue {
     create: '생성'
   }
 
+  private selectedTemplate: ITemplateData | null = null
+
   private rules = {
     name: [{ required: true, message: 'name is required', trigger: 'change' }]
   }
 
-  private tempTemplateData = defaultTemplateData
-
   created() {
+    window.addEventListener('message', this.handleUpdated)
     this.getList()
+  }
+
+  destroyed() {
+    window.removeEventListener('message', this.handleUpdated)
+  }
+
+  get ediutorUrl() {
+    const editorUrl = process.env.VUE_APP_EDITOR_URL + '#/?type=TEMPLATE'
+    if (this.selectedTemplate) {
+      return editorUrl + '&id=' + this.selectedTemplate.id
+    } else {
+      return editorUrl
+    }
+  }
+
+  private handleCreate() {
+    this.selectedTemplate = null
+    this.dialogStatus = 'create'
+    this.dialogFormVisible = true
+  }
+
+  private handleUpdated() {
+    this.getList()
+    this.dialogFormVisible = false
+  }
+
+  private handleUpdate(row: any) {
+    this.selectedTemplate = row
+    this.dialogStatus = 'update'
+    this.dialogFormVisible = true
+  }
+
+  private handleDownload(row: any) {
+    const link = document.createElement('a')
+    link.download = name
+    link.href = row.image
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   private async loadNode(node: any, resolve: any) {
@@ -326,75 +355,6 @@ export default class extends Vue {
   private getSortClass(key: string) {
     const sort = this.listQuery.order[0].dir
     return sort === 'asc' ? 'ascending' : 'descending'
-  }
-
-  private resetTempTemplateData() {
-    this.tempTemplateData = cloneDeep(defaultTemplateData)
-  }
-
-  private handleCreate() {
-    this.resetTempTemplateData()
-    this.dialogStatus = 'create'
-    this.dialogFormVisible = true
-    this.$nextTick(() => {
-      (this.$refs.dataForm as Form).clearValidate()
-    })
-  }
-
-  private createData() {
-    (this.$refs.dataForm as Form).validate(async(valid) => {
-      if (valid) {
-        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
-        const selectedCategories = selectedNodes.map((n: any) => n.data)
-        const { data } = await ApiTemplate.createTemplate(
-          this.tempTemplateData.name,
-          this.tempTemplateData.content!,
-          selectedCategories
-        )
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '성공',
-          message: '추가 했습니다',
-          type: 'success',
-          duration: 2000
-        })
-        await this.getList()
-      }
-    })
-  }
-
-  private handleUpdate(row: any) {
-    this.tempTemplateData = Object.assign({}, row)
-    this.dialogStatus = 'update'
-    this.dialogFormVisible = true
-    this.$nextTick(() => {
-      (this.$refs.dataForm as Form).clearValidate()
-    })
-  }
-
-  private updateData() {
-    (this.$refs.dataForm as Form).validate(async(valid) => {
-      if (valid) {
-        const selectedNodes = (this.$refs.formCategory as any).getCheckedNodes()
-        const selectedCategories = selectedNodes.map((n: any) => n.data)
-
-        const tempData = Object.assign({}, this.tempTemplateData)
-        const { data } = await ApiTemplate.updateTemplate(
-          tempData.id!,
-          tempData.name,
-          tempData.content!,
-          selectedCategories
-        )
-        this.dialogFormVisible = false
-        this.$notify({
-          title: '성공',
-          message: '저장했습니다',
-          type: 'success',
-          duration: 2000
-        })
-        await this.getList()
-      }
-    })
   }
 
   private async handleDelete(row: any, index: number) {

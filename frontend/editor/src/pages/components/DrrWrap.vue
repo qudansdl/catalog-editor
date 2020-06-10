@@ -26,7 +26,11 @@
         @deselect="onDeselected"
         @content-active="onContentActive"
         >
-        <button class="close" @click.stop.prevent="deleteItem" v-touch="deleteItem">&times;</button>
+        <button
+          :class="capture ? 'no-capture' : ''"
+          class="close no-print"
+          @click.stop.prevent="deleteItem"
+          v-touch="deleteItem">&times;</button>
         <!-- rotate info  -->
         <div ref="ddrInfo" :class="['ddr', {hidden:test}]"></div>
         <template v-if="item.type == 'text'">
@@ -51,13 +55,14 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator';
+  import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { cloneDeep } from 'lodash';
-import { Item } from '@/types/types';
+import { Configuration, Item } from '@/types/types';
 import Fitty from 'components/vue-fitty/Fitty.vue';
 import { FittyInstance } from 'fitty';
 import { Debounce } from 'vue-debounce-decorator';
 import drr from './drr.vue';
+import { State } from 'vuex-class';
 
 interface Rect {
   x: number;
@@ -76,6 +81,9 @@ interface Rect {
 export default class Drr extends Vue {
   @Prop() readonly item: Item | undefined;
 
+  @State('capture', { namespace: 'AppStatus' })
+  public capture!: boolean;
+
   selected = false;
 
   test = true;
@@ -87,6 +95,11 @@ export default class Drr extends Vue {
     posRight: 0,
     posLeft: 0,
   };
+
+  @Watch('capture')
+  onCaptureChanged() {
+    this.selected = false;
+  }
 
   public mounted(): void {
     document.addEventListener('keydown', (e: KeyboardEvent) => {
@@ -148,10 +161,12 @@ export default class Drr extends Vue {
   }
 
   onSelected() {
+    this.selected = true;
     this.$emit('select', this.item);
   }
 
   onDeselected() {
+    this.selected = false;
     this.$emit('deselect', this.item);
   }
 

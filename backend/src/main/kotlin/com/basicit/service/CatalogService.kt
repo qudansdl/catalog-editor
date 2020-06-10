@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service
 import java.util.*
 
 @Service
-class CatalogService(private val catalogRepository: CatalogRepository) {
+class CatalogService(
+        private val catalogRepository: CatalogRepository
+) {
 
   fun getCatalogs(input: DataTablesInput?): DataTablesOutput<Catalog>  =
           catalogRepository.findAll(input)
 
-  fun addCatalog(catalog: Catalog): Catalog = catalogRepository.save(catalog)
+  fun addCatalog(catalog: Catalog): Catalog =
+      catalogRepository.save(catalog)
 
   fun getCatalogById(catalogId: UUID): Optional<Catalog> =
           catalogRepository.findById(catalogId)
@@ -23,13 +26,14 @@ class CatalogService(private val catalogRepository: CatalogRepository) {
           newCatalog: Catalog
   ): Optional<Catalog> =
       catalogRepository.findById(catalogId).map { currentCatalog ->
-      val updatedCatalog = Catalog(
-              currentCatalog.id,
-              newCatalog.name,
-              newCatalog.content,
-              newCatalog.categories)
+          currentCatalog.id
+          currentCatalog.name = newCatalog.name
+          currentCatalog.content = newCatalog.content
+          currentCatalog.image = newCatalog.image
+          currentCatalog.thumbnail = newCatalog.thumbnail
+          currentCatalog.categories = newCatalog.categories
 
-          catalogRepository.save(updatedCatalog)
+          catalogRepository.save(currentCatalog)
     }
 
   fun deleteCatalog(catalogId: UUID): Boolean =

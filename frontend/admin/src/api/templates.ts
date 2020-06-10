@@ -7,29 +7,45 @@ import {
   getTemplateVariable
 } from '@/api/graphql/template'
 import apolloClient from '@/utils/vue-apollo'
-import {ICategoryData, ITemplateData } from '@/api/types'
+import { ICategoryData, ITemplateData } from '@/api/types'
 
 export const defaultTemplateData: ITemplateData = {
   id: null,
   name: '',
-  content: null
+  content: null,
+  image: null,
+  thumbnail: null
 }
 
 export default class ApiTemplate {
-  static createTemplate = (name: string, content: string, categories: ICategoryData[]) => {
+  static createTemplate = (
+    name: string,
+    content: string,
+    image: string,
+    thumbnail: string,
+    categories: ICategoryData[]
+  ) => {
     console.log('Create Template')
     return apolloClient.mutate({
       mutation: CREATE_TEMPLATE,
       variables: {
         name,
         content,
-        categories,
-        blocks: []
+        image,
+        thumbnail,
+        categories
       }
     })
   };
 
-  static updateTemplate = (templateId: string, name: string, content: string, categories: ICategoryData[]) => {
+  static updateTemplate = (
+    templateId: string,
+    name: string,
+    content: string,
+    image: string,
+    thumbnail: string,
+    categories: ICategoryData[]
+  ) => {
     console.log('Update Template')
     return apolloClient.mutate({
       mutation: UPDATE_TEMPLATE,
@@ -37,8 +53,9 @@ export default class ApiTemplate {
         templateId,
         name,
         content,
-        categories,
-        blocks: []
+        image,
+        thumbnail,
+        categories
       }
     })
   };

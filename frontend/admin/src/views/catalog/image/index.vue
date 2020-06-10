@@ -129,6 +129,7 @@
     <pagination
       v-show="total>0"
       :total="total"
+      :page-sizes="[5]"
       :page.sync="listQuery.page"
       :limit.sync="listQuery.length"
       @pagination="getList"
@@ -146,10 +147,6 @@
         label-width="100px"
         style="width: 400px; margin-left:50px;"
       >
-        <el-input
-          v-model="tempImageData.parent"
-          type="hidden"
-        />
         <el-form-item
           :label="$t('image.name')"
           prop="name"
@@ -277,8 +274,8 @@ export default class extends Vue {
 
   private listQuery: any = {
     page: 1,
-    start: 1,
-    length: 20,
+    start: 0,
+    length: 5,
     order: [{
       column: 'created',
       dir: 'desc'

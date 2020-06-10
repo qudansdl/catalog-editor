@@ -1,13 +1,13 @@
 <template>
   <el-tree
+    ref="categoryTree"
     :data="[]"
     :props="props"
-    @check="onCheck"
     :load="loadNode"
-    ref="categoryTree"
     lazy
     show-checkbox
     check-strictly
+    @check="onCheck"
   />
 </template>
 

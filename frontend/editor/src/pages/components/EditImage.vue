@@ -7,9 +7,7 @@
     transition-hide="slide-down"
   >
     <q-card>
-      <q-card-section style="height: 100%">
-    <q-layout view="Lhh lpR fff" container>
-      <q-header>
+      <q-card-section>
         <q-tabs
           v-model="tab"
           dense
@@ -23,18 +21,11 @@
             :name="item.name"
             :label="item.label"/>
         </q-tabs>
-      </q-header>
+      </q-card-section>
 
-      <q-footer>
-        <q-toolbar inset>
-          <q-btn color="primary" label="적용" @click="apply"/>
-          <q-btn color="secondary" label="잘라내기" @click="showCropp"/>
-          <q-btn color="brown-5" label="닫기" @click="showDialog = false"/>
-        </q-toolbar>
-      </q-footer>
+      <q-separator />
 
-      <q-page-container>
-        <q-page padding>
+      <q-card-section class="scroll" style="min-height: 250px;">
           <q-tab-panels v-model="tab" animated>
             <q-tab-panel
               v-for="tab in components"
@@ -49,10 +40,15 @@
               ></component>
             </q-tab-panel>
           </q-tab-panels>
-        </q-page>
-      </q-page-container>
-    </q-layout>
       </q-card-section>
+
+      <q-separator />
+
+      <q-card-actions class="fixed-bottom bg-grey-3">
+        <q-btn flat label="적용" @click="apply" :disable="content == null"/>
+        <q-btn flat label="잘라내기" @click="showCropp"/>
+        <q-btn flat label="닫기" @click="showDialog = false"/>
+      </q-card-actions>
     </q-card>
     <cropp-image v-model="cropp" v-on:apply="applyCroppedImage"></cropp-image>
   </q-dialog>
@@ -62,7 +58,6 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { cloneDeep } from 'lodash';
 import upload from './images/upload.vue';
 import library from './images/library.vue';
-import url from './images/url.vue';
 
 import CroppImage from './Cropp.vue';
 
@@ -70,7 +65,6 @@ import CroppImage from './Cropp.vue';
   components: {
     upload,
     library,
-    url,
     CroppImage,
   },
 })

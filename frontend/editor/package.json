@@ -9,7 +9,8 @@
   "private": true,
   "scripts": {
     "dev": "quasar dev",
-    "build": "quasar build",
+    "build:prod": "quasar build",
+    "build:stage": "quasar build --mode staging",
     "lint": "tsc --noEmit && eslint --ext .ts,.js,.vue --ignore-path .gitignore src",
     "lint:fix": "eslint --ext .ts,.js,.vue --ignore-path .gitignore src --fix",
     "test": "echo \"No test specified\" && exit 0",
@@ -35,7 +36,6 @@
     "graphql": "^14.5.8",
     "graphql-subscriptions": "^1.1.0",
     "graphql-tag": "^2.10.3",
-    "html2canvas": "^1.0.0-rc.5",
     "is-data-uri": "^0.1.0",
     "lodash": "^4.17.15",
     "mustache": "^4.0.1",
@@ -51,6 +51,7 @@
     "vue-debounce-decorator": "^1.0.1",
     "vue-draggable-resizable": "^2.2.0",
     "vue-fitty": "^0.1.8",
+    "html2canvas": "^1.0.0-rc.5",
     "vue-html2canvas": "^0.0.4",
     "vue-i18n": "^8.18.1",
     "vue-property-decorator": "^8.4.2",
@@ -63,9 +64,10 @@
     "vue2-touch-events": "^2.2.1",
     "vuejs-clipper": "^2.0.0",
     "vue-multiselect": "^2.1.6",
-    "vue-quill-editor": "^3.0.6",
     "vue-base64-file-upload": "^1.0.4",
-    "@johmun/vue-tags-input": "^2.1.0"
+    "@johmun/vue-tags-input": "^2.1.0",
+    "vue-moment": "^4.1.0",
+    "file-saver": "^2.0.2"
   },
   "devDependencies": {
     "@quasar/app": "^1.9.3",

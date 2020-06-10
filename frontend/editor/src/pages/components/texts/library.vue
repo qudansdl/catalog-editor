@@ -1,31 +1,43 @@
 <template>
-  <div class="q-pa-md">
-      <div class="row q-col-gutter-xs fixed">
-        <div class="col">
-            <vue-tags-input
-              v-model="tag"
-              :tags="tags"
-              :autocomplete-items="autocompleteItems"
-              :add-only-from-autocomplete="true"
-              @tags-changed="update"
-            />
-        </div>
-      </div>
-      <div class="row q-col-gutter-xs" style="padding-top: 35px">
-        <div class="col">
-            <q-list bordered separator>
-              <q-item clickable v-ripple v-for="text in texts" :key="text.id" @click="textSelected(text)">
-                <q-item-section>{{text.content}}</q-item-section>
-              </q-item>
-            </q-list>
-        </div>
-      </div>
-  </div>
+  <q-card>
+    <q-card-section class="row justify-center">
+      <vue-tags-input
+        placeholder="카테고리 입력"
+        v-model="tag"
+        :tags="tags"
+        :autocomplete-items="autocompleteItems"
+        :add-only-from-autocomplete="true"
+        @tags-changed="update"
+        style="width: 100%"
+      />
+    </q-card-section>
+    <q-separator />
+    <q-card-section>
+      <q-infinite-scroll @load="onLoad" :offset="150" style="height: 100%;" ref="loadArea">
+        <q-list bordered separator>
+          <q-item
+            clickable
+            v-ripple
+            v-for="text in texts"
+            :key="text.id"
+            @click="textSelected(text)"
+            :class="selected && selected.id == text.id ? 'selected-item' : ''">
+            <q-item-section>{{text.name}}</q-item-section>
+          </q-item>
+        </q-list>
+        <template v-slot:loading>
+          <div class="row justify-center">
+            <q-spinner-dots color="primary" size="40px" />
+          </div>
+        </template>
+      </q-infinite-scroll>
+    </q-card-section>
+  </q-card>
 </template>
 
 <script lang="ts">
 import { Component, Vue, Watch } from 'vue-property-decorator';
-import {ICategoryData, ITextData} from '@/api/types'
+import { ICategoryData, IImageData, ITextData } from '@/api/types';
 import ApiCategory from '@/api/categories';
 import ApiText from '@/api/texts';
 import VueTagsInput from '@johmun/vue-tags-input';
@@ -40,6 +52,7 @@ export default class SelectText extends Vue {
   categories: ICategoryData[] = []
 
   private texts: ITextData[] = []
+  private selected: ITextData | null = null
 
   isLoading = false
   private categoryQuery = {
@@ -54,7 +67,7 @@ export default class SelectText extends Vue {
 
   private listQuery = {
     start: 0,
-    length: 0,
+    length: 10,
     order: [{
       column: 'created',
       dir: 'desc'
@@ -66,25 +79,20 @@ export default class SelectText extends Vue {
   tags : any[] = []
   autocompleteItems: any[] = []
 
-  mounted()
-  {
-    this.getList();
-  }
-
-
   textSelected (text: ITextData) {
+    this.selected = text
     this.$emit('textSelected', text.content);
   }
 
   update(newTags: any[]) {
     this.autocompleteItems = [];
     this.tags = newTags;
-    this.getList()
+    (this.$refs.loadArea as any).reset()
   }
 
   @Watch('tag')
   initItems() {
-    if (this.tag.length < 2) return;
+    if (this.tag.length < 1) return;
 
     this.loadItems(this.tag)
   }
@@ -94,7 +102,16 @@ export default class SelectText extends Vue {
     this.getCategories(tag)
   }
 
-  @Debounce(600)
+  private async onLoad(index: number, done: any) {
+    if(index == 1)
+    {
+      this.texts = []
+    }
+    console.log(`index ${index}`)
+    this.listQuery.start = (index-1) * this.listQuery.length
+    done(await this.getList())
+  }
+
   private async getList() {
     this.isLoading = true
     const query = JSON.parse(JSON.stringify(this.listQuery))
@@ -112,10 +129,9 @@ export default class SelectText extends Vue {
     }
 
     const { data } = await ApiText.getTexts(query)
-
-    this.texts = data.texts.data
-
+    this.texts = this.texts.concat(data.texts.data)
     this.isLoading = false
+    return data.texts.recordsFiltered < this.listQuery.start + this.listQuery.length
   }
 
   async getCategories (search: string) {
