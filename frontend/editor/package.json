@@ -64,7 +64,6 @@
     "vue2-touch-events": "^2.2.1",
     "vuejs-clipper": "^2.0.0",
     "vue-multiselect": "^2.1.6",
-    "vue-quill-editor": "^3.0.6",
     "vue-base64-file-upload": "^1.0.4",
     "@johmun/vue-tags-input": "^2.1.0",
     "vue-moment": "^4.1.0",

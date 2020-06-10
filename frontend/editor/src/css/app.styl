@@ -1,1 +1,50 @@
 // app global css in Stylus form
+*{
+  user-select: none;
+}
+.printing-body {
+  position: absolute;
+  border: 4px solid #ccc;
+  height: 640px;
+  width: 360px;
+  overflow: hidden;
+}
+.printing-body p {
+  margin: 8px 0px 8px 0px;
+  line-height: 100%;
+}
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin: auto;
+  display: block;
+}
+.image {
+  float: left;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  border: 1px solid #ebebeb;
+  margin: 5px;
+}
+.vue-select-image__item {
+  margin-left: 0px !important;
+}
+
+.no-capture {
+  display: none !important;
+}
+
+.editor-q-item {
+  padding: 0px;
+  min-height: 20px;
+  max-height: 31px;
+}
+@media print
+{
+  .no-print, .no-print *
+  {
+    display: none !important;
+  }
+}

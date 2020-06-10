@@ -1,81 +1,58 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-drawer
-      v-model="showMenu"
-      show-if-above
-      bordered
-      content-class="bg-grey-1"
-      side="right"
-      class="no-print"
-      :width="80"
-    >
-      <q-layout view="lhr lpr lfr">
-        <q-header elevated height-hint="98" class="bg-white text-primary">
-          <q-list>
-            <q-item clickable v-ripple class="editor-q-item">
-              <q-btn flat color="primary" icon="text_fields" @click="showEditText"/>
-            </q-item>
-            <q-item clickable v-ripple class="editor-q-item">
-              <q-btn flat color="primary" icon="image_search" @click="image.show = true"/>
-            </q-item>
-            <q-item clickable v-ripple class="editor-q-item">
-              <q-btn flat color="primary" icon="grid_on" @click="background.show = true"/>
-            </q-item>
+        <q-footer reveal elevated class="bg-white text-primary" v-if="showMenu == true">
+          <q-toolbar>
+            <div class="row">
+              <div class="col">
+                <q-btn flat color="primary" icon="text_fields" @click="showEditText"/>
+              </div>
+              <div class="col">
 
-
-            <q-separator dark inset  color="orange" />
-
-
-            <q-item clickable v-ripple class="editor-q-item">
+                <q-btn flat color="primary" icon="image_search" @click="image.show = true"/>
+              </div>
+              <div class="col-auto">
+                <q-btn flat color="primary" icon="grid_on" @click="background.show = true"/>
+              </div>
+              <div class="col">
               <q-btn flat :disable="!showDelete" color="primary" icon="flip_to_front" @click="flipToFront"/>
-            </q-item>
-            <q-item v-ripple class="editor-q-item">
+              </div>
+              <div class="col">
+                <q-btn flat :disable="!showDelete" color="primary" icon="flip_to_back" @click="flipToBack"/>
+              </div>
+              <div class="col">
               <q-btn flat :disable="!showDelete"  color="primary" icon="delete" @click="deleteSelected()"/>
-            </q-item>
+              </div>
 
+              <div class="col">
 
-            <q-separator dark inset  color="orange" />
-
-
-            <q-item clickable v-ripple class="editor-q-item">
               <q-btn flat color="primary" icon="undo" @click="undo" :disable="changeIndex == 0"/>
-            </q-item>
-            <q-item clickable v-ripple class="editor-q-item">
+              </div>
+              <div class="col">
               <q-btn flat color="primary" icon="redo" @click="redo" :disable="changeIndex + 1 >= history.length"/>
-            </q-item>
+              </div>
 
 
-            <q-separator dark inset  color="orange" />
-
-            <q-item clickable v-ripple class="editor-q-item">
+              <div class="col">
               <q-btn flat color="primary" icon="folder_open"  @click="catalog.show = true"/>
-            </q-item>
-            <q-item clickable v-ripple class="editor-q-item">
+              </div>
+              <div class="col">
               <q-btn flat color="primary" icon="file_copy"  @click="template.show = true"/>
-            </q-item>
+              </div>
 
-
-            <q-separator dark inset  color="orange" />
-
-            <q-item clickable v-ripple class="editor-q-item">
+            <div class="col">
               <q-btn flat color="primary" icon="save_alt"  @click="saveCatalog()"/>
-            </q-item>
-
-            <q-separator dark inset  color="orange" />
-
-            <q-item clickable v-ripple class="editor-q-item">
+            </div>
+              <div class="col">
               <q-btn
                 flat
                 color="primary"
                 icon="menu"
                 @click="showMenu = !showMenu"
               />
-            </q-item>
-          </q-list>
-        </q-header>
-      </q-layout>
-    </q-drawer>
-
+              </div>
+            </div>
+          </q-toolbar>
+        </q-footer>
     <q-page-container>
       <div
         class="printing-body absolute-center"
@@ -498,6 +475,20 @@ export default class Index extends Vue {
       });
     })
   }
+
+  flipToBack(){
+    const activeList = document.querySelectorAll('.drr.active');
+
+    activeList.forEach((elem, index) => {
+      const id = elem.getAttribute('id');
+      console.log(`id = ${id}`);
+
+      const items = this.status.items;
+      const idx = items.findIndex(i => i.id == id);
+      items.unshift (items.splice(idx, 1)[0]);
+    });
+  }
+
   flipToFront(){
     const activeList = document.querySelectorAll('.drr.active');
 
@@ -556,51 +547,4 @@ export default class Index extends Vue {
 <style lang="sass">
   .selected-item
     background-color: $teal-1
-</style>
-<style>
-  *{
-    user-select: none;
-  }
-  .printing-body {
-    position: absolute;
-    border: 4px solid #ccc;
-    height: 360px;
-    width: 640px;
-    overflow: hidden;
-  }
-  button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin: auto;
-    display: block;
-  }
-  .image {
-    float: left;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
-    border: 1px solid #ebebeb;
-    margin: 5px;
-  }
-  .vue-select-image__item {
-    margin-left: 0px !important;
-  }
-
-  .no-capture {
-    display: none !important;
-  }
-
-  .editor-q-item {
-    padding: 0px;
-    min-height: 20px;
-    max-height: 31px;
-  }
-  @media print
-  {
-    .no-print, .no-print *
-    {
-      display: none !important;
-    }
-  }
 </style>
