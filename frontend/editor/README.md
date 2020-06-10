@@ -5,16 +5,8 @@
     * Graphql : https://www.apollographql.com/docs/
 
 # API 목록
-    > 목록 API는 페이징 가능해야함
-    > 카테고리외에 나머지 목록은 카테고리를 파라미터로 받아서 해당 카테고리 내에서 검색해야함
-    > 파라미터 : name(이름, like 검색)/page(현재페이지)/legth(페이지 길이)/카테고리(배열)
- * 카테고리 목록
- * 이미지 목록
- * 템플릿 목록
- * 백엔드 이미지 목록
- * 백엔드 패턴 이미지 목록
- * 문구 목록
- * 카탈로그 목록/저장
+   [API 목록](../../doc/Catalog%20Editor%20API%20목록.xlsx)
+
 
 # 에디터 실행/빌드
 ## Editor 프로젝트 폴더에서 아래 명령어를 실행해서 dependencies 설치
@@ -36,6 +28,35 @@ yarn run lint
 ```bash
 quasar build 혹은 yarn run build
 ```
+
+### 에디터 연동
+1. 기존 작성 내용 오픈
+    ```bash
+    "에디터 URL"/index.html#/?type={TEMPLATE/CATALOG}&id={Catalog or template id}
+    ```
+    * type : optional이고 작업할 유형을 선택
+              관리자는 TEMPLATE, 사용자는 CATALOOG
+    * id : 템플릿 혹은 카탈로그 아이디
+
+1. 신규 작성
+    ```bash
+    "에디터 URL"/index.html#/?type={TEMPLATE/CATALOG}
+    ```
+    * type : optional이고 작업할 유형을 선택
+              관리자는 TEMPLATE, 사용자는 CATALOOG
+1. 에디터 작업 완료 이벤트 처리
+    * 샘플 : admin\src\views\catalog\template\index.vue
+    ```
+        function handleEditorEvent(data) {
+            // data = {id="dqdqw", name="카탈로그/템플릿", content="작성 내용"}
+        }
+
+        에디터 초기화시
+        window.addEventListener('message', handleEditorEvent)
+
+        에디터 종료시
+        window.removeEventListener('message', handleUpdated)
+    ```
 
 ### 설정 참고 자료
  * [Support TypeScript](https://quasar.dev/quasar-cli/cli-documentation/supporting-ts)
