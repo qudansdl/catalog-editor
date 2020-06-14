@@ -2,6 +2,7 @@
   <q-layout view="lHh Lpr lFf">
         <q-footer reveal elevated class="bg-white text-primary" v-if="showMenu == true">
           <q-toolbar>
+            <div class="q-pa-md">
             <div class="row">
               <div class="col">
                 <q-btn flat color="primary" icon="text_fields" @click="showEditText"/>
@@ -22,7 +23,8 @@
               <div class="col">
               <q-btn flat :disable="!showDelete"  color="primary" icon="delete" @click="deleteSelected()"/>
               </div>
-
+            </div>
+            <div class="row">
               <div class="col">
 
               <q-btn flat color="primary" icon="undo" @click="undo" :disable="changeIndex == 0"/>
@@ -51,6 +53,7 @@
               />
               </div>
             </div>
+            </div>
           </q-toolbar>
         </q-footer>
     <q-page-container>
@@ -59,7 +62,8 @@
         ref="printMe"
         :style="[{'background': status.backgroundPattern ? `url(${status.backgroundPattern}) repeat` : `${status.backgroundColor || '#ffffff'} url(${status.backgroundImg}) 0 0/cover no-repeat`}]">
           <dw
-            v-for="(item) in status.items" ref="items"
+            v-for="(item) in status.items"
+            ref="items"
             :key="item.id"
             :item="item"
             @coordinate="onCoordinatesChanged"
@@ -105,8 +109,7 @@
 import { Vue, Component } from 'vue-property-decorator';
 
 import { v4 as uuidv4 } from 'uuid';
-import { cloneDeep } from 'lodash';
-import html2canvas from 'html2canvas';
+
 
 import VueDraggableResizable from 'vue-draggable-resizable';
 import { Debounce } from 'vue-debounce-decorator';
@@ -125,6 +128,7 @@ import dw from './components/DrrWrap.vue';
 import ApiCatalog from '@/api/catalogs';
 import { ITemplateData, ICatalogData } from '@/api/types';
 import ApiTemplate from '@/api/templates';
+import { cloneDeep } from 'lodash';
 
 @Component({
   components: {
@@ -334,12 +338,21 @@ export default class Index extends Vue {
     this.addHistory();
   }
 
-  onSelected() {
-    this.setShowDelete();
+  onSelected(item: Item) {
+    let items = this.$refs.items as Array<any>
+    for(let idx = 0; idx < items.length; idx++)
+    {
+      if(item.id != this.status.items[idx].id)
+      {
+        items[idx].deselect()
+      }
+    }
+
+    this.setShowDelete()
   }
 
   onDeselected() {
-    this.setShowDelete();
+    this.setShowDelete()
   }
 
   onDelete(item: Item) {

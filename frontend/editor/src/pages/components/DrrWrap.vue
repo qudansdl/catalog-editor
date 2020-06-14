@@ -170,6 +170,10 @@ export default class Drr extends Vue {
     this.$emit('deselect', this.item);
   }
 
+  deselect() {
+    (this.$refs.drr as any).deselect()
+  }
+
   onContentActive() {
     this.$emit('content-active', this.item);
   }

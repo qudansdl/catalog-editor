@@ -141,14 +141,14 @@
     />
 
     <el-dialog
-      width="75%"
+      width="400px"
       :title="templateMap[dialogStatus]"
       :visible.sync="dialogFormVisible"
     >
       <iframe
         :src="ediutorUrl"
-        width="640"
-        height="360"
+        width="360"
+        height="640"
         frameBorder="0"
       > iframe을 지원하지 않는 브라우저입니다. </iframe>
       <div
