@@ -12,9 +12,13 @@ export default class RestApiCatalog {
     categories: ICategoryData[]
   ) => {
     console.log('Create Catalog')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    Vue.prototype.$axios.post('/catalog/catalogs', {
+      name,
+      content,
+      image,
+      thumbnail,
+      categories
+    })
   };
 
   static updateCatalog = (
@@ -26,22 +30,28 @@ export default class RestApiCatalog {
     categories: ICategoryData[]
   ) => {
     console.log('Update Catalog')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    Vue.prototype.$axios.put('/catalog/catalogs', {
+      catalogId,
+      name,
+      content,
+      image,
+      thumbnail,
+      categories
+    })
   };
 
   static getCatalog = (catalogId: string) => {
     console.log('get Catalog : ' + catalogId)
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    return Vue.prototype.$axios.get(`/catalog/catalogs/${catalogId}`)
   };
 
   static getCatalogs = (start: number, length: number) => {
     console.log('get Catalogs')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    return Vue.prototype.$axios.get(`/catalog/catalogs`, {
+      params: {
+        start,
+        length
+      }
+    })
   };
 }

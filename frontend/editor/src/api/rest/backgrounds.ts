@@ -8,18 +8,17 @@ export default class RestApiBackground {
 
   static getBackground = (backgroundId: string | null) => {
     console.log('get Background')
-    return Vue.prototype.$axios.get({
-      query: GET_TEMPLATES,
-      variables: {
-        query
-      }
-    })
+    return Vue.prototype.$axios.get(`/catalog/backgrounds/${backgroundId}`)
   };
 
   static getBackgrounds = (start: number, length: number, tags: ICategoryData[]) => {
     console.log('get Backgrounds')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    return Vue.prototype.$axios.get(`/catalog/backgrounds`, {
+      params: {
+        start,
+        length,
+        categories: tags.map(c => c.id)
+      }
+    })
   };
 }

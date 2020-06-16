@@ -11,9 +11,13 @@ export default class RestApiTemplate {
     categories: ICategoryData[]
   ) => {
     console.log('Create Template')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    Vue.prototype.$axios.post('/catalog/templates', {
+      name,
+      content,
+      image,
+      thumbnail,
+      categories
+    })
   };
 
   static updateTemplate = (
@@ -25,22 +29,28 @@ export default class RestApiTemplate {
     categories: ICategoryData[]
   ) => {
     console.log('Update Template')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    Vue.prototype.$axios.put('/catalog/templates', {
+      templateId,
+      name,
+      content,
+      image,
+      thumbnail,
+      categories
+    })
   };
 
   static getTemplate = (templateId: string) => {
     console.log('get Template')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    return Vue.prototype.$axios.get(`/catalog/templates/${templateId}`)
   };
 
   static getTemplates = (start: number, length: number) => {
     console.log('get Templates')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    return Vue.prototype.$axios.get(`/catalog/templates`, {
+      params: {
+        start,
+        length
+      }
+    })
   };
 }

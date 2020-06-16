@@ -10,15 +10,17 @@ import Vue from 'vue';
 export default class RestApiText {
   static getText = (textId: string | null) => {
     console.log('get Text')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    return Vue.prototype.$axios.get(`/catalog/texts/${textId}`)
   };
 
   static getTexts = (start: number, length: number, tags: ICategoryData[]) => {
     console.log('get Texts')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    return Vue.prototype.$axios.get(`/catalog/texts`, {
+      params: {
+        start,
+        length,
+        categories: tags.map(c => c.id)
+      }
+    })
   };
 }

@@ -8,15 +8,17 @@ export default class RestApiImage {
 
   static getImage = (imageId: string | null) => {
     console.log('get Image')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    return Vue.prototype.$axios.get(`/catalog/images/${imageId}`)
   };
 
   static getImages = (start: number, length: number, tags: ICategoryData[]) => {
     console.log('get Images')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    return Vue.prototype.$axios.get(`/catalog/images`, {
+      params: {
+        start,
+        length,
+        categories: tags.map(c => c.id)
+      }
+    })
   };
 }

@@ -6,15 +6,15 @@ export default class RestApiCategory {
 
   static getCategory = (categoryId: string | null) => {
     console.log('get Category')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    return Vue.prototype.$axios.get(`/catalog/categories/${categoryId}`)
   };
 
-  static getCategories = (input: any) => {
+  static getCategories = (search: string) => {
     console.log('get Categories')
-    return new Promise((resolve) => {
-      resolve({ data: {} });
-    });
+    return Vue.prototype.$axios.get(`/catalog/categories`, {
+      params: {
+        search
+      }
+    })
   };
 }
