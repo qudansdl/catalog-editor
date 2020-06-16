@@ -54,7 +54,7 @@ export default class SelectImage extends Vue {
   isLoading = false
 
   start = 0
-  length = 0
+  length = 10
 
   tag = ''
   tags : any[] = []
@@ -99,10 +99,10 @@ export default class SelectImage extends Vue {
   private async getList() {
     this.isLoading = true
 
-    const { data } = await ApiImage.getImages(this.start, this.length, this.tags)
-    this.images = this.images.concat(data.images.data)
+    const data = await ApiImage.getImages(this.start, this.length, this.tags)
+    this.images = this.images.concat(data.list)
     this.isLoading = false
-    return data.images.recordsFiltered < this.start + this.length
+    return data.total < this.start + this.length
   }
 
 
@@ -110,8 +110,7 @@ export default class SelectImage extends Vue {
     this.isLoading = true
 
     const { data } = await ApiCategory.getCategories(search)
-    this.categories = data.categories.data
-
+    this.categories = data.list
     this.autocompleteItems = this.categories.map(
       function(c, index, array){
         return { text: c.name, id: c.id }

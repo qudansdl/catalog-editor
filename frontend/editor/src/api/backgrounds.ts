@@ -5,23 +5,46 @@ import GraphqlApiBackground from '@/api/graphql/backgrounds';
 
 export default class ApiBackground {
 
-  static getBackground = (backgroundId: string | null) => {
+  static getBackground = async (backgroundId: string | null) => {
     console.log('get Background')
     if(process.env.VUE_APP_API_TYPE  === 'REST')
     {
-      return RestApiBackground.getBackground(backgroundId)
+      const { data } = await RestApiBackground.getBackground(backgroundId)
+      return new Promise((resolve) => {
+        resolve(data);
+      });
     }else{
-      return GraphqlApiBackground.getBackground(backgroundId)
+      const { data } = await GraphqlApiBackground.getBackground(backgroundId)
+      return new Promise((resolve) => {
+        resolve(
+          {
+            data: data.background
+          }
+        );
+      });
     }
   };
 
-  static getBackgrounds = (start: number, length: number, categories: ICategoryData[]) => {
+  static getBackgrounds = async (start: number, length: number, categories: ICategoryData[]) : Promise<any> => {
     console.log('get Backgrounds')
     if(process.env.VUE_APP_API_TYPE  === 'REST')
     {
-      return RestApiBackground.getBackgrounds(start, length, categories)
+      const { data } = await RestApiBackground.getBackgrounds(start, length, categories)
+      return new Promise((resolve) => {
+        resolve(data);
+      });
     }else{
-      return GraphqlApiBackground.getBackgrounds(start, length, categories)
+      const { data } = await GraphqlApiBackground.getBackgrounds(start, length, categories)
+      return new Promise((resolve) => {
+        resolve(
+          {
+            data: {
+              total: data.backgrounds.recordsFiltered,
+              list: data.backgrounds.data
+            }
+          }
+        );
+      });
     }
   };
 }

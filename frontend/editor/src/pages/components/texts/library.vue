@@ -56,16 +56,8 @@ export default class SelectText extends Vue {
 
   isLoading = false
 
-
-  private listQuery = {
-    start: 0,
-    length: 10,
-    order: [{
-      column: 'created',
-      dir: 'desc'
-    }],
-    columns: []
-  }
+  start = 0
+  length = 10
 
   tag = ''
   tags : any[] = []
@@ -100,37 +92,24 @@ export default class SelectText extends Vue {
       this.texts = []
     }
     console.log(`index ${index}`)
-    this.listQuery.start = (index-1) * this.listQuery.length
+    this.start = (index-1) * this.length
     done(await this.getList())
   }
 
-  private async getList() {
+  private async  getList() {
     this.isLoading = true
-    const query = JSON.parse(JSON.stringify(this.listQuery))
-    if (this.tags.length > 0) {
-      query.columns.push({
-        name: 'categories',
-        operation: '',
-        value: '',
-        columns: [{
-          name: 'id',
-          operation: 'in',
-          value: this.tags.map(c => c.id).join(',')
-        }]
-      })
-    }
 
-    const { data } = await ApiText.getTexts(query)
-    this.texts = this.texts.concat(data.texts.data)
+    const data = await ApiText.getTexts(this.start, this.length, this.tags)
+    this.texts = this.texts.concat(data.list)
     this.isLoading = false
-    return data.texts.recordsFiltered < this.listQuery.start + this.listQuery.length
+    return data.total < this.start + this.length
   }
 
   async getCategories (search: string) {
     this.isLoading = true
 
     const { data } = await ApiCategory.getCategories(search)
-    this.categories = data.categories.data
+    this.categories = data.list
     this.autocompleteItems = this.categories.map(
       function(c, index, array){
         return { text: c.name, id: c.id }

@@ -11,7 +11,7 @@ export default class RestApiTemplate {
     categories: ICategoryData[]
   ) => {
     console.log('Create Template')
-    Vue.prototype.$axios.post('/catalog/templates', {
+    Vue.prototype.$axios.post('/catalog/templates.do', {
       name,
       content,
       image,
@@ -29,7 +29,7 @@ export default class RestApiTemplate {
     categories: ICategoryData[]
   ) => {
     console.log('Update Template')
-    Vue.prototype.$axios.put('/catalog/templates', {
+    Vue.prototype.$axios.put('/catalog/templates.do', {
       templateId,
       name,
       content,
@@ -41,12 +41,12 @@ export default class RestApiTemplate {
 
   static getTemplate = (templateId: string) => {
     console.log('get Template')
-    return Vue.prototype.$axios.get(`/catalog/templates/${templateId}`)
+    return Vue.prototype.$axios.get(`/catalog/templates/${templateId}.do`)
   };
 
   static getTemplates = (start: number, length: number) => {
     console.log('get Templates')
-    return Vue.prototype.$axios.get(`/catalog/templates`, {
+    return Vue.prototype.$axios.get(`/catalog/templates.do`, {
       params: {
         start,
         length

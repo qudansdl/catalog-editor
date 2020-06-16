@@ -64,31 +64,54 @@ export default class ApiTemplate {
   };
 
 
-  static getTemplate = (templateId: string) => {
+  static getTemplate = async (templateId: string): Promise<any> => {
     console.log('get Template : ' + templateId)
     if(process.env.VUE_APP_API_TYPE  === 'REST')
     {
-      return RestApiTemplate.getTemplate(
+      const {data} = await RestApiTemplate.getTemplate(
         templateId
       )
+      return new Promise((resolve) => {
+        resolve(data);
+      });
     }else{
-      return GraphqlApiTemplate.getTemplate(
+      const { data } = await GraphqlApiTemplate.getTemplate(
         templateId
       )
+      return new Promise((resolve) => {
+        resolve(
+          {
+            data: data.template
+          }
+        );
+      });
     }
   };
 
-  static getTemplates = (start: number, length: number) => {
+  static getTemplates = async (start: number, length: number): Promise<any> => {
     console.log('get Templates')
     if(process.env.VUE_APP_API_TYPE  === 'REST')
     {
-      return RestApiTemplate.getTemplates(
+      const { data } = await RestApiTemplate.getTemplates(
         start, length
       )
+      return new Promise((resolve) => {
+        resolve(data);
+      });
     }else{
-      return GraphqlApiTemplate.getTemplates(
+      const { data } = await GraphqlApiTemplate.getTemplates(
         start, length
       )
+      return new Promise((resolve) => {
+        resolve(
+          {
+            data: {
+              total: data.templates.recordsFiltered,
+              list: data.templates.data
+            }
+          }
+        );
+      });
     }
   };
 }

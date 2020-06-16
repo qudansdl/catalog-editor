@@ -8,31 +8,54 @@ import GraphqlApiImage from '@/api/graphql/images';
 
 export default class ApiImage {
 
-  static getImage = (imageId: string | null) => {
+  static getImage = async (imageId: string | null) => {
     console.log('get Image')
     if(process.env.VUE_APP_API_TYPE  === 'REST')
     {
-      return RestApiImage.getImage(
+      const { data } = await RestApiImage.getImage(
         imageId
       )
+      return new Promise((resolve) => {
+        resolve(data);
+      });
     }else{
-      return GraphqlApiImage.getImage(
+      const { data } = await GraphqlApiImage.getImage(
         imageId
       )
+      return new Promise((resolve) => {
+        resolve(
+          {
+            data: data.image
+          }
+        );
+      });
     }
   };
 
-  static getImages = (start: number, length: number, categories: ICategoryData[]) => {
+  static getImages = async (start: number, length: number, categories: ICategoryData[]): Promise<any> => {
     console.log('get Images')
     if(process.env.VUE_APP_API_TYPE  === 'REST')
     {
-      return RestApiImage.getImages(
+      const { data } = await RestApiImage.getImages(
         start, length, categories
       )
+      return new Promise((resolve) => {
+        resolve(data);
+      });
     }else{
-      return GraphqlApiImage.getImages(
+      const { data } =  await GraphqlApiImage.getImages(
         start, length, categories
       )
+      return new Promise((resolve) => {
+        resolve(
+          {
+            data: {
+              total: data.images.recordsFiltered,
+              list: data.images.data
+            }
+          }
+        );
+      });
     }
   };
 }

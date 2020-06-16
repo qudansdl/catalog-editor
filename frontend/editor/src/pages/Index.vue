@@ -212,13 +212,13 @@ export default class Index extends Vue {
         let content = ''
         if (this.type === 'CATALOG') {
           const catalog = await ApiCatalog.getCatalog(id)
-          content = catalog.data.catalog.content
-          this.entity = catalog.data.catalog
+          content = catalog.content
+          this.entity = catalog
         } else if (this.type === 'TEMPLATE') {
           this.template.id = id
           const template = await ApiTemplate.getTemplate(id)
-          content = template.data.template.content
-          this.entity = template.data.template
+          content = template.content
+          this.entity = template
         }
         this.updateStatus(JSON.parse(content))
       }

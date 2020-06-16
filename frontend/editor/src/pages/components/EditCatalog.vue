@@ -104,9 +104,9 @@ export default class EditCatalog extends Vue {
   private async getList() {
     this.isLoading = true
     const { data } = await ApiCatalog.getCatalogs(this.start, this.length)
-    this.catalogs = this.catalogs.concat(data.catalogs.data)
+    this.catalogs = this.catalogs.concat(data.list)
     this.isLoading = false
-    return data.catalogs.recordsFiltered < this.start + this.length
+    return data.total < this.start + this.length
   }
 
 }

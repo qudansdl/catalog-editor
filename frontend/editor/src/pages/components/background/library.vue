@@ -102,10 +102,10 @@ export default class SelectImage extends Vue {
   private async getList() {
     this.isLoading = true
 
-    const { data } = await ApiBackground.getBackgrounds(this.start, this.length, this.tags)
-    this.backgrounds = this.backgrounds.concat(data.backgrounds.data)
+    const data = await ApiBackground.getBackgrounds(this.start, this.length, this.tags)
+    this.backgrounds = this.backgrounds.concat(data.list)
     this.isLoading = false
-    return data.backgrounds.recordsFiltered < this.start + this.length
+    return data.total < this.start + this.length
   }
 
 
@@ -113,8 +113,7 @@ export default class SelectImage extends Vue {
     this.isLoading = true
 
     const { data } = await ApiCategory.getCategories(search)
-    this.categories = data.categories.data
-
+    this.categories = data.list
     this.autocompleteItems = this.categories.map(
       function(c, index, array){
         return { text: c.name, id: c.id }

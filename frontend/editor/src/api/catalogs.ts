@@ -23,6 +23,7 @@ export default class ApiCatalog {
         thumbnail,
         categories
       )
+
     }else{
       return GraphqlApiCatalog.createCatalog(
         name,
@@ -66,31 +67,54 @@ export default class ApiCatalog {
   };
 
 
-  static getCatalog = (catalogId: string) => {
+  static getCatalog = async (catalogId: string): Promise<any> => {
     console.log('get Catalog : ' + catalogId)
     if(process.env.VUE_APP_API_TYPE  === 'REST')
     {
-      return RestApiCatalog.getCatalog(
+      const { data } = await RestApiCatalog.getCatalog(
         catalogId
       )
+      return new Promise((resolve) => {
+        resolve(data);
+      });
     }else{
-      return GraphqlApiCatalog.getCatalog(
+      const { data } = await GraphqlApiCatalog.getCatalog(
         catalogId
       )
+      return new Promise((resolve) => {
+        resolve(
+          {
+            data: data.catalog
+          }
+        );
+      });
     }
   };
 
-  static getCatalogs = (start: number, length: number) => {
+  static getCatalogs = async (start: number, length: number): Promise<any> => {
     console.log('get Catalogs')
     if(process.env.VUE_APP_API_TYPE  === 'REST')
     {
-      return RestApiCatalog.getCatalogs(
+      const { data } = await RestApiCatalog.getCatalogs(
         start, length
       )
+      return new Promise((resolve) => {
+        resolve(data);
+      });
     }else{
-      return GraphqlApiCatalog.getCatalogs(
+      const { data } = await GraphqlApiCatalog.getCatalogs(
         start, length
       )
+      return new Promise((resolve) => {
+        resolve(
+          {
+            data: {
+              total: data.catalogs.recordsFiltered,
+              list: data.catalogs.data
+            }
+          }
+        );
+      });
     }
   };
 }

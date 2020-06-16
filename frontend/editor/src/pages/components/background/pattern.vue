@@ -94,10 +94,10 @@
     private async getList() {
       this.isLoading = true
 
-      const { data } = await ApiPattern.getPatterns(this.start, this.length, this.categories)
-      this.patterns = this.patterns.concat(data.patterns.data)
+      const data = await ApiPattern.getPatterns(this.start, this.length, this.categories)
+      this.patterns = this.patterns.concat(data.list)
       this.isLoading = false
-      return data.patterns.recordsFiltered < this.start + this.length
+      return data.total < this.start + this.length
     }
 
 
@@ -105,7 +105,7 @@
       this.isLoading = true
 
       const { data } = await ApiCategory.getCategories(search)
-      this.categories = data.categories.data
+      this.categories = data.list
       this.autocompleteItems = this.categories.map(
         function(c, index, array){
           return { text: c.name, id: c.id }

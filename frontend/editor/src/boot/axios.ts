@@ -10,7 +10,7 @@ declare module 'vue/types/vue' {
 
 axios.interceptors.request.use(
   config => {
-    config.baseURL = process.env.VUE_APP_BASE_URL
+    config.baseURL = process.env.VUE_APP_BASE_API
     config.headers['Content-Type'] = 'application/json'
     return config
   }

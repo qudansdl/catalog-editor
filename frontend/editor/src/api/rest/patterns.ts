@@ -6,12 +6,12 @@ export default class RestApiPattern {
 
   static getPattern = (patternId: string | null) => {
     console.log('get Pattern')
-    return Vue.prototype.$axios.get(`/catalog/patterns/${patternId}`)
+    return Vue.prototype.$axios.get(`/catalog/patterns/${patternId}.do`)
   };
 
   static getPatterns = (start: number, length: number, tags: ICategoryData[]) => {
     console.log('get Patterns')
-    return Vue.prototype.$axios.get(`/catalog/patterns`, {
+    return Vue.prototype.$axios.get(`/catalog/patterns.do`, {
       params: {
         start,
         length,

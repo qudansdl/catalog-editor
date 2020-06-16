@@ -12,7 +12,7 @@ export default class RestApiCatalog {
     categories: ICategoryData[]
   ) => {
     console.log('Create Catalog')
-    Vue.prototype.$axios.post('/catalog/catalogs', {
+    Vue.prototype.$axios.post('/catalog/catalogs.do', {
       name,
       content,
       image,
@@ -30,7 +30,7 @@ export default class RestApiCatalog {
     categories: ICategoryData[]
   ) => {
     console.log('Update Catalog')
-    Vue.prototype.$axios.put('/catalog/catalogs', {
+    Vue.prototype.$axios.put('/catalog/catalogs.do', {
       catalogId,
       name,
       content,
@@ -42,12 +42,12 @@ export default class RestApiCatalog {
 
   static getCatalog = (catalogId: string) => {
     console.log('get Catalog : ' + catalogId)
-    return Vue.prototype.$axios.get(`/catalog/catalogs/${catalogId}`)
+    return Vue.prototype.$axios.get(`/catalog/catalogs/${catalogId}.do`)
   };
 
   static getCatalogs = (start: number, length: number) => {
     console.log('get Catalogs')
-    return Vue.prototype.$axios.get(`/catalog/catalogs`, {
+    return Vue.prototype.$axios.get(`/catalog/catalogs.do`, {
       params: {
         start,
         length
