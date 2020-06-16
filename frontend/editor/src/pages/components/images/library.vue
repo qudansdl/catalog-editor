@@ -99,10 +99,10 @@ export default class SelectImage extends Vue {
   private async getList() {
     this.isLoading = true
 
-    const { data } = await ApiImage.getImages(query)
+    const { data } = await ApiImage.getImages(this.start, this.length, this.tags)
     this.images = this.images.concat(data.images.data)
     this.isLoading = false
-    return data.images.recordsFiltered < this.listQuery.start + this.listQuery.length
+    return data.images.recordsFiltered < this.start + this.length
   }
 
 
