@@ -1,19 +1,9 @@
 /* eslint-disable */
-import {
-  CREATE_CATALOG,
-  DELETE_CATALOG,
-  GET_CATALOG_BY_ID,
-  GET_CATALOGS,
-  UPDATE_CATALOG
-} from '@/api/graphql/catalogs'
 import { ICategoryData, ICatalogData } from '@/api/types';
-import Vue from 'vue';
-
-export const defaultCatalogData: ICatalogData = {
-  id: null,
-  name: '',
-  content: null
-}
+import RestApiBackground from '@/api/rest/backgrounds';
+import GraphqlApiBackground from '@/api/graphql/backgrounds';
+import RestApiCatalog from '@/api/rest/catalogs';
+import GraphqlApiCatalog from '@/api/graphql/catalogs';
 
 export default class ApiCatalog {
   static createCatalog = (
@@ -24,16 +14,24 @@ export default class ApiCatalog {
     categories: ICategoryData[]
   ) => {
     console.log('Create Catalog')
-    return Vue.prototype.$apollo.mutate({
-      mutation: CREATE_CATALOG,
-      variables: {
+    if(process.env.VUE_APP_API_TYPE  === 'REST')
+    {
+      return RestApiCatalog.createCatalog(
         name,
         content,
         image,
         thumbnail,
         categories
-      }
-    })
+      )
+    }else{
+      return GraphqlApiCatalog.createCatalog(
+        name,
+        content,
+        image,
+        thumbnail,
+        categories
+      )
+    }
   };
 
   static updateCatalog = (
@@ -45,46 +43,54 @@ export default class ApiCatalog {
     categories: ICategoryData[]
   ) => {
     console.log('Update Catalog')
-    return Vue.prototype.$apollo.mutate({
-      mutation: UPDATE_CATALOG,
-      variables: {
+    if(process.env.VUE_APP_API_TYPE  === 'REST')
+    {
+      return RestApiCatalog.updateCatalog(
         catalogId,
         name,
         content,
         image,
         thumbnail,
         categories
-      }
-    })
+      )
+    }else{
+      return GraphqlApiCatalog.updateCatalog(
+        catalogId,
+        name,
+        content,
+        image,
+        thumbnail,
+        categories
+      )
+    }
   };
 
-  static deleteCatalog = (catalogId: string) => {
-    console.log('Delete Catalog')
-    return Vue.prototype.$apollo.mutate({
-      mutation: DELETE_CATALOG,
-      variables: {
-        catalogId
-      }
-    })
-  };
 
   static getCatalog = (catalogId: string) => {
     console.log('get Catalog : ' + catalogId)
-    return Vue.prototype.$apollo.query({
-      query: GET_CATALOG_BY_ID,
-      variables: {
+    if(process.env.VUE_APP_API_TYPE  === 'REST')
+    {
+      return RestApiCatalog.getCatalog(
         catalogId
-      }
-    })
+      )
+    }else{
+      return GraphqlApiCatalog.getCatalog(
+        catalogId
+      )
+    }
   };
 
-  static getCatalogs = (input: any) => {
+  static getCatalogs = (start: number, length: number) => {
     console.log('get Catalogs')
-    return Vue.prototype.$apollo.query({
-      query: GET_CATALOGS,
-      variables: {
-        input
-      }
-    })
+    if(process.env.VUE_APP_API_TYPE  === 'REST')
+    {
+      return RestApiCatalog.getCatalogs(
+        start, length
+      )
+    }else{
+      return GraphqlApiCatalog.getCatalogs(
+        start, length
+      )
+    }
   };
 }

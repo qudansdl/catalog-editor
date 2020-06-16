@@ -55,25 +55,9 @@ export default class SelectImage extends Vue {
   private selected: IBackgroundData | null = null
 
   isLoading = false
-  private categoryQuery = {
-    start: 0,
-    length: 0,
-    order: [{
-      column: 'created',
-      dir: 'desc'
-    }],
-    columns: []
-  }
 
-  private listQuery = {
-    start: 1,
-    length: 10,
-    order: [{
-      column: 'created',
-      dir: 'desc'
-    }],
-    columns: []
-  }
+  start = 0
+  length = 10
 
   tag = ''
   tags : any[] = []
@@ -111,41 +95,24 @@ export default class SelectImage extends Vue {
       this.backgrounds = []
     }
     console.log(`index ${index}`)
-    this.listQuery.start = (index-1)*this.listQuery.length
+    this.start = (index-1)*this.length
     done(await this.getList())
   }
 
   private async getList() {
     this.isLoading = true
-    const query = JSON.parse(JSON.stringify(this.listQuery))
-    if (this.tags.length > 0) {
-      query.columns.push({
-        name: 'categories',
-        operation: '',
-        value: '',
-        columns: [{
-          name: 'id',
-          operation: 'in',
-          value: this.tags.map(c => c.id).join(',')
-        }]
-      })
-    }
-    const { data } = await ApiBackground.getBackgrounds(query)
+
+    const { data } = await ApiBackground.getBackgrounds(this.start, this.length, this.tags)
     this.backgrounds = this.backgrounds.concat(data.backgrounds.data)
     this.isLoading = false
-    return data.backgrounds.recordsFiltered < this.listQuery.start + this.listQuery.length
+    return data.backgrounds.recordsFiltered < this.start + this.length
   }
 
 
   async getCategories (search: string) {
     this.isLoading = true
-    const query = JSON.parse(JSON.stringify(this.categoryQuery))
-    query.columns.push({
-      name: 'name',
-      operation: 'like',
-      value: search
-    })
-    const { data } = await ApiCategory.getCategories(query)
+
+    const { data } = await ApiCategory.getCategories(search)
     this.categories = data.categories.data
 
     this.autocompleteItems = this.categories.map(

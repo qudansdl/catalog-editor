@@ -1,104 +1,92 @@
 /* eslint-disable */
-import gql from 'graphql-tag'
-import Mustache from 'mustache'
+import {
+  CREATE_TEMPLATE,
+  GET_TEMPLATE_BY_ID,
+  GET_TEMPLATES,
+  UPDATE_TEMPLATE
+} from '@/api/graphql/query/templates'
+import { ICategoryData, ITemplateData } from '@/api/types';
+import Vue from 'vue';
+import { CREATE_CATALOG, GET_CATALOG_BY_ID, GET_CATALOGS, UPDATE_CATALOG } from '@/api/graphql/query/catalogs';
 
-export const CREATE_TEMPLATE = gql`
-    mutation CreateTemplate(
-      $name: String,
-      $content: String!,
-      $image: String!,
-      $thumbnail: String!,
-      $categories: [CategoryInput]
-    ){
-        createTemplate(
-          name: $name,
-          content: $content,
-          image: $image,
-          thumbnail: $thumbnail,
-          categories: $categories
-        ) {
-            id,
-            name
-        }
-    }
-`
+export default class GraphqlApiTemplate {
 
-export const UPDATE_TEMPLATE = gql`
-  mutation updateTemplate(
-    $templateId: UUID!,
-    $name: String,
-    $content: String!,
-    $image: String!,
-    $thumbnail: String!,
-    $categories: [CategoryInput]
-  ){
-    updateTemplate(
-      templateId: $templateId,
-      name: $name,
-      content: $content,
-      image: $image,
-      thumbnail: $thumbnail,
-      categories: $categories
-    ) {
-      id
-      name
-      created
-      updated
-    }
+
+  private static listQuery = {
+    start: 0,
+    length: 10,
+    order: [{
+      column: 'created',
+      dir: 'desc'
+    }],
+    columns: []
   }
-`
 
-export const DELETE_TEMPLATE = gql`
-  mutation deleteTemplate($templateId: UUID!){
-    deleteTemplate(templateId: $templateId)
-  }
-`
 
-export const GET_TEMPLATES = gql`query($input: DataTablesInput) {
-    templates(input: $input) {
-        recordsTotal
-        recordsFiltered
-        error
-        data {
-            id
-            name
-            thumbnail
-            created
-            updated
-        }
-    }
-}`
+  static createTemplate = (
+    name: string,
+    content: string,
+    image: string,
+    thumbnail: string,
+    categories: ICategoryData[]
+  ) => {
+    console.log('Create Catalog')
+    return Vue.prototype.$apollo.mutate({
+      mutation: CREATE_TEMPLATE,
+      variables: {
+        name,
+        content,
+        image,
+        thumbnail,
+        categories
+      }
+    })
+  };
 
-export const GET_TEMPLATE_BY_ID = gql`query($templateId: UUID) {
-  template(templateId: $templateId) {
-    id
-    name
-    content
-    image
-    thumbnail
-    created
-    updated
-  }
-}`
+  static updateTemplate = (
+    catalogId: string,
+    name: string,
+    content: string,
+    image: string,
+    thumbnail: string,
+    categories: ICategoryData[]
+  ) => {
+    console.log('Update Catalog')
+    return Vue.prototype.$apollo.mutate({
+      mutation: UPDATE_TEMPLATE,
+      variables: {
+        catalogId,
+        name,
+        content,
+        image,
+        thumbnail,
+        categories
+      }
+    })
+  };
 
-export function getTemplateVariable(category: string, pageSize: number, currentPage: number) {
-  const variableTemplate = `{
-        "input": {
-            "start": {{start}},
-            "length": {{pageSize}} {{#category}},
-            "columns": [{
-                "name": "categories",
-                "columns": [{
-                    "name": "id",
-                    "operation": "eq",
-                    "value": "{{category}}"
-                }]
-            }]
-            {{/category}}
-        }
-    }`
+  static getTemplate = (catalogId: string) => {
+    console.log('get Catalog : ' + catalogId)
+    return Vue.prototype.$apollo.query({
+      query: GET_TEMPLATE_BY_ID,
+      variables: {
+        catalogId
+      }
+    })
+  };
 
-  const start = (currentPage - 1) * pageSize
-  const variables = Mustache.render(variableTemplate, { category, pageSize, start })
-  return JSON.parse(variables)
+  static getTemplates = (start: number, length: number) => {
+    console.log('get Catalogs')
+
+    const query = JSON.parse(JSON.stringify(GraphqlApiTemplate.listQuery))
+    query.start = start
+    query.length = length
+    return Vue.prototype.$apollo.query({
+      query: GET_TEMPLATES,
+      variables: {
+        query
+      }
+    })
+  };
+
 }

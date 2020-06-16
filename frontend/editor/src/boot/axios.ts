@@ -1,5 +1,6 @@
-import { boot } from 'quasar/wrappers';
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from 'axios'
+import { boot } from 'quasar/wrappers'
+import { Notify } from 'quasar'
 
 declare module 'vue/types/vue' {
   interface Vue {
@@ -7,7 +8,32 @@ declare module 'vue/types/vue' {
   }
 }
 
+axios.interceptors.request.use(
+  config => {
+    config.baseURL = process.env.VUE_APP_BASE_URL
+    config.headers['Content-Type'] = 'application/json'
+    return config
+  }
+)
+
+axios.interceptors.response.use(
+  response => {
+    return Promise.resolve(response)
+  },
+  error => {
+    switch (error.response.status) {
+      case 401:
+        window.location.href = '#/logout'
+    }
+    Notify.create({
+      message: `[${error.response.statusText}]${error.response.data}`,
+      position: 'top',
+      color: 'negative'
+    })
+    return Promise.reject(error)
+  }
+)
+
 export default boot(({ Vue }) => {
-  // eslint-disable-next-line no-param-reassign
-  Vue.prototype.$axios = axios;
-});
+  Vue.prototype.$axios = axios
+})

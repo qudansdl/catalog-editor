@@ -38,7 +38,6 @@ import { cloneDeep } from 'lodash';
 import { ICategoryData, ICatalogData, ITextData } from '@/api/types';
 import { Debounce } from 'vue-debounce-decorator';
 import ApiCatalog from '@/api/catalogs';
-import ApiCategory from '@/api/categories';
 import VueTagsInput from '@johmun/vue-tags-input';
 
 @Component({
@@ -55,17 +54,8 @@ export default class EditCatalog extends Vue {
   private catalogs: ICatalogData[] = []
 
   isLoading = false
-
-  private listQuery = {
-    start: 0,
-    length: 10,
-    order: [{
-      column: 'created',
-      dir: 'desc'
-    }],
-    columns: []
-  }
-
+  start = 0
+  length = 10
 
   async apply() {
     const { data } = await ApiCatalog.getCatalog(this.selected!.id!)
@@ -107,17 +97,16 @@ export default class EditCatalog extends Vue {
       this.catalogs = []
     }
     console.log(`index ${index}`)
-    this.listQuery.start = (index -1) * this.listQuery.length
+    this.start = (index -1) * this.length
     done(await this.getList())
   }
 
   private async getList() {
     this.isLoading = true
-    const query = JSON.parse(JSON.stringify(this.listQuery))
-    const { data } = await ApiCatalog.getCatalogs(query)
+    const { data } = await ApiCatalog.getCatalogs(this.start, this.length)
     this.catalogs = this.catalogs.concat(data.catalogs.data)
     this.isLoading = false
-    return data.catalogs.recordsFiltered < this.listQuery.start + this.listQuery.length
+    return data.catalogs.recordsFiltered < this.start + this.length
   }
 
 }

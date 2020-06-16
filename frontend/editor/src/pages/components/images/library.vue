@@ -52,25 +52,9 @@ export default class SelectImage extends Vue {
   private selected: IImageData | null = null
 
   isLoading = false
-  private categoryQuery = {
-    start: 0,
-    length: 0,
-    order: [{
-      column: 'created',
-      dir: 'desc'
-    }],
-    columns: []
-  }
 
-  private listQuery = {
-    start: 1,
-    length: 10,
-    order: [{
-      column: 'created',
-      dir: 'desc'
-    }],
-    columns: []
-  }
+  start = 0
+  length = 0
 
   tag = ''
   tags : any[] = []
@@ -108,25 +92,13 @@ export default class SelectImage extends Vue {
       this.images = []
     }
     console.log(`index ${index}`)
-    this.listQuery.start = (index -1) * this.listQuery.length
+    this.start = (index -1) * this.length
     done(await this.getList())
   }
 
   private async getList() {
     this.isLoading = true
-    const query = JSON.parse(JSON.stringify(this.listQuery))
-    if (this.categories.length > 0) {
-      query.columns.push({
-        name: 'categories',
-        operation: '',
-        value: '',
-        columns: [{
-          name: 'id',
-          operation: 'in',
-          value: this.categories.map(c => c.id).join(',')
-        }]
-      })
-    }
+
     const { data } = await ApiImage.getImages(query)
     this.images = this.images.concat(data.images.data)
     this.isLoading = false
@@ -136,13 +108,8 @@ export default class SelectImage extends Vue {
 
   async getCategories (search: string) {
     this.isLoading = true
-    const query = JSON.parse(JSON.stringify(this.categoryQuery))
-    query.columns.push({
-      name: 'name',
-      operation: 'like',
-      value: search
-    })
-    const { data } = await ApiCategory.getCategories(query)
+
+    const { data } = await ApiCategory.getCategories(search)
     this.categories = data.categories.data
 
     this.autocompleteItems = this.categories.map(

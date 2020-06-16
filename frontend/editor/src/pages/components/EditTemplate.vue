@@ -54,7 +54,6 @@ import { Debounce } from 'vue-debounce-decorator';
 import ApiTemplate from '@/api/templates';
 import ApiCategory from '@/api/categories';
 import VueTagsInput from '@johmun/vue-tags-input';
-import ApiCatalog from '@/api/catalogs';
 
 @Component({
   components: {
@@ -72,15 +71,6 @@ export default class EditTemplate extends Vue {
   private templates: ITemplateData[] = []
 
   isLoading = false
-  private categoryQuery = {
-    start: 0,
-    length: 0,
-    order: [{
-      column: 'created',
-      dir: 'desc'
-    }],
-    columns: []
-  }
 
   private listQuery = {
     start: 0,
@@ -181,13 +171,8 @@ export default class EditTemplate extends Vue {
 
   async getCategories (search: string) {
     this.isLoading = true
-    const query = JSON.parse(JSON.stringify(this.categoryQuery))
-    query.columns.push({
-      name: 'name',
-      operation: 'like',
-      value: search
-    })
-    const { data } = await ApiCategory.getCategories(query)
+
+    const { data } = await ApiCategory.getCategories(search)
     this.categories = data.categories.data
     this.autocompleteItems = this.categories.map(
       function(c, index, array){

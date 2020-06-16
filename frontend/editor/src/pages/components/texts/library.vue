@@ -55,15 +55,7 @@ export default class SelectText extends Vue {
   private selected: ITextData | null = null
 
   isLoading = false
-  private categoryQuery = {
-    start: 0,
-    length: 0,
-    order: [{
-      column: 'created',
-      dir: 'desc'
-    }],
-    columns: []
-  }
+
 
   private listQuery = {
     start: 0,
@@ -136,13 +128,8 @@ export default class SelectText extends Vue {
 
   async getCategories (search: string) {
     this.isLoading = true
-    const query = JSON.parse(JSON.stringify(this.categoryQuery))
-    query.columns.push({
-      name: 'name',
-      operation: 'like',
-      value: search
-    })
-    const { data } = await ApiCategory.getCategories(query)
+
+    const { data } = await ApiCategory.getCategories(search)
     this.categories = data.categories.data
     this.autocompleteItems = this.categories.map(
       function(c, index, array){
