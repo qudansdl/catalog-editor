@@ -1,0 +1,62 @@
+@charset "UTF-8";
+/*폰트 선언 시작*/
+@font-face {
+  font-family: 'Frutiger';
+  font-style: normal;
+  src: url("./font/FrutigerLTStd-Cn.woff") format("woff"), url("./font/FrutigerLTStd-Cn.eot");
+}
+
+@font-face {
+  font-family: '고도체B';
+  font-style: normal;
+  src: url("./font/GodoB.woff") format("woff"), url("./font/GodoB.eot");
+}
+
+@font-face {
+  font-family: '고도체M';
+  font-style: normal;
+  src: url("./font/GodoM.woff") format("woff"), url("./font/GodoM.eot");
+}
+
+@font-face {
+  font-family: '나눔바른고딕';
+  font-style: normal;
+  src: url("./font/NanumBarunGothic.woff") format("woff"), url("./font/NanumBarunGothic.eot");
+}
+
+@font-face {
+  font-family: '윤고딕310';
+  font-style: normal;
+  src: url("./font/yun310.woff") format("woff"), url("./font/yun310.eot");
+}
+
+@font-face {
+    font-family: '윤고딕320';
+    font-style: normal;
+    src: url("./font/yun320.woff") format("woff"), url("./font/yun320.eot");
+}
+
+@font-face {
+  font-family: '윤고딕330';
+  font-style: normal;
+  src: url("./font/yun330.woff") format("woff"), url("./font/yun330.eot");
+}
+
+@font-face {
+  font-family: '윤고딕340';
+  font-style: normal;
+  src: url("./font/yun340.woff") format("woff"), url("./font/yun340.eot");
+}
+
+@font-face {
+  font-family: '윤고딕350';
+  font-style: normal;
+  src: url("./font/yun350.woff") format("woff"), url("./font/yun350.eot");
+}
+
+@font-face {
+  font-family: '윤고딕360';
+  font-style: normal;
+  src: url("./font/yun360.woff") format("woff"), url("./font/yun360.eot");
+}
+

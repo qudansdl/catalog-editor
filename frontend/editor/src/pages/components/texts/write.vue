@@ -49,19 +49,16 @@
             fixedIcon: true,
             options: [
               'default_font',
-              'dotum',
-              'gullim',
-              'batang',
-              'NanumGothic',
-              'MalgunGothic',
-              'arial',
-              'arial_black',
-              'comic_sans',
-              'courier_new',
-              'impact',
-              'lucida_grande',
-              'times_new_roman',
-              'verdana'
+              'Frutiger',
+              'GodoM',
+              'GodoB',
+              'NanumBarunGothic',
+              'yun310',
+              'yun320',
+              'yun330',
+              'yun340',
+              'yun350',
+              'yun360'
             ]
           },
           'removeFormat'
@@ -70,20 +67,17 @@
         ['undo', 'redo'],
         ['viewsource']
       ]"
-        :fonts="{
-        arial: 'Arial',
-        arial_black: 'Arial Black',
-        comic_sans: 'Comic Sans MS',
-        courier_new: 'Courier New',
-        impact: 'Impact',
-        lucida_grande: 'Lucida Grande',
-        times_new_roman: 'Times New Roman',
-        verdana: 'Verdana',
-        dotum: '돋움',
-        gullim: '굴림',
-        batang: '바탕',
-        NanumGothic: '나눔고딕',
-        MalgunGothic: '맑은고딕'
+      :fonts="{
+        Frutiger: 'Frutiger',
+        GodoM: '고도체M',
+        GodoB: '고도체B',
+        NanumBarunGothic: '나눔바른고딕',
+        yun310: '윤고딕310',
+        yun320: '윤고딕320',
+        yun330: '윤고딕330',
+        yun340: '윤고딕340',
+        yun350: '윤고딕350',
+        yun360: '윤고딕360'
       }"
       />
     </q-card-section>
